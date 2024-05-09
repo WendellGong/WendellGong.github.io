@@ -12,7 +12,7 @@ title                    : "龚文治 / Personal homepage"
 title_separator          : "-"
 name                     : &name "龚文治"
 description              : &description "personal description"
-url                      : https://wendellgong.github.io/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : "https://space.bilibili.com/700240001" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "https://github.com/WendellGong"
 
@@ -25,9 +25,9 @@ author:
   name             : "龚文治"
   pronouns         : # example: "she/her"  
   bio              : "Aggressive, Amicable And Apprehensive."
-  location         : " Beijing, Shanghai"
-  employer         : "Huazhong University of science and technology"
-  uri              : " 904057564@qq.com"# URL
+  location         : "Beijing, Shanghai"
+  employer         : "华中科技大学"
+  uri              : "904057564@qq.com"# URL
   email            : "904057564@qq.com"
 
   # Academic websites
