@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO 優化開始 -->
+    <title>PID 模拟器 - PID仿真学习系统</title>
+    <meta name="description" content="这是一个PID模拟器，用于学习和展示比例、积分、微分控制器的工作原理。适合工程学、自动化和控制系统爱好者。">
+    <meta name="keywords" content="PID模拟器, 控制系统, 自动化, 工程学, 比例积分微分控制器">
+    <link rel="stylesheet" href="styles.css">
+    <!-- SEO 優化結束 -->
+</head>
+
+<body>
+    <div class="controls">
+        <div>
+            <label>目标值: <input type="range" id="setpoint" min="0" max="100" value="50">
+            <span id="setpointValue">50</span></label>
+        </div>
+        <div>
+            <label>Kp: <input type="range" id="Kp" min="0" max="2" step="0.05" value="0.6"> 
+            <span id="KpValue">0.6</span></label>
+        </div>
+        <div>
+            <label>Ki: <input type="range" id="Ki" min="0" max="1" step="0.01" value="0.06"> 
+            <span id="KiValue">0.06</span></label>
+        </div>
+        <div>
+            <label>Kd: <input type="range" id="Kd" min="0" max="0.05" step="0.001" value="0.001"> 
+            <span id="KdValue">0.01</span></label>
+        </div>
+        <div>
+            <label>噪音: <input type="range" id="noise" min="0" max="10" step="0.1" value="1.0"> 
+            <span id="noiseValue">1.0</span></label>
+        </div>
+
+        <button id="resetBtn">重置</button>
+
+        <div>
+            <label><input type="checkbox" id="showTarget" checked> 显示目标值 (红色)</label>
+        </div>
+        <div>
+            <label><input type="checkbox" id="showCurrent" checked> 显示当前值 (蓝色)</label>
+        </div>
+        <div>
+            <label><input type="checkbox" id="showNoise" checked> 显示噪音值 (橘色)</label>
+        </div>
+    </div>
+
+    <canvas id="canvas" width="600" height="400"></canvas>
+    <div class="legend">
+        <p><span class="red-color">●</span> 目标值</p>
+        <p><span class="blue-color">●</span> 当前值</p>
+        <p><span class="orange-color">●</span> Noise 噪声影响</p>
+    </div>
+  
+<!-- PID說明部分 -->
+<div class="controls">
+<div class="pid-description">
+    <h2>PID 工作方式说明:</h2>
+    <p>PID控制器是一种常见的控制器，用于控制工程系统的各种应用。它由三个主要部分组成：比例(P)、积分(I)和微分(D)。</p>
+    <ul>
+        <li><strong>比例(P)</strong>: 这部分考虑目前的误差。如果误差很大，控制器输出也会很大。</li>
+        <li><strong>积分(I)</strong>: 考虑过去的误差。如果误差存在已经很长时间，它将累积（积分）误差，以便控制器可以对其进行修正。</li>
+        <li><strong>微分(D)</strong>: 预测未来的误差。它查看误差如何随著时间变化，并且如果误差的变化速度迅速增加，控制器输出将会增加。</li>
+    </ul>
+</div>
+
+<!-- 控制項介紹部分 -->
+<div class="controls-description">
+    <h2>控制项介绍:</h2>
+    <ul>
+        <li><strong>目标值</strong>: 这是你希望系统达到的目标或设定点。例如，如果你正在控制室内温度，这可能是你希望的温度。</li>
+        <li><strong>Kp</strong>: 比例增益。决定控制器响应目前误差的强度。值越大，响应越强烈。</li>
+        <li><strong>Ki</strong>: 积分增益。决定控制器响应过去误差积累的强度。值越大，响应长时间存在的误差越强烈。</li>
+        <li><strong>Kd</strong>: 微分增益。决定控制器如何响应误差的变化速度。值越大，响应误差变化的速度越快。</li>
+        <li><strong>噪音</strong>: 在实际系统中，经常会有噪音或干扰。这个控制可以模拟这种情况，允许你看到控制器如何在有噪音的情况下响应。</li>
+    </ul>
+</div>
+</div>
+<div class="controls">
+    <div class="footer">
+        <li> </li>
+        <a href="https://www.facebook.com/groups/930109078230045" target="_blank">Facebook Ardpilot</a>
+        <a href="https://github.com/WendellGong/WendellGong.github.io" target="_blank">如果你喜欢或者有用，欢迎Star一下</a>
+        
+        <p>版本：1.1.0</p>
+        <p>更新日期：2023-11-07</p>
+        
+    </div></div>
+    <script src="script.js"></script>
+</body>
+
+</html>

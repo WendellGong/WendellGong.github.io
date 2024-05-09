@@ -1,0 +1,22 @@
+# main links links
+main:
+#  - title: "Publications"
+#    url: /publications/
+#
+#  - title: "Talks"
+#    url: /talks/
+
+  - title: "Teaching"
+    url: /teaching/    
+    
+  - title: "Portfolio"
+    url: /https://space.bilibili.com/700240001/
+        
+  - title: "Blog Posts"
+    url: /year-archive/
+    
+  - title: "Social Media"
+    url: "https://space.bilibili.com/700240001"
+
+  - title: "About Me"
+    url: "https://wendellgong.github.io/personalResume/"
