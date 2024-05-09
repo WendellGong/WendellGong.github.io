@@ -12,8 +12,8 @@ title                    : "龚文治 / Personal homepage"
 title_separator          : "-"
 name                     : &name "龚文治"
 description              : &description "personal description"
-url                      : "https://space.bilibili.com/700240001" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
-baseurl                  : "" # the subpath of your site, e.g. "/blog"
+url                      : #"https://space.bilibili.com/700240001"
+baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "https://github.com/WendellGong"
 
 # Site Author - The following control what appear as part of the author content on the side bar.
@@ -26,7 +26,7 @@ author:
   pronouns         : # example: "she/her"  
   bio              : "Aggressive, Amicable And Apprehensive."
   location         : "Beijing, Shanghai"
-  employer         : "HUST"
+  employer         : "华中科技大学"
   uri              : "904057564@qq.com"# URL
   email            : "904057564@qq.com"
 
