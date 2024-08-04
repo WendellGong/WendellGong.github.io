@@ -7,17 +7,17 @@ redirect_from:
   - /about.html
 ---
 <span id="jumphome"></span>
-[开放词汇自动化标注系统](#jump3)  
+[多模态开放词汇自动化标注系统](#jump3)  
 [基于目标姿态与关键点的多视角视频生成系统](#jump0)   
 [视频生成模型评估系统](#jump)  
 [端云协同的多模态数据飞轮系统](#jump2)  
 [端侧模型优化部署方案](#jump4)  
 [平台规则检索校验RAG模型](#jump5)  
 [无字幕视频多语识别与字幕生成系统（个人项目）](#jump6)  
-[技术产品思维之TPF&PMF](#jump8) 
+[技术产品思维之TPF&PMF](#jump8)   
 [For more info](#jump7)  
 
-<span id="jump0"></span>
+<span id="jump3"></span>
 
 多模态开放词汇自动化标注系统
 ------
@@ -51,9 +51,9 @@ redirect_from:
   <img src="/images/autoLabeling.png" alt="autoLabeling" width="500">
 </div>
 
-<span id="jump4"></span> 
-
 [返回目录](#jumphome) 
+
+<span id="jump0"></span> 
 
 基于目标位置与关键点的多视角视频生成系统
 ======
@@ -139,7 +139,7 @@ eg：平台上的数据内容越多，就越能吸引更多的用户，而更多
 
 [返回目录](#jumphome)
 
-<span id="jump3"></span>
+<span id="jump4"></span>
 
 端侧模型优化部署方案
 ------
@@ -164,6 +164,7 @@ eg：平台上的数据内容越多，就越能吸引更多的用户，而更多
 利用XGBoost小模型学习深度强化学习大模型知识，最终将模型限制在40KB内，模型体积降低98%，使其能够在移动端顺利部署，并加快了模型推理速度
 
 [返回目录](#jumphome)
+
 <span id="jump5"></span>
 
 平台规则检索校验RAG模型
@@ -186,6 +187,7 @@ eg：平台上的数据内容越多，就越能吸引更多的用户，而更多
 </div>
 
 [返回目录](#jumphome)
+
 <span id="jump6"></span>
 
 无字幕视频多语识别与字幕生成系统（个人项目）
