@@ -1,0 +1,23 @@
+# main links links
+main:
+#  - title: "Publications"
+#    url: /publications/
+#
+#  - title: "Talks"
+#    url: /talks/
+  - title: "About Me"
+    url: "https://wendellgong.github.io/personalResume/"
+
+#  - title: "teaching"
+#    url: /teaching/
+#
+#  - title: "Personal skill"
+#    url: /portfolio/
+#
+#  - title: "Blog Posts"
+#    url: "https://space.bilibili.com/700240001"
+    
+  - title: "Blog Posts"
+    url: "https://www.xiaohongshu.com/user/profile/62ae76d2000000001b0267bc"
+
+
