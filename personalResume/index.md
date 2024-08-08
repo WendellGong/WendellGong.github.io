@@ -56,7 +56,7 @@ Aggressive, Amicable And Apprehensive.
 - **DDS通信中间件AVP调试组件设计与落地**  
 
 
-#### AI Algorithm engineer at Bilibili（2022.6~2022.9）
+#### AI Algorithm engineer at Bilibili（2022.5~2022.10）
 - **Reinforcement learning software development**  
 
 
