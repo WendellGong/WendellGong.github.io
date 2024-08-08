@@ -57,9 +57,7 @@ Aggressive, Amicable And Apprehensive.
 
 
 #### AI Algorithm engineer at Bilibili（2022.5~2022.10）
-- **Reinforcement learning software development**  
-
-
+- **Reinforcement learning software development**
 - **Mobile terminal Streaming quality software development**  
 
 ### Social work
