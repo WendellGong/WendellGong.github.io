@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>钢琴和弦键位图解 · 交互版</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23f0b429'/><rect x='6' y='8' width='5' height='16' rx='1' fill='%231a1a1a'/><rect x='13' y='8' width='5' height='16' rx='1' fill='%231a1a1a'/><rect x='20' y='8' width='5' height='16' rx='1' fill='%231a1a1a'/></svg>">
+<style>
+  :root {
+    --bg: #0e1116; --bg-soft: #161b22; --bg-card: #1c2230;
+    --border: #2a3142; --text: #e8ecf1; --text-dim: #8b95a7; --text-faint: #5a6478;
+    --accent: #f0b429; --accent-soft: rgba(240,180,41,.15);
+    --l1: #4ade80; --l2: #60a5fa; --l3: #c084fc; --l4: #f87171;
+    --kw: #f5f2ea; --kp: #f0b429; --kb: #1a1d24; --kbp: #d4961a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;line-height:1.5;overflow:hidden;height:100vh}
+  .app{display:flex;flex-direction:column;height:100vh}
+
+  /* 顶栏 */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#131820,var(--bg));flex-shrink:0}
+  .topbar h1{font-size:18px;font-weight:700;letter-spacing:1px}
+  .topbar h1 span{color:var(--accent)}
+  .root-selector{display:flex;gap:4px}
+  .root-btn{width:32px;height:30px;border-radius:6px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text-dim);font-size:12px;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+  .root-btn:hover{border-color:var(--accent);color:var(--text)}
+  .root-btn.active{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+  .instrument-select{background:var(--bg-soft);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;font-family:inherit;cursor:pointer;outline:none;transition:.15s}
+  .instrument-select:hover{border-color:var(--accent)}
+  .instrument-select:focus{border-color:var(--accent)}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+
+  /* 主体 */
+  .main{display:flex;flex:1;overflow:hidden}
+  /* 左侧控制 */
+  .sidebar{width:230px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+  .side-section{padding:12px 12px 8px}
+  .side-label{font-size:11px;color:var(--text-faint);letter-spacing:1px;margin-bottom:8px;font-weight:600}
+  .level-btns{display:flex;flex-direction:column;gap:5px}
+  .level-btn{text-align:left;padding:8px 10px;border-radius:7px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);font-size:12px;cursor:pointer;transition:.15s;font-family:inherit;display:flex;align-items:center;gap:8px}
+  .level-btn:hover{border-color:var(--accent);color:var(--text)}
+  .level-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--text)}
+  .level-btn .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .level-btn .cnt{margin-left:auto;font-size:10px;color:var(--text-faint)}
+  .chord-btns{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .chord-btn{padding:7px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);font-size:11px;cursor:pointer;transition:.15s;font-family:inherit;text-align:center}
+  .chord-btn:hover{border-color:var(--accent);color:var(--text)}
+  .chord-btn.active{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
+  .chord-btn .en{display:block;font-size:10px;opacity:.7;font-family:monospace;margin-top:1px}
+
+  /* 右侧显示 */
+  .display{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:12px 16px;gap:10px}
+  /* 五线谱 */
+  .staff-box{background:var(--bg-soft);border:1px solid var(--border);border-radius:10px;padding:8px 12px;flex-shrink:0}
+  .staff-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
+  .staff-title{font-size:13px;font-weight:600}
+  .staff-title .sym{color:var(--accent)}
+  .staff-notes{font-size:12px;color:var(--text-dim);font-family:monospace}
+  .staff-notes b{color:var(--accent)}
+  .staff-svg{width:100%;height:90px;display:block}
+  /* 钢琴 — 等比例缩放容器 */
+  .piano-box{background:var(--bg-soft);border:1px solid var(--border);border-radius:10px;padding:10px 12px;flex-shrink:0;overflow-x:auto;display:flex;align-items:center;justify-content:center}
+  .piano-scaler{position:relative;margin:0 auto}
+  .piano{position:relative;display:flex;height:175px;user-select:none;width:fit-content;transform-origin:top left;transform:scale(1)}
+  .white-key{width:38px;height:175px;background:var(--kw);border:1px solid #c8c4ba;border-radius:0 0 5px 5px;margin-right:-1px;cursor:pointer;position:relative;transition:.1s;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px}
+  .white-key:hover{background:#e8e4d8}
+  .white-key.pressed{background:var(--kp);border-color:#c8941a;box-shadow:inset 0 -3px 6px rgba(0,0,0,.15)}
+  .white-key .lbl{font-size:9px;color:var(--text-faint);font-weight:600;pointer-events:none}
+  .white-key.pressed .lbl{color:#5a4200}
+  .white-key .itag{position:absolute;top:5px;font-size:8px;font-weight:700;color:var(--accent);background:rgba(240,180,41,.12);padding:1px 3px;border-radius:3px;pointer-events:none;display:none}
+  .white-key.pressed .itag{display:block}
+  .white-key .finger{position:absolute;top:24px;width:18px;height:18px;line-height:18px;text-align:center;border-radius:50%;background:#1a1a1a;color:var(--kp);font-size:11px;font-weight:700;pointer-events:none;display:none}
+  .black-key{position:absolute;width:22px;height:110px;background:linear-gradient(180deg,#2a2e38,var(--kb));border-radius:0 0 3px 3px;z-index:2;cursor:pointer;transition:.1s;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:4px;box-shadow:0 2px 3px rgba(0,0,0,.4)}
+  .black-key:hover{background:linear-gradient(180deg,#3a3e48,#252830)}
+  .black-key.pressed{background:var(--kbp);box-shadow:inset 0 -2px 4px rgba(0,0,0,.3)}
+  .black-key .lbl{font-size:7px;color:#666;font-weight:600;pointer-events:none}
+  .black-key.pressed .lbl{color:#3a2a00}
+  .black-key .itag{position:absolute;top:4px;font-size:7px;font-weight:700;color:#fff;background:rgba(0,0,0,.3);padding:1px 2px;border-radius:2px;pointer-events:none;display:none}
+  .black-key.pressed .itag{display:block}
+  .black-key .finger{position:absolute;top:20px;width:16px;height:16px;line-height:16px;text-align:center;border-radius:50%;background:#fff;color:#1a1a1a;font-size:10px;font-weight:700;pointer-events:none;display:none}
+  body.show-fingers .pressed .finger{display:block}
+  .finger-toggle{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s;margin-left:8px}
+  .finger-toggle.on{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
+  .play-toggle{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s;margin-left:8px}
+  .play-toggle.on{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
+  .sustain-toggle{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s;margin-left:8px}
+  .sustain-toggle.on{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
+  .oct-btn{font-size:10px;padding:3px 7px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s;margin-left:4px}
+  .oct-btn:hover{border-color:var(--accent);color:var(--text)}
+  /* 级联菜单：色彩 → 版本 */
+  .cascader{position:relative}
+  .cascader-trigger{background:var(--bg-card);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:.15s}
+  .cascader-trigger:hover{border-color:var(--accent)}
+  .cascader.open .cascader-trigger{border-color:var(--accent)}
+  .cascader-menu{position:absolute;top:calc(100% + 4px);left:0;min-width:200px;background:#1e232c;border:1px solid var(--border);border-radius:8px;padding:5px;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:300;display:none;max-height:420px;overflow:visible}
+  .cascader.open .cascader-menu{display:block}
+  .cascader-group{position:relative}
+  .cascader-item{padding:7px 28px 7px 10px;font-size:12px;color:var(--text-dim);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:.12s}
+  .cascader-item:hover{background:rgba(240,180,41,.1);color:var(--text)}
+  .cascader-item .arrow{color:var(--text-faint);font-size:10px}
+  .cascader-item:hover .arrow{color:var(--accent)}
+  .cascader-submenu{position:fixed;min-width:180px;background:#1e232c;border:1px solid var(--border);border-radius:8px;padding:5px;box-shadow:0 10px 30px rgba(0,0,0,.5);display:none;z-index:500}
+  .cascader-group.sub-open .cascader-submenu{display:block;position:static;box-shadow:none;border:none;padding:2px 0 4px 14px;margin-top:0}
+  .cascader-subitem{padding:6px 10px;border-radius:5px;cursor:pointer;transition:.12s}
+  .cascader-subitem:hover{background:var(--accent)}
+  .cascader-subitem:hover .sub-label{color:#1a1a1a;font-weight:600}
+  .cascader-subitem:hover .sub-ref{color:#3a2a00}
+  .cascader-subitem .sub-label{font-size:11.5px;color:var(--text-dim);line-height:1.3}
+  .cascader-subitem .sub-ref{font-size:9.5px;color:var(--text-faint);margin-top:1px;line-height:1.3}
+  /* 和弦选择子菜单（右滑下级） */
+  .chord-subbar{display:flex;gap:4px;margin-bottom:6px}
+  .chord-subtab{flex:1;font-size:10px;padding:4px 2px;border-radius:5px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s;text-align:center}
+  .chord-subtab.active{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
+  .chord-viewport{overflow:hidden;position:relative;touch-action:pan-y}
+  .chord-slider{display:flex;transition:transform .25s ease;width:200%}
+  .chord-page{width:50%;flex-shrink:0}
+  .chord-page .chord-btns{max-height:280px}
+  .chord-page.complex-page{padding-left:10px}
+  .chord-swipe-hint{font-size:9px;color:var(--text-faint);text-align:center;margin-top:5px}
+  /* 可拖拽分割条 */
+  .resizer{height:8px;flex-shrink:0;cursor:row-resize;display:flex;align-items:center;justify-content:center;position:relative}
+  .resizer-handle{width:48px;height:3px;background:var(--border);border-radius:2px;transition:background .15s}
+  .resizer:hover .resizer-handle{background:var(--accent)}
+  .resizer.dragging .resizer-handle{background:var(--accent)}
+
+  /* 详情面板 */
+  .detail-box{flex:1;background:var(--bg-soft);border:1px solid var(--border);border-radius:10px;padding:8px 14px;overflow-y:auto;min-height:0}
+  .detail-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+  .detail-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .detail-title .badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
+  .detail-toggle{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s}
+  .detail-toggle:hover{border-color:var(--accent);color:var(--text)}
+  .detail-body{font-size:12px;color:var(--text-dim);line-height:1.6}
+  .detail-body h4{color:var(--text);font-size:11.5px;margin:6px 0 3px;display:flex;align-items:center;gap:6px}
+  .detail-body h4::before{content:'';width:3px;height:11px;background:var(--accent);border-radius:2px}
+  .detail-body p{margin-bottom:3px}
+  .detail-body .interval-row{display:flex;gap:5px;flex-wrap:wrap;margin:3px 0}
+  .detail-body .interval-chip{font-size:10.5px;padding:2px 7px;border-radius:4px;background:var(--bg-card);border:1px solid var(--border);font-family:monospace;color:var(--accent)}
+  .detail-collapsed .detail-body{display:none}
+
+  @media (max-height: 700px) {
+    .staff-svg{height:70px}
+  }
+  /* 手机竖屏：上下堆叠 */
+  @media (max-width: 768px) and (orientation: portrait) {
+    body{overflow:auto;height:auto}
+    .app{height:auto}
+    .main{flex-direction:column}
+    .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;overflow-x:auto}
+    .side-section{flex-shrink:0;min-width:200px}
+    .display{padding:10px}
+    .root-btn{width:28px;height:26px;font-size:11px}
+  }
+  /* 手机横屏 / 低高度：左右分栏，紧凑布局 */
+  @media (max-height: 520px) and (orientation: landscape) {
+    .topbar{padding:4px 12px}
+    .topbar h1{font-size:14px}
+    .instrument-select{font-size:11px;padding:3px 6px}
+    .root-btn{width:25px;height:22px;font-size:10px}
+    .sidebar{width:155px}
+    .side-section{padding:5px 7px 3px}
+    .side-label{font-size:10px;margin-bottom:4px}
+    .level-btn{padding:4px 7px;font-size:10.5px}
+    .chord-btn{padding:4px 3px;font-size:9.5px}
+    .chord-btn .en{font-size:8.5px}
+    .display{padding:5px 8px;gap:5px}
+    .staff-box{padding:3px 8px}
+    .staff-svg{height:50px}
+    .detail-box{padding:4px 8px}
+    .detail-header{margin-bottom:2px}
+    .detail-body{font-size:10.5px;line-height:1.4}
+    .detail-body h4{margin:3px 0 1px;font-size:10.5px}
+    .detail-body p{margin-bottom:1px}
+    .resizer{height:6px}
+    .oct-btn{font-size:9px;padding:2px 5px}
+    .color-select{font-size:11px;padding:5px 6px}
+  }
+  /* 平板横屏微调 */
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .sidebar{width:190px}
+  }
+
+  /* ===== 全屏放大镜模式 ===== */
+  .fs-btn{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s;margin-left:8px}
+  .fs-btn:hover{border-color:var(--accent);color:var(--text)}
+  /* 自动伴奏控制条 */
+  .accomp-bar{display:flex;align-items:center;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+  .accomp-input{width:50px;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:3px 6px;font-size:12px;font-family:inherit;text-align:center}
+  .accomp-input:focus{outline:none;border-color:var(--accent)}
+  .accomp-prog{flex:1;min-width:0;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:3px 8px;font-size:12px;font-family:inherit}
+  .accomp-prog:focus{outline:none;border-color:var(--accent)}
+  .accomp-label{font-size:10px;color:var(--text-faint);flex-shrink:0}
+  .accomp-btn{font-size:11px;padding:3px 12px;border-radius:5px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;transition:.15s;flex-shrink:0}
+  .accomp-btn:hover{border-color:var(--accent);color:var(--text)}
+  .accomp-btn.playing{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <h1>钢琴和弦<span>键位图解</span></h1>
+    <div class="topbar-right">
+      <select id="instrumentSelect" class="instrument-select">
+        <option value="piano">三角钢琴</option>
+        <option value="epiano">电钢琴</option>
+        <option value="organ">管风琴</option>
+        <option value="harpsichord">羽管键琴</option>
+        <option value="synth">合成器垫</option>
+        <option value="celesta">钟琴</option>
+        <option value="guitar">木吉他</option>
+        <option value="eguitar">电吉他</option>
+      </select>
+      <div class="root-selector" id="rootSelector"></div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="sidebar">
+      <div class="side-section">
+        <div class="side-label">音乐色彩·和弦进行</div>
+        <div class="cascader" id="cascader">
+          <div class="cascader-trigger" id="cascaderTrigger">选择色彩进行 ▾</div>
+          <div class="cascader-menu" id="cascaderMenu"></div>
+        </div>
+      </div>
+      <div class="side-section">
+        <div class="side-label">难度级别</div>
+        <div class="level-btns" id="levelBtns"></div>
+      </div>
+      <div class="side-section">
+        <div class="side-label">和弦选择</div>
+        <div class="chord-subbar">
+          <button class="chord-subtab active" data-page="0">本级和弦</button>
+          <button class="chord-subtab" data-page="1">复杂和弦 · 8音+</button>
+        </div>
+        <div class="chord-viewport" id="chordViewport">
+          <div class="chord-slider" id="chordSlider">
+            <div class="chord-page">
+              <div class="chord-btns" id="chordBtns"></div>
+            </div>
+            <div class="chord-page complex-page">
+              <div class="chord-btns" id="complexBtns"></div>
+            </div>
+          </div>
+        </div>
+        <div class="chord-swipe-hint">左右滑动切换 · 复杂和弦为8-10音</div>
+      </div>
+    </div>
+    <div class="display">
+      <div class="staff-box">
+        <div class="staff-header">
+          <div class="staff-title" id="staffTitle">—</div>
+          <div style="display:flex;align-items:center;gap:2px">
+            <div class="staff-notes" id="staffNotes">—</div>
+            <button class="oct-btn" id="octDown" title="降低八度">8↓</button>
+            <button class="oct-btn" id="octUp" title="升高八度">8↑</button>
+            <button class="oct-btn" id="clefToggle" title="切换高音/低音谱号">高</button>
+            <button class="play-toggle" id="playToggle" title="同音/琶音切换">琶</button>
+            <button class="sustain-toggle" id="sustainToggle" title="延音踏板">延</button>
+            <button class="finger-toggle" id="fingerToggle">指法</button>
+          </div>
+        </div>
+        <svg class="staff-svg" id="staffSvg" viewBox="0 0 700 90" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="accomp-bar">
+          <input type="number" id="bpmInput" class="accomp-input" value="60" min="20" max="240" title="每分钟拍数">
+          <span class="accomp-label">BPM</span>
+          <input type="text" id="chordProg" class="accomp-prog" placeholder="和弦进行：C,Am,F,G7（逗号隔开）" value="C,Am,F,G">
+          <button class="accomp-btn" id="accompPlay">播放</button>
+          <button class="accomp-btn" id="accompStop">停止</button>
+        </div>
+      </div>
+      <div class="piano-box" id="pianoBox">
+        <div class="piano-scaler" id="pianoScaler">
+          <div class="piano" id="piano"></div>
+        </div>
+      </div>
+      <div class="resizer" id="resizer">
+        <div class="resizer-handle"></div>
+      </div>
+      <div class="detail-box" id="detailBox">
+        <div class="detail-header">
+          <div class="detail-title"><span class="badge" id="detailBadge">—</span><span id="detailName">—</span></div>
+          <button class="detail-toggle" id="detailToggle">收起详情</button>
+        </div>
+        <div class="detail-body" id="detailBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const SOLFEGE=['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+const DIATONIC=[0,0,1,1,2,3,3,4,4,5,5,6]; // semitone -> diatonic degree (C=0)
+const ITAG={0:'根',2:'9',3:'b3',4:'3',5:'11',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7',13:'b9',14:'9',15:'#9',17:'11',18:'#11',21:'13'};
+
+/* 和弦常见别名/等音标记 */
+const ALIASES={
+  'maj':['Major','M','Δ'],
+  'm':['minor','min','-'],
+  'aug':['augmented','+'],
+  'dim':['diminished','°'],
+  'maj7':['Major7','M7','Δ7','ma7'],
+  '7':['dom7','dominant7'],
+  'm7':['min7','minor7','-7'],
+  'm7b5':['half-dim7','ø7','m7-5','min7b5'],
+  'dim7':['°7','o7','diminished7'],
+  'mMaj7':['minMaj7','mM7','-Δ7','m(maj7)'],
+  '6':['add6','major6'],
+  'm6':['min6','minor6'],
+  'add9':['add2','2'],
+  'sus2':['2sus'],
+  'sus4':['sus','4sus'],
+  '9':['dom9','dominant9'],
+  'maj9':['M9','Δ9','major9'],
+  'm9':['min9','minor9','-9'],
+  '11':['dom11'],
+  '13':['dom13'],
+  '7#5':['7+5','7aug','dom7#5'],
+  '7b5':['7-5','dom7b5'],
+  '7#9':['7+9','dom7#9'],
+  '7b9':['7-9','dom7b9'],
+  '7#5#9':['7+5+9','7alt'],
+  '7b5b9':['7-5-9','7alt'],
+  '13b9':['13-9','dom13b9'],
+  '13#9':['13+9','dom13#9'],
+  '13b5':['13-5','dom13b5'],
+  '13#11':['13+11','dom13#11'],
+  '13b9b5':['13-9-5'],
+  '13b9#11':['13-9+11'],
+  '13#9b5':['13+9-5'],
+  '13alt':['13full','13all'],
+};
+
+/* 音乐色彩 · 和弦进行（每组含基础版 + 3个8和弦版，8和弦版参考流行歌曲） */
+const PROGRESSION_GROUPS=[
+  {name:'明亮·流行金曲', versions:[
+    {label:'标准版（4和弦）', prog:'C,G,Am,F', ref:'《小幸运》《稻香》'},
+    {label:'七和弦版（4和弦）', prog:'Cmaj7,G7,Am7,Fmaj7', ref:'R&B 风格改编'},
+    {label:'8和弦·《Let It Be》', prog:'C,G,Am,F,C,G,F,C', ref:'《Let It Be》主歌'},
+    {label:'8和弦·《Someone Like You》', prog:'C,G,Am,F,C,G,Am,F', ref:'Adele 万能进行'},
+    {label:'8和弦·《Perfect》', prog:'C,Am,F,G,C,Am,F,G', ref:'Ed Sheeran 1645'},
+  ]},
+  {name:'阳光·乡村民谣', versions:[
+    {label:'标准版（4和弦）', prog:'C,F,G,C', ref:'《乡村路》'},
+    {label:'七和弦版（4和弦）', prog:'Cmaj7,Fmaj7,G7,Cmaj7', ref:'西部乡村风格'},
+    {label:'8和弦·《Hey Jude》', prog:'C,G,F,C,C,G,F,C', ref:'The Beatles 副歌'},
+    {label:'8和弦·《Country Roads》', prog:'C,G,Am,F,C,G,F,C', ref:'John Denver'},
+    {label:'8和弦·《Blowin Wind》', prog:'C,F,C,G,F,C,G,C', ref:'Bob Dylan'},
+  ]},
+  {name:'忧郁·小调抒情', versions:[
+    {label:'标准版（4和弦）', prog:'Am,F,C,G', ref:'《平凡之路》6415'},
+    {label:'七和弦版（4和弦）', prog:'Am7,Fmaj7,Cmaj7,G7', ref:'抒情慢歌改编'},
+    {label:'8和弦·《平凡之路》', prog:'Am,F,C,G,Am,F,Em,G', ref:'朴树 完整段落'},
+    {label:'8和弦·《River Flows》', prog:'Am,F,C,G,Am,F,Dm,G', ref:'Yiruma 钢琴小品'},
+    {label:'8和弦·《Stay With Me》', prog:'Am,F,C,G,Am,F,C,G', ref:'Sam Smith'},
+  ]},
+  {name:'深情·小调进行', versions:[
+    {label:'标准版（4和弦）', prog:'Am,Em,F,G', ref:'《Counting Stars》'},
+    {label:'七和弦版（4和弦）', prog:'Am7,Em7,Fmaj7,G7', ref:'深情 R&B 改编'},
+    {label:'8和弦·《Counting Stars》', prog:'Am,Em,F,C,Am,Em,F,G', ref:'OneRepublic'},
+    {label:'8和弦·《Shape of You》', prog:'Am,Dm,F,G,Am,Dm,F,G', ref:'Ed Sheeran'},
+    {label:'8和弦·《All of Me》', prog:'Am,F,C,G,F,C,Dm,G', ref:'John Legend'},
+  ]},
+  {name:'梦幻·大七和声', versions:[
+    {label:'标准版（4和弦）', prog:'Cmaj7,Fmaj7,Am7,Em7', ref:'《Ipanema》'},
+    {label:'三和弦版（4和弦）', prog:'C,F,Am,Em', ref:'简化版'},
+    {label:'8和弦·爵士华尔兹', prog:'Cmaj7,Fmaj7,Am7,Em7,Dm7,G7,Cmaj7,Cmaj7', ref:'3/4 拍爵士'},
+    {label:'8和弦·《Misty》', prog:'Cmaj7,Am7,Dm7,G7,Cmaj7,Am7,Dm7,G7', ref:'Erroll Garner'},
+    {label:'8和弦·《Moon River》', prog:'Cmaj7,Fmaj7,Dm7,G7,Em7,Am7,Dm7,G7', ref:'《蒂凡尼早餐》'},
+  ]},
+  {name:'慵懒·爵士小曲', versions:[
+    {label:'标准版（4和弦）', prog:'Cmaj7,Dm7,Em7,A7', ref:'《Autumn Leaves》片段'},
+    {label:'三和弦版（4和弦）', prog:'C,Dm,Em,A', ref:'简化版'},
+    {label:'8和弦·《Autumn Leaves》', prog:'Am7,Dm7,G7,Cmaj7,Fmaj7,Bm7b5,E7,Am7', ref:'爵士必学曲'},
+    {label:'8和弦·《Fly Me Moon》', prog:'Dm7,G7,Cmaj7,Am7,Dm7,G7,Cmaj7,E7', ref:'Frank Sinatra'},
+    {label:'8和弦·《Blue Bossa》', prog:'Am7,Dm7,Em7b5,A7,Am7,Dm7,G7,Cmaj7', ref:'巴萨诺瓦'},
+  ]},
+  {name:'蓝调·十二小节', versions:[
+    {label:'标准版（4和弦）', prog:'C7,F7,C7,G7', ref:'经典蓝调'},
+    {label:'三和弦版（4和弦）', prog:'C,F,C,G', ref:'简化摇滚'},
+    {label:'8和弦·《Hound Dog》', prog:'C7,C7,F7,C7,F7,C7,G7,C7', ref:'猫王 12小节'},
+    {label:'8和弦·《Johnny B Goode》', prog:'C7,C7,C7,C7,F7,F7,C7,C7', ref:'Chuck Berry'},
+    {label:'8和弦·《Sweet Home》', prog:'C7,C7,F7,F7,C7,C7,G7,C7', ref:'Robert Johnson'},
+  ]},
+  {name:'复古·六和弦', versions:[
+    {label:'标准版（4和弦）', prog:'C6,Am6,F6,G7', ref:'50年代爵士'},
+    {label:'三和弦版（4和弦）', prog:'C,Am,F,G', ref:'《Stand By Me》'},
+    {label:'8和弦·《Stand By Me》', prog:'C6,Am6,F6,G7,C6,Am6,F6,G7', ref:'Ben E. King'},
+    {label:'8和弦·《月亮代表》', prog:'C6,Am6,Dm7,G7,C6,Am6,F6,G7', ref:'邓丽君'},
+    {label:'8和弦·《Every Breath》', prog:'C6,Am6,F6,G7,C6,Am6,F6,G7', ref:'The Police'},
+  ]},
+  {name:'空灵·挂留和声', versions:[
+    {label:'标准版（4和弦）', prog:'Csus2,Fsus2,Gsus4,C', ref:'氛围流行'},
+    {label:'七和弦版（4和弦）', prog:'Csus2,Fmaj7,G7sus4,Cmaj7', ref:'梦幻改编'},
+    {label:'8和弦·《Wonderwall》', prog:'Em7,G,Dsus4,Asus4,Em7,G,Dsus4,Asus4', ref:'Oasis'},
+    {label:'8和弦·《Creep》', prog:'C,E,F,Fm,C,E,F,Fm', ref:'Radiohead'},
+    {label:'8和弦·《Where Is Mind》', prog:'Csus2,Fsus2,Gsus4,Csus2,Csus2,Fsus2,Gsus4,Gsus4', ref:'Pixies'},
+  ]},
+  {name:'华丽·九和弦', versions:[
+    {label:'标准版（4和弦）', prog:'Cmaj9,Am9,Dm9,G9', ref:'现代 R&B'},
+    {label:'七和弦版（4和弦）', prog:'Cmaj7,Am7,Dm7,G7', ref:'简化版'},
+    {label:'8和弦·《No Diggity》', prog:'Cmaj9,Am9,Dm9,G9,Cmaj9,Am9,Fmaj9,G9', ref:'Blackstreet'},
+    {label:'8和弦·《Two of Us》', prog:'Cmaj9,Am9,Dm9,G9,Cmaj9,Am9,Dm9,G9', ref:'Grover Washington'},
+    {label:'8和弦·《Isnt She Lovely》', prog:'Cmaj9,Fmaj9,Dm9,G9,Cmaj9,Am9,Fmaj9,G9', ref:'Stevie Wonder'},
+  ]},
+  {name:'浪漫·卡农进行', versions:[
+    {label:'流行版（8和弦）', prog:'C,G,Am,Em,F,C,F,G', ref:'《晴天》'},
+    {label:'七和弦版（8和弦）', prog:'Cmaj7,G7,Am7,Em7,Fmaj7,Cmaj7,Fmaj7,G7', ref:'梦幻改编'},
+    {label:'8和弦·《晴天》', prog:'C,G,Am,Em,F,C,F,G', ref:'周杰伦 流行卡农'},
+    {label:'8和弦·古典原版', prog:'C,G,Am,Em,F,C,Dm,G', ref:'帕赫贝尔 15634125'},
+    {label:'8和弦·《童年》', prog:'C,G,Am,Em,F,G,C,G', ref:'罗大佑'},
+  ]},
+  {name:'放克·小七律动', versions:[
+    {label:'标准版（4和弦）', prog:'Am7,Dm7,G7,Cmaj7', ref:'《Uptown Funk》'},
+    {label:'三和弦版（4和弦）', prog:'Am,Dm,G,C', ref:'简化版'},
+    {label:'8和弦·《Get Lucky》', prog:'Am7,Dm7,G7,Am7,Dm7,Am7,G7,G7', ref:'Daft Punk'},
+    {label:'8和弦·《Uptown Funk》', prog:'Am,Dm,Am,Dm,Am,Dm,Am,Am', ref:'Bruno Mars'},
+    {label:'8和弦·《Superstition》', prog:'Am,Dm,E,Am,Dm,E,Am,Am', ref:'Stevie Wonder'},
+  ]},
+  {name:'紧张·属七循环', versions:[
+    {label:'标准版（4和弦）', prog:'C7,F7,Bb7,Eb7', ref:'爵士五度圈'},
+    {label:'三和弦版（4和弦）', prog:'C,F,Bb,Eb', ref:'简化版'},
+    {label:'8和弦·五度圈', prog:'C7,F7,Bb7,Eb7,Ab7,Db7,Gb7,B7', ref:'五度下行'},
+    {label:'8和弦·《Rhythm Changes》', prog:'D7,G7,C7,F7,Bb7,Eb7,Ab7,Db7', ref:'Gershwin 桥段'},
+    {label:'8和弦·爵士Turnaround', prog:'A7,D7,G7,C7,F7,Bb7,Eb7,Ab7', ref:'回转终止'},
+  ]},
+  {name:'宏大·史诗终止', versions:[
+    {label:'标准版（8和弦）', prog:'C,G,Am,F,F,G,C,C', ref:'《We Are Champions》'},
+    {label:'七和弦版（8和弦）', prog:'Cmaj7,G7,Am7,Fmaj7,Fmaj7,G7,Cmaj7,Cmaj7', ref:'宏大改编'},
+    {label:'8和弦·《Hotel California》', prog:'Am,Em,F,C,G,Dm,G,G', ref:'Eagles'},
+    {label:'8和弦·《We Are Champions》', prog:'C,G,Am,F,F,G,C,C', ref:'Queen'},
+    {label:'8和弦·《My Way》', prog:'C,G,Am,F,Dm,G,C,C', ref:'Frank Sinatra'},
+  ]},
+  {name:'神秘·减七过渡', versions:[
+    {label:'标准版（4和弦）', prog:'Cm,Adim7,Dm7,G7', ref:'小调爵士'},
+    {label:'三和弦版（4和弦）', prog:'Cm,Adim,Dm,G', ref:'简化版'},
+    {label:'8和弦·《Minor Swing》', prog:'Cm,Adim7,Dm7,G7,Cm,Adim7,Dm7,G7', ref:'Django Reinhardt'},
+    {label:'8和弦·小调爵士', prog:'Am,G#dim7,Bm7,E7,Am,G#dim7,Bm7,E7', ref:'ii-V 回转'},
+    {label:'8和弦·《After Gone》', prog:'Am,G#dim7,Bm7,E7,Am,G#dim7,Bm7,E7', ref:'Henry Creamer'},
+  ]},
+];
+
+/* 各和弦在自然大调中的级数标记（罗马数字 / 数字+M·m） */
+const SCALE_DEGREE={
+  maj:{roman:'I · IV · V', num:'1M · 4M · 5M'},
+  m:{roman:'ii · iii · vi', num:'2m · 3m · 6m'},
+  dim:{roman:'vii°', num:'7dim'},
+  aug:{roman:'非自然调式', num:'—'},
+  maj7:{roman:'Imaj7 · IVmaj7', num:'1M7 · 4M7'},
+  '7':{roman:'V7', num:'5·7'},
+  m7:{roman:'ii7 · iii7 · vi7', num:'2m7 · 3m7 · 6m7'},
+  m7b5:{roman:'viiø7', num:'7m7b5'},
+  dim7:{roman:'非自然调式', num:'—'},
+  mMaj7:{roman:'非自然调式', num:'—'},
+  '6':{roman:'I6 · IV6', num:'1M6 · 4M6'},
+  m6:{roman:'非自然调式', num:'—'},
+  add9:{roman:'Iadd9', num:'1Madd9'},
+  sus2:{roman:'非自然调式', num:'—'},
+  sus4:{roman:'Vsus4', num:'5sus'},
+  '9':{roman:'V9', num:'5·9'},
+  maj9:{roman:'Imaj9', num:'1M9'},
+  m9:{roman:'ii9', num:'2m9'},
+  '11':{roman:'V11', num:'5·11'},
+  '13':{roman:'V13', num:'5·13'},
+  '7#5':{roman:'非自然调式', num:'—'},
+  '7b5':{roman:'非自然调式', num:'—'},
+  '7#9':{roman:'非自然调式', num:'—'},
+  '7b9':{roman:'非自然调式', num:'—'},
+  '7#5#9':{roman:'非自然调式', num:'—'},
+  '7b5b9':{roman:'非自然调式', num:'—'},
+  '13b9':{roman:'V13b9', num:'5·13b9'},
+  '13#9':{roman:'V13#9', num:'5·13#9'},
+  '13b5':{roman:'非自然调式', num:'—'},
+  '13#11':{roman:'V13#11', num:'5·13#11'},
+  '13b9b5':{roman:'非自然调式', num:'—'},
+  '13b9#11':{roman:'非自然调式', num:'—'},
+  '13#9b5':{roman:'非自然调式', num:'—'},
+  '13alt':{roman:'非自然调式', num:'—'},
+};
+
+const LEVELS=[
+  {id:1,name:'入门·三和弦',color:'#4ade80',desc:'3个音'},
+  {id:2,name:'进阶·七和弦',color:'#60a5fa',desc:'4个音'},
+  {id:3,name:'高级·延伸和弦',color:'#c084fc',desc:'5~7音'},
+  {id:4,name:'变音·变化和弦',color:'#f87171',desc:'变化音'},
+  {id:5,name:'终极·复合和弦',color:'#fbbf24',desc:'8~10音'},
+];
+
+const CHORDS=[
+  {cn:'大三',en:'maj',deg:[0,4,7],lv:1,
+    nameOrigin:'"大"指根音到三音为大三度（4个半音），这是大三和弦最核心的标志。三音到五音为小三度，根音到五音构成纯五度。',
+    character:'音程结构最稳定、最协和。根音-三音的大三度带来明亮感，纯五度提供坚实支撑。',
+    color:'明亮、开朗、稳定。是大调主和弦的默认形态，流行、古典、民谣中最基础的和弦。听感像"阳光"。'},
+  {cn:'小三',en:'m',deg:[0,3,7],lv:1,
+    nameOrigin:'"小"指根音到三音为小三度（3个半音），比大三度少一个半音。三音到五音为大三度，根音到五音仍为纯五度。',
+    character:'唯一区别于大三和弦的是三音降半音，正是这一个半音改变了整个色彩。纯五度框架保持稳定。',
+    color:'柔和、忧郁、内敛。小调主和弦的默认形态，常用于表达伤感、深情或沉思。听感像"阴天"。'},
+  {cn:'增三',en:'aug',deg:[0,4,8],lv:1,
+    nameOrigin:'"增"指根音到五音为增五度（8个半音），比纯五度多一个半音，有"膨胀"感。两个三度都是大三度。',
+    character:'由两个叠置的大三度构成，三音到五音也是大三度。没有纯五度的稳定支撑，协和度低。',
+    color:'紧张、不稳定、有膨胀和飘浮感。常用于过渡和弦或戏剧性瞬间，需要解决到更稳定的和弦。'},
+  {cn:'减三',en:'dim',deg:[0,3,6],lv:1,
+    nameOrigin:'"减"指根音到五音为减五度（6个半音），比纯五度少一个半音，即三全音（Tritone）。两个三度都是小三度。',
+    character:'由两个叠置的小三度构成，根音到五音是三全音——西方音乐中最不协和的音程之一，有强烈的向内收缩感。',
+    color:'暗淡、紧张、神秘。减五度的"魔鬼音程"带来不安感，常用于过渡、悬疑或爵士和声。'},
+
+  {cn:'大七',en:'maj7',deg:[0,4,7,11],lv:2,
+    nameOrigin:'"大七"指在大三和弦基础上加入大七度音（11个半音）。大七度与根音仅差一个半音（小二度），是其色彩来源。',
+    character:'大三和弦的稳定框架 + 大七度的柔和摩擦。根音与七音是小二度关系，产生朦胧的"拍音"效果。',
+    color:'梦幻、柔和、温暖、略带慵懒。爵士抒情曲和R&B的标志性和弦。听感像"黄昏的柔光"。'},
+  {cn:'属七',en:'7',deg:[0,4,7,10],lv:2,
+    nameOrigin:'"属"指该和弦通常建立在调式的属音（第五级）上。"七"指加入小七度（10个半音）。属七=大三+小七。',
+    character:'三音到七音构成三全音（减五度），这是属七和弦紧张感和解决倾向的核心来源。',
+    color:'有强烈解决倾向的紧张感，同时保持大三和弦的明亮。布鲁斯、摇滚、流行的核心功能和弦，听感像"想要落地"。'},
+  {cn:'小七',en:'m7',deg:[0,3,7,10],lv:2,
+    nameOrigin:'"小七"=小三和弦+小七度。三音是小三度，七音也是小七度，两个"小"叠加。',
+    character:'小三和弦的柔和 + 小七度的松弛。没有三全音，协和度较高，是最柔和的七和弦之一。',
+    color:'柔和、慵懒、略带忧郁。爵士、R&B、流行中极常用，常作为ii级和弦出现在ii-V-I进行中。'},
+  {cn:'半减七',en:'m7b5',deg:[0,3,6,10],lv:2,
+    nameOrigin:'"半减"意为"部分减"：五音是减五度（降五音），但七音是小七度而非减七度，所以只"减了一半"。也叫小七降五。',
+    character:'减三和弦框架（根-三-五含三全音）+ 小七度。比减七和弦柔和，比小七和弦紧张。',
+    color:'幽暗、过渡性强、略带悬疑。爵士ii-V-I中ii级的典型形态，起到连接属七和弦的桥梁作用。'},
+  {cn:'减七',en:'dim7',deg:[0,3,6,9],lv:2,
+    nameOrigin:'"减七"=减三和弦+减七度。减七度等音于大六度（9个半音）。四个音按小三度等距叠置，具有对称性。',
+    character:'四个音均匀分布（每个间隔3个半音），可以等音转换为多个调的减七和弦，是最具"游移性"的和弦。',
+    color:'高度紧张、神秘、戏剧化。常用于转调枢纽、恐怖/悬疑配乐，以及古典音乐中的经过和弦。'},
+  {cn:'小大七',en:'mMaj7',deg:[0,3,7,11],lv:2,
+    nameOrigin:'"小大七"=小三和弦+大七度。三音是"小"（小三度），七音是"大"（大七度），大小并存。',
+    character:'小三度的忧郁 + 大七度的朦胧摩擦。两种色彩冲突又共存，协和度中等偏低。',
+    color:'神秘、暧昧、电影感。常用于电影配乐表达复杂情绪，爵士中也作为小调主和弦的高级替代。'},
+
+  {cn:'六和弦',en:'6',deg:[0,4,7,9],lv:3,
+    nameOrigin:'在大三和弦基础上加入大六度音（9个半音）。六度音等音于小七度的等音转换，但色彩完全不同。',
+    character:'大三和弦+大六度。六度音比七度音更协和，没有小二度摩擦，整体更开放。',
+    color:'温暖、怀旧、轻松愉快。早期爵士、流行抒情曲常用，听感像"老照片"。'},
+  {cn:'小六',en:'m6',deg:[0,3,7,9],lv:3,
+    nameOrigin:'小三和弦+大六度。"小"指三音为小三度，"六"指加入大六度音。',
+    character:'小三和弦的柔和 + 六度音的明亮点缀。比小七和弦更开放、更少紧张感。',
+    color:'柔和中带一丝明亮。流行、爵士中作为小调色彩的轻松替代。'},
+  {cn:'加九',en:'add9',deg:[0,4,7,14],lv:3,
+    nameOrigin:'"add"=直接添加，在三和弦基础上直接加九度音（14个半音），不经过七度音。九度=二度+一个八度。',
+    character:'三和弦的稳定框架 + 九度音的色彩点缀。九度音与根音是大二度关系，柔和不刺耳。',
+    color:'清新、空灵、流行感强。流行音乐中极常用的"装饰"和弦，让普通三和弦瞬间高级。'},
+  {cn:'挂二',en:'sus2',deg:[0,2,7],lv:3,
+    nameOrigin:'"sus"=suspended（挂留），三音被二度音（2个半音）替代。和弦没有三音，大小调性模糊。',
+    character:'根音-二度-五音。缺少三音意味着没有明确的大/小属性，是"中性"和弦。二度与根音柔和摩擦。',
+    color:'空灵、开放、悬浮。没有大小调的倾向性，常用于氛围音乐、后摇，或作为过渡和弦。'},
+  {cn:'挂四',en:'sus4',deg:[0,5,7],lv:3,
+    nameOrigin:'三音被四度音（5个半音）替代。四度音与三音仅差半音，有强烈的"想要解决到三音"的倾向。',
+    character:'根音-四度-五音。四度与三度仅差半音，听感上四度音像一个"悬而未决"的音，等待落到三音。',
+    color:'悬停、期待、有张力。流行歌中常见的"悬念-解决"手法（sus4→大三），营造推进感。'},
+  {cn:'属九',en:'9',deg:[0,4,7,10,14],lv:3,
+    nameOrigin:'属七和弦+九度音。"九"指在七和弦基础上继续叠置九度（二度+八度）。',
+    character:'属七的三全音张力 + 九度音的柔和色彩。五个音层次丰富，紧张与柔和并存。',
+    color:'丰富、放克、爵士感。属九是放克音乐的灵魂和弦，九度音带来"律动"的色彩。'},
+  {cn:'大九',en:'maj9',deg:[0,4,7,11,14],lv:3,
+    nameOrigin:'大七和弦+九度音。大七度的朦胧 + 九度的柔和，是最"华丽"的和弦之一。',
+    character:'大七和弦基础上叠加九度。根音-大七度（小二度摩擦）+ 根音-九度（大二度柔和），层次极丰富。',
+    color:'梦幻、华丽、极其柔和。爵士抒情曲和R&B的"高级感"代名词，听感像"丝绸"。'},
+  {cn:'小九',en:'m9',deg:[0,3,7,10,14],lv:3,
+    nameOrigin:'小七和弦+九度音。小三度的忧郁 + 小七度的松弛 + 九度的柔和。',
+    character:'小七和弦基础上叠加九度。比小七和弦更丰富，九度音柔化了小三度的忧郁感。',
+    color:'忧郁而丰富、慵懒。爵士小调、Neo-Soul的常用和弦，比单纯小七更有深度。'},
+  {cn:'属十一',en:'11',deg:[0,4,7,10,14,17],lv:3,
+    nameOrigin:'属九和弦+十一度音。十一度=四度+八度，继续在七和弦上向上叠置。',
+    character:'六个音的延伸和弦。十一度音与三音是小二度关系（E和F），产生明显摩擦，实际演奏中常省略三音。',
+    color:'复杂、朦胧、爵士感强。十一度的摩擦带来"模糊"的听感，是爵士和声的高级素材。'},
+  {cn:'属十三',en:'13',deg:[0,4,7,10,14,17,21],lv:3,
+    nameOrigin:'在属十一基础上继续叠加十三度音（六度+八度）。理论上最完整的延伸和弦，包含七个音。',
+    character:'七个音覆盖了音阶中的大部分音。实际演奏中常省略十一度（与三音冲突），保留根、三、五、七、九、十三。',
+    color:'极其丰富、饱满、爵士大乐队质感。十三和弦是属功能和弦的"终极形态"，色彩层次最多。'},
+
+  {cn:'属七升五',en:'7#5',deg:[0,4,8,10],lv:4,
+    nameOrigin:'属七和弦的五音升高半音（#5）。升五音使根音到五音变为增五度，与属七的小七度结合。',
+    character:'大三度+增五度+小七度。增五度带来"膨胀"的紧张感，比普通属七更不稳定。',
+    color:'紧张、有膨胀感、戏剧性。常用于需要强烈解决的属和弦位置，爵士和古典中都常见。'},
+  {cn:'属七降五',en:'7b5',deg:[0,4,6,10],lv:4,
+    nameOrigin:'属七和弦的五音降低半音（b5）。降五音使根音到五音变为减五度（三全音）。',
+    character:'大三度+减五度+小七度。和弦内有两个三全音（根-降五、三-降七），紧张度极高。',
+    color:'暧昧、幽暗、不稳定。减五度的"魔鬼音程"带来神秘感，常用于爵士替代属和弦。'},
+  {cn:'属七升九',en:'7#9',deg:[0,4,7,10,15],lv:4,
+    nameOrigin:'属七和弦+升九度音。升九与三音是小三度关系（E和G#），产生著名的"蓝调音"摩擦。也被称为"Hendrix和弦"。',
+    character:'大三度+升九度同时存在，二者构成小三度。这个"大小三度并存"是布鲁斯的核心色彩。',
+    color:'尖锐、狂野、布鲁斯标志性色彩。Jimi Hendrix在《Purple Haze》中经典使用，是摇滚和布鲁斯的灵魂和弦。'},
+  {cn:'属七降九',en:'7b9',deg:[0,4,7,10,13],lv:4,
+    nameOrigin:'属七和弦+降九度音。降九与根音是小二度关系（C和Db），半音摩擦极其尖锐。',
+    character:'根音与降九音是小二度，产生最直接的半音张力。降九音有强烈解决到根音或九音的倾向。',
+    color:'尖锐、紧张、半音刺痛感。爵士属和弦最常用的变音之一，听感像"绷紧的弹簧"。'},
+  {cn:'属七升五升九',en:'7#5#9',deg:[0,4,8,10,15],lv:4,
+    nameOrigin:'同时升高五音和九音的属七和弦。双重变音，是变化属和弦中最"极端"的形态之一。',
+    character:'增五度的膨胀 + 升九度的蓝调摩擦。两个变音同时作用，紧张度达到顶峰。',
+    color:'极度紧张、强烈的解决欲望、戏剧化。用于需要最大张力的属和弦位置，解决到主和弦时释放感极强。'},
+  {cn:'属七降五降九',en:'7b5b9',deg:[0,4,6,10,13],lv:4,
+    nameOrigin:'同时降低五音和九音的属七和弦。双重降音，和弦内半音关系密集。',
+    character:'减五度 + 降九度，两个"降"变音叠加。和弦内半音摩擦密集，协和度极低。',
+    color:'幽暗、神秘、高度紧张。常用于爵士小调的属和弦，或表达黑暗、悬疑的情绪。'},
+  /* ===== 8音以上复合和弦 ===== */
+  {cn:'属十三降九',en:'13b9',deg:[0,4,7,10,13,14,17,21],lv:5,
+    nameOrigin:'在十三和弦基础上同时加入降九度和九度。b9与9仅相差一个半音，产生小二度摩擦，是爵士中最复杂的属和弦之一。',
+    character:'8个音，包含b9-9小二度对。音域横跨两个八度，几乎覆盖属和弦的全部延伸音，半音摩擦与丰满和声并存。',
+    color:'深邃、华丽、充满张力。常用于爵士钢琴独奏的属和弦，或需要极丰富和声色彩的终止式。'},
+  {cn:'属十三升九',en:'13#9',deg:[0,4,7,10,14,15,17,21],lv:5,
+    nameOrigin:'十三和弦加入升九度，9与#9形成小二度对。亨德里克斯和弦（E7#9）的完整延伸版本。',
+    character:'8个音，9-#9小二度对叠加在十三和弦上。兼具布鲁斯的狂野和爵士的丰满。',
+    color:'狂野、迷幻、能量充沛。常用于摇滚和融合爵士的属和弦，情绪浓烈而外放。'},
+  {cn:'属十三降五',en:'13b5',deg:[0,4,6,7,10,14,17,21],lv:5,
+    nameOrigin:'十三和弦同时保留纯五度和减五度，5与b5形成小二度对。',
+    character:'8个音，b5-5小二度对。三全音与纯五度并存，和弦的方向感模糊。',
+    color:'暧昧、漂浮、色彩朦胧。常用于现代爵士和印象派风格的和声。'},
+  {cn:'属十三升十一',en:'13#11',deg:[0,4,7,10,14,17,18,21],lv:5,
+    nameOrigin:'十三和弦同时保留十一度和升十一度，11与#11形成小二度对。#11是利底亚属调式的特征音。',
+    character:'8个音，11-#11小二度对。兼具利底亚的明亮和属和弦的张力。',
+    color:'明亮、梦幻、略带悬浮感。常用于融合爵士和电影配乐，色彩华丽而现代。'},
+  {cn:'属十三降九降五',en:'13b9b5',deg:[0,4,6,7,10,13,14,17,21],lv:5,
+    nameOrigin:'十三和弦叠加b9-9和b5-5两组小二度对。9个音，是altered和弦与自然延伸音的完整结合。',
+    character:'9个音，包含两组小二度对。变化音与自然音同时存在，和声密度极高。',
+    color:'幽暗、神秘、层次繁复。常用于爵士小调的属和弦，制造深不可测的紧张感。'},
+  {cn:'属十三降九升十一',en:'13b9#11',deg:[0,4,7,10,13,14,17,18,21],lv:5,
+    nameOrigin:'十三和弦叠加b9-9和11-#11两组小二度对。9个音，结合了降九的幽暗和升十一的明亮。',
+    character:'9个音，b9的幽暗与#11的利底亚色彩在同一和弦中碰撞，明暗对比强烈。',
+    color:'戏剧性、华丽、明暗交织。常用于高级爵士编曲和电影配乐。'},
+  {cn:'属十三升九降五',en:'13#9b5',deg:[0,4,6,7,10,14,15,17,21],lv:5,
+    nameOrigin:'十三和弦叠加9-#9和b5-5两组小二度对。9个音，结合了布鲁斯的狂野和减五的暧昧。',
+    character:'9个音，#9的布鲁斯张力与b5的三全音并存，能量感极强。',
+    color:'狂野、迷幻、充满攻击性。常用于融合爵士和摇滚，情绪外放而浓烈。'},
+  {cn:'属十三全变化',en:'13alt',deg:[0,4,6,7,10,13,14,17,18,21],lv:5,
+    nameOrigin:'在一个十三和弦中同时包含b9-9、11-#11、b5-5三组小二度对，10个音。这是钢琴上能演奏的最密集的属和弦之一。',
+    character:'10个音，三组小二度对同时存在，几乎覆盖一个八度内所有音。半音摩擦达到极致，和声密度接近音簇。',
+    color:'极度繁复、戏剧化、光怪陆离。仅用于先锋爵士和现代古典，制造近乎音簇的震撼效果。'},
+];
+
+let curRoot=0, curLevel=1, curChord=CHORDS[0], audioCtx=null, showFingers=false, playMode='arpeggio', sustain=false, instrument='piano', octOffset=0, clefType='treble';
+
+/* 右手指法分配（原位和弦，从低音到高音） */
+function getFingering(count){
+  if(count<=3) return [1,3,5];
+  if(count===4) return [1,2,3,5];
+  if(count===5) return [1,2,3,4,5];
+  // 6音以上：琶音指法，拇指穿越（1-2-3-4-5-1-2-3-4-5）
+  const base=[1,2,3,4,5];
+  const result=[];
+  for(let i=0;i<count;i++) result.push(base[i%5]);
+  return result;
+}
+
+/* ===== 乐器音色参数表 ===== */
+const INSTRUMENTS={
+  piano:{
+    name:'三角钢琴', osc:'sine', master:0.20,
+    harmonics:[
+      {m:1,g:1.0,d:1.0},{m:2,g:.5,d:.7},{m:3,g:.25,d:.5},
+      {m:4,g:.13,d:.35},{m:5,g:.07,d:.25},{m:6,g:.04,d:.18},
+      {m:7,g:.02,d:.12},{m:8,g:.01,d:.08},
+    ],
+    attack:.003, decay:.12, sustain:.06, rel:1.2,
+    fStart:6000, fEnd:1200, fQ:.3, noise:true, noiseG:.05,
+    inharmonicity:.0008, unison:3.5,
+  },
+  epiano:{
+    name:'电钢琴', osc:'sine', master:0.18,
+    harmonics:[
+      {m:1,g:1.0,d:.9},{m:2,g:.55,d:.6},{m:3,g:.18,d:.35},
+      {m:4,g:.06,d:.2},{m:5,g:.02,d:.12},
+    ],
+    attack:.008, decay:.18, sustain:.06, rel:1.0,
+    fStart:3800, fEnd:1100, fQ:.5, noise:false, tremolo:true,
+    inharmonicity:.0003, unison:2.0,
+  },
+  organ:{
+    name:'管风琴', osc:'sine', master:0.13,
+    harmonics:[
+      {m:1,g:.8,d:1.5},{m:2,g:.5,d:1.5},{m:3,g:.3,d:1.5},
+      {m:4,g:.25,d:1.5},{m:6,g:.12,d:1.5},{m:8,g:.08,d:1.5},
+    ],
+    attack:.02, decay:.1, sustain:.75, rel:1.2,
+    fStart:4000, fEnd:4000, fQ:.2, noise:false, vibrato:true,
+    inharmonicity:0, unison:0,
+  },
+  harpsichord:{
+    name:'羽管键琴', osc:'sawtooth', master:0.09,
+    harmonics:[
+      {m:1,g:.6,d:.4},{m:2,g:.4,d:.3},{m:3,g:.3,d:.22},
+      {m:4,g:.2,d:.15},{m:5,g:.12,d:.1},{m:6,g:.07,d:.08},
+    ],
+    attack:.002, decay:.08, sustain:.02, rel:.5,
+    fStart:6000, fEnd:2500, fQ:1.0, noise:false,
+    inharmonicity:.0002, unison:1.5,
+  },
+  synth:{
+    name:'合成器垫', osc:'sawtooth', master:0.12,
+    harmonics:[{m:1,g:.7,d:1.2},{m:2,g:.3,d:1.0},{m:3,g:.12,d:.8}],
+    attack:.05, decay:.3, sustain:.15, rel:1.3,
+    fStart:2500, fEnd:800, fQ:2.0, noise:false,
+    inharmonicity:0, unison:5.0,
+  },
+  celesta:{
+    name:'钟琴', osc:'sine', master:0.16,
+    harmonics:[
+      {m:1,g:1.0,d:1.2},{m:2,g:.3,d:.8},{m:4,g:.15,d:.5},
+      {m:6,g:.08,d:.3},{m:8,g:.03,d:.2},
+    ],
+    attack:.002, decay:.1, sustain:.05, rel:1.5,
+    fStart:8000, fEnd:4000, fQ:.5, noise:false,
+    inharmonicity:.0005, unison:1.0,
+  },
+  guitar:{
+    name:'木吉他', osc:'triangle', master:0.16,
+    harmonics:[
+      {m:1,g:1.0,d:.85},{m:2,g:.42,d:.55},{m:3,g:.2,d:.35},
+      {m:4,g:.1,d:.22},{m:5,g:.05,d:.14},{m:6,g:.02,d:.08},
+    ],
+    attack:.003, decay:.25, sustain:.04, rel:.8,
+    fStart:4500, fEnd:1600, fQ:.4, noise:true, noiseG:.09,
+    inharmonicity:.0004, unison:2.0,
+  },
+  eguitar:{
+    name:'电吉他', osc:'sawtooth', master:0.10,
+    harmonics:[
+      {m:1,g:.8,d:1.0},{m:2,g:.55,d:.8},{m:3,g:.35,d:.6},
+      {m:4,g:.22,d:.45},{m:5,g:.12,d:.3},{m:6,g:.06,d:.2},
+    ],
+    attack:.008, decay:.3, sustain:.18, rel:1.1,
+    fStart:3200, fEnd:1100, fQ:3.5, noise:false,
+    inharmonicity:.0002, unison:2.5,
+  },
+};
+
+/* ===== 多乐器音色合成 ===== */
+function playNote(semi, dur=1.8){
+  ensureAudio();
+  const cfg=INSTRUMENTS[instrument];
+  const freq=261.63*Math.pow(2,semi/12);
+  const now=audioCtx.currentTime;
+  const durActual=sustain?dur*2.8:dur;
+  const sustainEnd=now+durActual*0.65;
+  const releaseEnd=now+durActual*(sustain?1.8:cfg.rel);
+
+  // 主增益 ADSR 包络
+  const master=audioCtx.createGain();
+  master.gain.setValueAtTime(0, now);
+  master.gain.linearRampToValueAtTime(cfg.master, now+cfg.attack);
+  master.gain.linearRampToValueAtTime(cfg.master*cfg.sustain, now+cfg.attack+cfg.decay);
+  master.gain.setValueAtTime(cfg.master*cfg.sustain, sustainEnd);
+  master.gain.exponentialRampToValueAtTime(0.001, releaseEnd);
+
+  // 低通滤波
+  const filter=audioCtx.createBiquadFilter();
+  filter.type='lowpass';
+  filter.frequency.setValueAtTime(cfg.fStart, now);
+  filter.frequency.exponentialRampToValueAtTime(sustain?cfg.fEnd*0.5:cfg.fEnd, releaseEnd);
+  filter.Q.value=cfg.fQ;
+  master.connect(filter);
+  filter.connect(audioCtx.destination);
+
+  // 谐波振荡器（含泛音失谐 + 多弦叠加）
+  const oscList=[];
+  cfg.harmonics.forEach(h=>{
+    // 钢琴泛音不是精确整数倍：f_n = n*f*sqrt(1+B*n^2)
+    const stretch=cfg.inharmonicity?Math.sqrt(1+cfg.inharmonicity*h.m*h.m):1;
+    const hFreq=freq*h.m*stretch;
+    // 每个谐波用1-2个略微失谐的振荡器，模拟多根弦/自然厚度
+    const detunes=cfg.unison?[-cfg.unison,cfg.unison]:[0];
+    detunes.forEach(dt=>{
+      const osc=audioCtx.createOscillator();
+      osc.type=cfg.osc;
+      osc.frequency.value=hFreq;
+      osc.detune.value=dt;
+      const g=audioCtx.createGain();
+      const layerGain=cfg.unison?0.5:1;
+      g.gain.setValueAtTime(h.g*layerGain, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now+durActual*h.d);
+      osc.connect(g);
+      g.connect(master);
+      osc.start(now);
+      osc.stop(releaseEnd+0.1);
+      oscList.push(osc);
+    });
+  });
+
+  // 颤音（管风琴）
+  if(cfg.vibrato){
+    const lfo=audioCtx.createOscillator();
+    lfo.frequency.value=5.5;
+    const lfoG=audioCtx.createGain();
+    lfoG.gain.value=freq*0.004;
+    lfo.connect(lfoG);
+    oscList.forEach(o=>lfoG.connect(o.frequency));
+    lfo.start(now);
+    lfo.stop(releaseEnd+0.1);
+  }
+  // 振幅颤音（电钢琴）
+  if(cfg.tremolo){
+    const lfo=audioCtx.createOscillator();
+    lfo.frequency.value=4;
+    const lfoG=audioCtx.createGain();
+    lfoG.gain.value=cfg.master*0.06;
+    lfo.connect(lfoG);
+    lfoG.connect(master.gain);
+    lfo.start(now);
+    lfo.stop(releaseEnd+0.1);
+  }
+
+  // 琴槌/拨弦瞬态噪声
+  if(cfg.noise){
+    const noiseLen=0.04;
+    const buf=audioCtx.createBuffer(1, audioCtx.sampleRate*noiseLen, audioCtx.sampleRate);
+    const data=buf.getChannelData(0);
+    for(let i=0;i<data.length;i++){
+      // 快速衰减的脉冲 + 少量高频颗粒
+      data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,2.5);
+    }
+    const src=audioCtx.createBufferSource();
+    src.buffer=buf;
+    const ng=audioCtx.createGain();
+    ng.gain.setValueAtTime(cfg.noiseG, now);
+    ng.gain.exponentialRampToValueAtTime(0.001, now+noiseLen);
+    const nf=audioCtx.createBiquadFilter();
+    nf.type='bandpass'; nf.frequency.value=freq*2.5; nf.Q.value=0.8;
+    // 再加一层高频噪声（琴槌敲击的泛音颗粒）
+    const src2=audioCtx.createBufferSource();
+    src2.buffer=buf;
+    const ng2=audioCtx.createGain();
+    ng2.gain.setValueAtTime(cfg.noiseG*0.4, now);
+    ng2.gain.exponentialRampToValueAtTime(0.001, now+0.015);
+    const nf2=audioCtx.createBiquadFilter();
+    nf2.type='highpass'; nf2.frequency.value=3000;
+    src.connect(nf); nf.connect(ng); ng.connect(master);
+    src2.connect(nf2); nf2.connect(ng2); ng2.connect(master);
+    src.start(now); src.stop(now+noiseLen);
+    src2.start(now); src2.stop(now+noiseLen);
+  }
+}
+
+/* 和弦播放：同音 / 琶音 */
+function playChord(deg){
+  ensureAudio();
+  if(playMode==='chord'){
+    deg.forEach(d=>playNote(d, 2.0));
+  }else{
+    deg.forEach((d,i)=>setTimeout(()=>playNote(d,1.6),i*70));
+  }
+}
+
+function ensureAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}
+
+/* 乐器切换 */
+document.getElementById('instrumentSelect').onchange=function(){
+  instrument=this.value;
+  render(); // 切换后立即用新音色播放当前和弦
+};
+
+/* 根音选择器 */
+const rs=document.getElementById('rootSelector');
+NOTES.forEach((n,i)=>{
+  const b=document.createElement('button');b.className='root-btn'+(i===0?' active':'');b.textContent=n;
+  b.onclick=()=>{curRoot=i;document.querySelectorAll('.root-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()};
+  rs.appendChild(b);
+});
+
+/* 级别按钮 */
+const lb=document.getElementById('levelBtns');
+LEVELS.forEach(lv=>{
+  const b=document.createElement('button');b.className='level-btn'+(lv.id===1?' active':'');
+  b.innerHTML=`<span class="dot" style="background:${lv.color}"></span>${lv.name}<span class="cnt">${lv.desc}</span>`;
+  b.onclick=()=>{curLevel=lv.id;document.querySelectorAll('.level-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderChordBtns();const first=CHORDS.find(c=>c.lv===lv.id);if(first){curChord=first;render()}};
+  lb.appendChild(b);
+});
+
+/* 和弦按钮 */
+const cb=document.getElementById('chordBtns');
+/* 色彩·和弦进行级联菜单构建 */
+function buildCascader(){
+  const menu=document.getElementById('cascaderMenu');
+  menu.innerHTML='';
+  PROGRESSION_GROUPS.forEach(group=>{
+    const gDiv=document.createElement('div');gDiv.className='cascader-group';
+    const item=document.createElement('div');item.className='cascader-item';
+    item.innerHTML=`<span>${group.name}</span><span class="arrow">▸</span>`;
+    /* 点击展开子菜单（触摸设备） */
+    item.onclick=function(e){
+      e.stopPropagation();
+      const wasOpen=gDiv.classList.contains('sub-open');
+      menu.querySelectorAll('.cascader-group').forEach(g=>g.classList.remove('sub-open'));
+      if(!wasOpen) gDiv.classList.add('sub-open');
+    };
+    gDiv.appendChild(item);
+    const sub=document.createElement('div');sub.className='cascader-submenu';
+    let hideTimer=null;
+    function positionSub(){
+      const rect=item.getBoundingClientRect();
+      sub.style.display='block';
+      // 无gap紧贴，右侧不足则翻到左侧
+      let left=rect.right;
+      if(left+sub.offsetWidth>window.innerWidth) left=rect.left-sub.offsetWidth;
+      sub.style.left=left+'px';
+      sub.style.top=rect.top+'px';
+    }
+    /* 桌面端 hover：fixed 定位 + 延迟隐藏，避免经过缝隙消失 */
+    gDiv.addEventListener('mouseenter',()=>{
+      if(!window.matchMedia('(hover:hover)').matches) return;
+      if(hideTimer){clearTimeout(hideTimer);hideTimer=null}
+      positionSub();
+    });
+    sub.addEventListener('mouseenter',()=>{
+      if(hideTimer){clearTimeout(hideTimer);hideTimer=null}
+    });
+    function scheduleHide(){
+      if(hideTimer) clearTimeout(hideTimer);
+      hideTimer=setTimeout(()=>{sub.style.display='none'},120);
+    }
+    gDiv.addEventListener('mouseleave',scheduleHide);
+    sub.addEventListener('mouseleave',scheduleHide);
+    group.versions.forEach(v=>{
+      const si=document.createElement('div');si.className='cascader-subitem';
+      si.innerHTML=`<div class="sub-label">${v.label}</div>${v.ref?`<div class="sub-ref">${v.ref}</div>`:''}`;
+      si.onclick=()=>{
+        document.getElementById('chordProg').value=v.prog;
+        document.getElementById('cascaderTrigger').innerHTML=`${group.name} · ${v.label} ▾`;
+        document.getElementById('cascader').classList.remove('open');
+        startAccompaniment();
+      };
+      sub.appendChild(si);
+    });
+    gDiv.appendChild(sub);
+    menu.appendChild(gDiv);
+  });
+}
+/* 级联菜单开关 */
+document.getElementById('cascaderTrigger').onclick=function(e){
+  e.stopPropagation();
+  document.getElementById('cascader').classList.toggle('open');
+};
+document.addEventListener('click',()=>{
+  document.getElementById('cascader').classList.remove('open');
+});
+
+function renderChordBtns(){
+  cb.innerHTML='';
+  CHORDS.filter(c=>c.lv===curLevel).forEach(c=>{
+    const b=document.createElement('button');b.className='chord-btn'+(c===curChord?' active':'');
+    b.innerHTML=`${c.cn}<span class="en">${c.en}</span>`;
+    b.onclick=()=>{curChord=c;render()};
+    cb.appendChild(b);
+  });
+}
+
+/* 复杂和弦（8音+）子菜单按钮 */
+const cbx=document.getElementById('complexBtns');
+function renderComplexBtns(){
+  cbx.innerHTML='';
+  CHORDS.filter(c=>c.lv===5).forEach(c=>{
+    const b=document.createElement('button');b.className='chord-btn'+(c===curChord?' active':'');
+    b.innerHTML=`${c.cn}<span class="en">${c.en} · ${c.deg.length}音</span>`;
+    b.onclick=()=>{
+      curChord=c;
+      if(curLevel!==5){curLevel=5;
+        document.querySelectorAll('.level-btn').forEach((x,i)=>x.classList.toggle('active',LEVELS[i].id===5));
+      }
+      render();
+    };
+    cbx.appendChild(b);
+  });
+}
+
+/* 子菜单切换：tab点击 + 触摸滑动 */
+let chordPage=0;
+function setChordPage(p){
+  chordPage=p;
+  document.getElementById('chordSlider').style.transform=`translateX(-${p*50}%)`;
+  document.querySelectorAll('.chord-subtab').forEach((t,i)=>t.classList.toggle('active',i===p));
+}
+document.querySelectorAll('.chord-subtab').forEach(t=>{
+  t.onclick=()=>setChordPage(parseInt(t.dataset.page));
+});
+(function(){
+  const vp=document.getElementById('chordViewport');
+  let sx=0, dx=0, touching=false;
+  vp.addEventListener('touchstart',e=>{
+    sx=e.touches[0].clientX; dx=0; touching=true;
+    document.getElementById('chordSlider').style.transition='none';
+  },{passive:true});
+  vp.addEventListener('touchmove',e=>{
+    if(!touching) return;
+    dx=e.touches[0].clientX-sx;
+    const w=vp.getBoundingClientRect().width;
+    const base=-chordPage*50;
+    document.getElementById('chordSlider').style.transform=`translateX(calc(${base}% + ${dx}px))`;
+  },{passive:true});
+  vp.addEventListener('touchend',()=>{
+    touching=false;
+    document.getElementById('chordSlider').style.transition='transform .25s ease';
+    if(Math.abs(dx)>40){
+      setChordPage(dx<0?1:0);
+    }else{
+      setChordPage(chordPage);
+    }
+  });
+})();
+
+/* 钢琴键盘 */
+const piano=document.getElementById('piano');
+const WHITE_W=38;
+const whites=[];
+for(let o=0;o<2;o++)[0,2,4,5,7,9,11].forEach(n=>whites.push(o*12+n));
+whites.forEach((semi,idx)=>{
+  const k=document.createElement('div');k.className='white-key';k.dataset.semi=semi;
+  k.innerHTML=`<span class="itag"></span><span class="finger"></span><span class="lbl">${NOTES[semi%12]}</span>`;
+  k.onclick=()=>playNote(semi);piano.appendChild(k);
+});
+for(let o=0;o<2;o++){
+  const base=o*7;
+  [[0,1],[1,3],[3,6],[4,8],[5,10]].forEach(([wi,se])=>{
+    const k=document.createElement('div');k.className='black-key';k.dataset.semi=o*12+se;
+    k.style.left=(base*WHITE_W+wi*WHITE_W+WHITE_W-11)+'px';
+    k.innerHTML=`<span class="itag"></span><span class="finger"></span><span class="lbl">${NOTES[(o*12+se)%12]}</span>`;
+    k.onclick=e=>{e.stopPropagation();playNote(o*12+se)};piano.appendChild(k);
+  });
+}
+
+/* 五线谱渲染 */
+function renderStaff(deg){
+  const svg=document.getElementById('staffSvg');
+  svg.innerHTML='';
+  const NS='http://www.w3.org/2000/svg';
+  const lineY=[30,38,46,54,62]; // 5条线
+  // 画五线
+  lineY.forEach(y=>{
+    const l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',40);l.setAttribute('x2',680);l.setAttribute('y1',y);l.setAttribute('y2',y);
+    l.setAttribute('stroke','#8b95a7');l.setAttribute('stroke-width','1');svg.appendChild(l);
+  });
+  // 谱号
+  const clef=document.createElementNS(NS,'text');
+  if(clefType==='treble'){
+    clef.setAttribute('x',48);clef.setAttribute('y',58);clef.setAttribute('font-size','42');
+    clef.textContent='𝄞';
+  }else{
+    clef.setAttribute('x',50);clef.setAttribute('y',55);clef.setAttribute('font-size','38');
+    clef.textContent='𝄢';
+  }
+  clef.setAttribute('fill','#8b95a7');clef.setAttribute('font-family','serif');
+  svg.appendChild(clef);
+
+  // 音符
+  const startX=120;
+  const spacing=Math.min(70, 520/Math.max(deg.length,1));
+  deg.forEach((d,i)=>{
+    const totalSemi=curRoot+d+octOffset*12;
+    const semi=((totalSemi%12)+12)%12;
+    const oct=Math.floor(totalSemi/12);
+    const dia=DIATONIC[semi]+oct*7;
+    // y坐标：高音谱号 E4(dia=2)在第一线；低音谱号 A3(dia=-2)在第一线
+    const baseDia=clefType==='treble'?2:-2;
+    const y=30-(dia-baseDia)*4;
+    const x=startX+i*spacing;
+    const isSharp=NOTES[semi].includes('#');
+    // 加线
+    if(y>62){ // 下加线
+      for(let ly=66;ly<=y;ly+=8){
+        const al=document.createElementNS(NS,'line');
+        al.setAttribute('x1',x-8);al.setAttribute('x2',x+8);al.setAttribute('y1',ly);al.setAttribute('y2',ly);
+        al.setAttribute('stroke','#8b95a7');al.setAttribute('stroke-width','1');svg.appendChild(al);
+      }
+    }
+    if(y<30){ // 上加线
+      for(let ly=26;ly>=y;ly-=8){
+        const al=document.createElementNS(NS,'line');
+        al.setAttribute('x1',x-8);al.setAttribute('x2',x+8);al.setAttribute('y1',ly);al.setAttribute('y2',ly);
+        al.setAttribute('stroke','#8b95a7');al.setAttribute('stroke-width','1');svg.appendChild(al);
+      }
+    }
+    // 变音记号
+    if(isSharp){
+      const sh=document.createElementNS(NS,'text');
+      sh.setAttribute('x',x-14);sh.setAttribute('y',y+4);sh.setAttribute('font-size','14');
+      sh.setAttribute('fill','#f0b429');sh.setAttribute('font-family','serif');sh.setAttribute('font-weight','bold');
+      sh.textContent='♯';svg.appendChild(sh);
+    }
+    // 符头（椭圆）
+    const head=document.createElementNS(NS,'ellipse');
+    head.setAttribute('cx',x);head.setAttribute('cy',y);head.setAttribute('rx',6.5);head.setAttribute('ry',4.5);
+    head.setAttribute('fill','#f0b429');head.setAttribute('transform',`rotate(-20 ${x} ${y})`);
+    svg.appendChild(head);
+    // 符干（低音谱号朝上，高音谱号朝下）
+    const stem=document.createElementNS(NS,'line');
+    if(clefType==='treble'){
+      stem.setAttribute('x1',x+6);stem.setAttribute('x2',x+6);
+      stem.setAttribute('y1',y);stem.setAttribute('y2',y-30);
+    }else{
+      stem.setAttribute('x1',x-6);stem.setAttribute('x2',x-6);
+      stem.setAttribute('y1',y);stem.setAttribute('y2',y+30);
+    }
+    stem.setAttribute('stroke','#f0b429');stem.setAttribute('stroke-width','1.5');svg.appendChild(stem);
+    // 音名标注
+    const nm=document.createElementNS(NS,'text');
+    nm.setAttribute('x',x);nm.setAttribute('y',82);nm.setAttribute('font-size','10');
+    nm.setAttribute('fill','#8b95a7');nm.setAttribute('text-anchor','middle');nm.setAttribute('font-family','monospace');
+    nm.textContent=NOTES[semi];svg.appendChild(nm);
+  });
+}
+
+/* 详情 */
+function renderDetail(){
+  const c=curChord;
+  const lv=LEVELS.find(l=>l.id===c.lv);
+  document.getElementById('detailBadge').textContent='Lv.'+c.lv+' '+lv.name.split('·')[1];
+  document.getElementById('detailBadge').style.background=lv.color+'22';
+  document.getElementById('detailBadge').style.color=lv.color;
+  const aliasStr=(ALIASES[c.en]||[]).map(a=>NOTES[curRoot]+a).join(' / ');
+  document.getElementById('detailName').innerHTML=`${NOTES[curRoot]}${c.en} · ${c.cn}和弦　<span style="font-weight:600;color:var(--text-dim);font-size:12px">${aliasStr}</span>`;
+  const degNames=c.deg.map(d=>ITAG[d]||d+'半').join(' · ');
+  const fingers=getFingering(c.deg.length);
+  const fingerStr=fingers.join('-')+(c.deg.length>5?'（需省略音/琶音）':'');
+  document.getElementById('detailBody').innerHTML=`
+    <h4>构成音</h4>
+    <div class="interval-row">${c.deg.map(d=>`<span class="interval-chip">${ITAG[d]||d} = ${NOTES[(curRoot+d)%12]}</span>`).join('')}</div>
+    <p style="font-size:11px;color:var(--text-faint)">音程角色：${degNames}</p>
+    <h4>级数标记（调式中的位置）</h4>
+    <p><b style="color:var(--accent)">${(SCALE_DEGREE[c.en]||{}).roman||'—'}</b>　罗马数字</p>
+    <p><b style="color:var(--accent)">${(SCALE_DEGREE[c.en]||{}).num||'—'}</b>　数字+M/m（M=大三，m=小三，数字=级数）</p>
+    <h4>右手指法</h4>
+    <p><b style="color:var(--accent)">${fingerStr}</b>　指：1=拇指 2=食指 3=中指 4=无名指 5=小指（原位和弦从低音到高音）</p>
+    <h4>命名由来</h4><p>${c.nameOrigin}</p>
+    <h4>音值特性</h4><p>${c.character}</p>
+    <h4>音乐色彩</h4><p>${c.color}</p>
+  `;
+}
+
+/* 八度调整（自动联动谱号） */
+document.getElementById('octUp').onclick=()=>{
+  octOffset=Math.min(1,octOffset+1);
+  if(octOffset>=0){clefType='treble';document.getElementById('clefToggle').textContent='高'}
+  render();
+};
+document.getElementById('octDown').onclick=()=>{
+  octOffset=Math.max(-1,octOffset-1);
+  if(octOffset<0){clefType='bass';document.getElementById('clefToggle').textContent='低'}
+  render();
+};
+/* 谱号手动切换 */
+document.getElementById('clefToggle').onclick=function(){
+  clefType=(clefType==='treble')?'bass':'treble';
+  this.textContent=clefType==='treble'?'高':'低';
+  render();
+};
+
+/* 详情折叠 */
+document.getElementById('detailToggle').onclick=()=>{
+  const box=document.getElementById('detailBox');
+  const btn=document.getElementById('detailToggle');
+  box.classList.toggle('detail-collapsed');
+  btn.textContent=box.classList.contains('detail-collapsed')?'展开详情':'收起详情';
+};
+
+/* 指法开关 */
+document.getElementById('fingerToggle').onclick=()=>{
+  showFingers=!showFingers;
+  document.body.classList.toggle('show-fingers',showFingers);
+  const btn=document.getElementById('fingerToggle');
+  btn.classList.toggle('on',showFingers);
+  btn.textContent=showFingers?'指法 开':'指法';
+};
+
+/* 同音/琶音切换 */
+document.getElementById('playToggle').onclick=()=>{
+  playMode=playMode==='arpeggio'?'chord':'arpeggio';
+  const btn=document.getElementById('playToggle');
+  btn.classList.toggle('on',playMode==='chord');
+  btn.textContent=playMode==='chord'?'同':'琶';
+  btn.title=playMode==='chord'?'同音模式：所有音同时发声':'琶音模式：从低到高依次发声';
+};
+
+/* 延音开关 */
+document.getElementById('sustainToggle').onclick=()=>{
+  sustain=!sustain;
+  const btn=document.getElementById('sustainToggle');
+  btn.classList.toggle('on',sustain);
+  btn.textContent=sustain?'延 开':'延';
+  btn.title=sustain?'延音已开启：音符持续时间延长2.8倍':'延音已关闭';
+};
+
+/* 总渲染 */
+function render(){
+  const c=curChord;
+  const fingers=getFingering(c.deg.length);
+  // 钢琴高亮
+  document.querySelectorAll('.white-key,.black-key').forEach(k=>k.classList.remove('pressed'));
+  c.deg.forEach((d,i)=>{
+    // 键盘始终显示相对位置，不随八度偏移移动
+    const absSemi=curRoot+d;
+    const key=document.querySelector(`[data-semi="${absSemi}"]`);
+    if(key){
+      key.classList.add('pressed');
+      const t=key.querySelector('.itag');if(t)t.textContent=ITAG[d]||d;
+      const f=key.querySelector('.finger');if(f)f.textContent=fingers[i]||'';
+    }
+  });
+  // 五线谱
+  document.getElementById('staffTitle').innerHTML=`${NOTES[curRoot]} <span class="sym">${c.en}</span> · ${c.cn}和弦`;
+  document.getElementById('staffNotes').innerHTML='构成音：'+c.deg.map(d=>`<b>${NOTES[(curRoot+d)%12]}</b>`).join(' · ');
+  renderStaff(c.deg);
+  // 详情
+  renderDetail();
+  // 和弦按钮高亮
+  document.querySelectorAll('.chord-btn').forEach((b,i)=>{
+    const list=CHORDS.filter(x=>x.lv===curLevel);
+    b.classList.toggle('active',list[i]===c);
+  });
+  playChord(c.deg.map(d=>curRoot+d+octOffset*12));
+}
+
+/* ===== 可拖拽分割条：钢琴等比例缩放 ===== */
+const PIANO_BASE_W=14*38;   // 14个白键 × 38px
+const PIANO_BASE_H=175;
+let pianoScale=1;
+function setPianoScale(s){
+  pianoScale=Math.max(0.55,Math.min(2.2,s));
+  const piano=document.getElementById('piano');
+  const scaler=document.getElementById('pianoScaler');
+  piano.style.transform=`scale(${pianoScale})`;
+  scaler.style.width=(PIANO_BASE_W*pianoScale)+'px';
+  scaler.style.height=(PIANO_BASE_H*pianoScale)+'px';
+}
+(function(){
+  const resizer=document.getElementById('resizer');
+  const pianoBox=document.getElementById('pianoBox');
+  let dragging=false, startY=0, startH=0;
+  function onStart(clientY){
+    dragging=true;
+    resizer.classList.add('dragging');
+    startY=clientY;
+    startH=pianoBox.getBoundingClientRect().height;
+    document.body.style.cursor='row-resize';
+    document.body.style.userSelect='none';
+  }
+  function onMove(clientY){
+    if(!dragging) return;
+    const newBoxH=startH+(clientY-startY);
+    const pianoH=newBoxH-20; // 减去 piano-box 上下 padding
+    setPianoScale(pianoH/PIANO_BASE_H);
+  }
+  function onEnd(){
+    dragging=false;
+    resizer.classList.remove('dragging');
+    document.body.style.cursor='';
+    document.body.style.userSelect='';
+  }
+  resizer.addEventListener('mousedown',e=>{e.preventDefault();onStart(e.clientY)});
+  document.addEventListener('mousemove',e=>onMove(e.clientY));
+  document.addEventListener('mouseup',onEnd);
+  resizer.addEventListener('touchstart',e=>{onStart(e.touches[0].clientY)},{passive:true});
+  document.addEventListener('touchmove',e=>{if(dragging)onMove(e.touches[0].clientY)},{passive:true});
+  document.addEventListener('touchend',onEnd);
+})();
+
+/* ===== 和弦解析器 ===== */
+const FLAT_MAP={'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#'};
+const TYPE_RULES=[
+  {re:/^13b9#11b5$|^13-9\+11-5$/i,en:'13alt'},
+  {re:/^13b9b5$|^13-9-5$/i,en:'13b9b5'},
+  {re:/^13b9#11$|^13-9\+11$/i,en:'13b9#11'},
+  {re:/^13#9b5$|^13\+9-5$/i,en:'13#9b5'},
+  {re:/^13alt$|^13full$/i,en:'13alt'},
+  {re:/^13b9$|^13-9$/i,en:'13b9'},
+  {re:/^13#9$|^13\+9$/i,en:'13#9'},
+  {re:/^13b5$|^13-5$/i,en:'13b5'},
+  {re:/^13#11$|^13\+11$/i,en:'13#11'},
+  {re:/^maj7$/i,en:'maj7'},{re:/^m7b5$|^m7-5$/i,en:'m7b5'},
+  {re:/^dim7$/i,en:'dim7'},{re:/^mmaj7$|^mm7$/i,en:'mMaj7'},
+  {re:/^maj9$/i,en:'maj9'},{re:/^m9$/i,en:'m9'},
+  {re:/^7#5#9$|^7\+5\+9$/i,en:'7#5#9'},{re:/^7b5b9$|^7-5-9$/i,en:'7b5b9'},
+  {re:/^7#5$|^7\+5$|^7aug$/i,en:'7#5'},{re:/^7b5$|^7-5$/i,en:'7b5'},
+  {re:/^7#9$|^7\+9$/i,en:'7#9'},{re:/^7b9$|^7-9$/i,en:'7b9'},
+  {re:/^add9$|^add2$/i,en:'add9'},{re:/^sus2$/i,en:'sus2'},
+  {re:/^sus4$|^sus$/i,en:'sus4'},{re:/^m6$/i,en:'m6'},
+  {re:/^m7$|^min7$|^-7$/i,en:'m7'},{re:/^m$|^min$|^-$/i,en:'m'},
+  {re:/^aug$|^\+$/i,en:'aug'},{re:/^dim$/i,en:'dim'},
+  {re:/^maj$|^M$/i,en:'maj'},{re:/^6$/i,en:'6'},
+  {re:/^7$|^dom7$/i,en:'7'},{re:/^9$/i,en:'9'},
+  {re:/^11$/i,en:'11'},{re:/^13$/i,en:'13'},{re:/^$/,en:'maj'},
+];
+function parseChord(str){
+  str=str.trim();
+  if(!str) return null;
+  const m=str.match(/^([A-G][#b]?)/);
+  if(!m) return null;
+  let root=m[1];
+  if(FLAT_MAP[root]) root=FLAT_MAP[root];
+  const rootIndex=NOTES.indexOf(root);
+  if(rootIndex<0) return null;
+  const rest=str.slice(m[1].length);
+  for(const {re,en} of TYPE_RULES){ if(re.test(rest)) return {rootIndex,en}; }
+  return {rootIndex,en:'maj'};
+}
+
+/* ===== 自动伴奏 ===== */
+let accompTimer=null, accompIndex=0, accompList=[], prevPlayMode='arpeggio';
+function startAccompaniment(){
+  const bpm=Math.max(20,Math.min(240,parseInt(document.getElementById('bpmInput').value)||60));
+  const parts=document.getElementById('chordProg').value.split(/[,，]/).map(s=>parseChord(s)).filter(Boolean);
+  if(parts.length===0){
+    const inp=document.getElementById('chordProg');
+    inp.style.borderColor='#f87171';
+    setTimeout(()=>inp.style.borderColor='',1200);
+    return;
+  }
+  stopAccompaniment();
+  accompList=parts; accompIndex=0;
+  prevPlayMode=playMode; playMode='chord'; // 伴奏用同音模式
+  const beatMs=60000/bpm;
+  playAccompanimentStep();
+  accompTimer=setInterval(playAccompanimentStep, beatMs*2); // 每和弦2拍
+  document.getElementById('accompPlay').classList.add('playing');
+  document.getElementById('accompPlay').textContent='播放中';
+}
+function playAccompanimentStep(){
+  const chord=accompList[accompIndex%accompList.length];
+  curRoot=chord.rootIndex;
+  const target=CHORDS.find(c=>c.en===chord.en);
+  if(target){
+    curChord=target; curLevel=target.lv;
+    document.querySelectorAll('.root-btn').forEach((b,i)=>b.classList.toggle('active',i===curRoot));
+    document.querySelectorAll('.level-btn').forEach((b,i)=>b.classList.toggle('active',LEVELS[i].id===curLevel));
+    renderChordBtns();
+    render();
+  }
+  accompIndex++;
+}
+function stopAccompaniment(){
+  if(accompTimer){ clearInterval(accompTimer); accompTimer=null; }
+  playMode=prevPlayMode;
+  document.getElementById('accompPlay').classList.remove('playing');
+  document.getElementById('accompPlay').textContent='播放';
+}
+document.getElementById('accompPlay').onclick=startAccompaniment;
+document.getElementById('accompStop').onclick=stopAccompaniment;
+
+buildCascader();
+renderChordBtns();
+renderComplexBtns();
+/* 初始自适应缩放 */
+(function(){
+  const landscape=window.matchMedia('(orientation: landscape)').matches;
+  if(window.innerHeight<=520 && landscape) setPianoScale(0.63);
+  else if(window.innerWidth<=1024 && landscape) setPianoScale(0.88);
+})();
+render();
+</script>
+</body>
+</html>
+<!-- （注：内容由AI生成） -->

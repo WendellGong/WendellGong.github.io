@@ -6,7 +6,7 @@
 <title>Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索</title>
 <meta name="description" content="Wendell Gong — 专注多模态表征、生成式召回、数据飞轮与出海搜索，把模型理解翻译成业务收益。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231D63FF'/%3E%3Cpath d='M15 46V18h9l8 16 8-16h9v28h-9V30l-8 14-8-14v16z' fill='%23fff'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Spectral:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* ============================================================
    DESIGN TOKENS — flat · tech · white + blue
@@ -476,18 +476,109 @@ header{
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ============================================================
-   BLOG VIEW
+   BLOG VIEW — each card carries its own post's design language
    ============================================================ */
-.blog-empty{
-  text-align:center;padding:70px 20px;border:1px dashed var(--line-2);border-radius:var(--r-lg);
-  background:var(--blue-mist);position:relative;overflow:hidden;
+.blog-grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:900px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
+.blog-card{
+  display:block;overflow:hidden;background:#fff;
+  border:1px solid var(--line);border-radius:var(--r-lg);
+  transition:transform .4s var(--ease),border-color .35s,box-shadow .4s;
 }
-.blog-empty .be-ico{width:76px;height:76px;margin:0 auto 22px;border-radius:22px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--blue);box-shadow:var(--shadow-2)}
-.blog-empty .be-ico svg{width:36px;height:36px}
-.blog-empty h3{font-size:20px;font-weight:700}
-.blog-empty p{margin:10px auto 26px;max-width:440px;color:var(--ink-2);font-size:14.5px}
+.blog-card:hover{transform:translateY(-6px);border-color:var(--line-2);box-shadow:var(--shadow-2)}
+.bc-art{position:relative;height:214px;padding:18px 20px 0;display:flex;flex-direction:column;overflow:hidden}
+.bc-art-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bc-kicker{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bc-no{font-size:11px;font-weight:700;letter-spacing:.1em;opacity:.7;flex:none}
+.bc-art-bottom{
+  margin-top:auto;height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:10.5px;letter-spacing:.06em;white-space:nowrap;overflow:hidden;
+}
+.bc-art-bottom>span{overflow:hidden;text-overflow:ellipsis}
+.bc-body{padding:20px 22px 22px}
+.bc-meta{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600}
+.bc-type{padding:3px 10px;border-radius:999px;flex:none}
+.bc-idx{color:var(--ink-3);font-family:var(--font-d);font-weight:500}
+.bc-body h3{margin-top:13px;font-size:18px;font-weight:700;line-height:1.4;letter-spacing:-.01em}
+.bc-sub{margin-top:3px;font-family:var(--font-d);font-size:12.5px;color:var(--ink-3)}
+.bc-body p{margin-top:11px;font-size:13.5px;color:var(--ink-2);line-height:1.7;min-height:46px}
+.bc-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.bc-tags span{padding:3px 9px;border-radius:6px;border:1px solid var(--line);background:var(--bg-2);color:var(--ink-2);font-size:11.5px}
+.bc-go{
+  margin-top:17px;padding-top:15px;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:13px;font-weight:600;color:var(--blue);
+}
+.bc-go>span:first-child{display:inline-flex;align-items:center;gap:8px}
+.bc-go svg{transition:transform .3s}
+.blog-card:hover .bc-go svg{transform:translateX(4px)}
+.bc-go .hint{font-size:11.5px;font-weight:400;color:var(--ink-3)}
+
+/* 01 · dark instrument panel + amber accents (piano chord atlas) */
+.bc-art--piano{
+  background:
+    radial-gradient(380px 170px at 82% -35%,rgba(240,180,41,.2),transparent 72%),
+    linear-gradient(165deg,#161b22 0%,#0e1116 72%);
+  color:#e8ecf1;border-bottom:1px solid #2a3142;
+}
+.bc-art--piano .bc-kicker{font-family:var(--font-d);color:#8b95a7}
+.bc-art--piano .bc-no{color:#f0b429}
+.bc-art--piano .bc-art-bottom{color:#8b95a7;font-family:'IBM Plex Mono',ui-monospace,monospace;border-top:1px solid #2a3142}
+.bc-levels{display:flex;gap:5px;align-items:center;flex:none}
+.bc-levels i{display:block;width:6px;height:6px;border-radius:50%}
+.bc-keys-svg{width:100%;height:118px;margin-top:10px;display:block}
+.bc-body--piano .bc-type{background:rgba(240,180,41,.15);color:#9a6f0c}
+.bc-go--piano{color:#9a6f0c}
+
+/* 02 · financial terminal x financial journal (FinLex) */
+.bc-art--finlex{
+  background:
+    radial-gradient(420px 190px at 78% -55%,rgba(59,108,224,.45),transparent 70%),
+    linear-gradient(180deg,#0A1E3C 0%,#102A52 100%);
+  color:#E6EDFA;border-bottom:1px solid rgba(255,255,255,.1);
+}
+.bc-art--finlex .bc-kicker{color:#8FB0F2;font-family:'IBM Plex Mono',ui-monospace,monospace}
+.bc-art--finlex .bc-no{color:#9FB6E6}
+.fl-mid{flex:1;min-height:0;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.fl-wordmark{font-family:'Spectral',Georgia,serif;font-size:34px;font-weight:700;color:#fff;line-height:1.05}
+.fl-wordmark span{display:block;margin-top:7px;font-family:'Noto Sans SC',sans-serif;font-size:11px;font-weight:400;letter-spacing:2px;color:#9FB6E6}
+.fl-chip{
+  margin-top:12px;max-width:190px;padding:7px 11px;border-radius:8px;
+  background:#EDF0F7;box-shadow:0 8px 20px rgba(0,0,0,.22);
+}
+.fl-chip b{display:block;font-family:'Spectral',Georgia,serif;font-size:13px;color:#0A1E3C}
+.fl-chip small{display:block;margin-top:1px;font-size:9.5px;color:#5C6C88}
+.fl-chip i{display:inline-block;margin-top:4px;padding:1px 6px;border-radius:4px;background:#E7EEFD;color:#1B54D8;font-style:normal;font-size:9px}
+.fl-bars{height:82px;flex:none;display:flex;align-items:flex-end;gap:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.16)}
+.fl-bars i{display:block;width:13px;border-radius:2px 2px 0 0;background:#6E9CF5}
+.fl-bars i:nth-child(1){height:22px;opacity:.5}
+.fl-bars i:nth-child(2){height:48px;opacity:.75}
+.fl-bars i:nth-child(3){height:72px}
+.fl-bars i:nth-child(4){height:38px;opacity:.6}
+.bc-art--finlex .bc-art-bottom{color:#93A4C6;font-family:'IBM Plex Mono',ui-monospace,monospace;border-top:1px solid rgba(255,255,255,.1)}
+.bc-art--finlex .bc-art-bottom .gold{color:#D8B26A;flex:none}
+.bc-body--finlex .bc-type{background:#E7EEFD;color:#1B54D8}
+.bc-go--finlex{color:#1B54D8}
+
+/* slim subscribe strip */
+.blog-empty.blog-empty--slim{
+  margin-top:24px;padding:24px 26px;text-align:left;border:1px solid var(--line-2);border-radius:var(--r-md);
+  background:var(--blue-mist);display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.blog-empty.blog-empty--slim .be-ico{width:48px;height:48px;margin:0;border-radius:14px;flex:none;box-shadow:none}
+.blog-empty.blog-empty--slim .be-ico svg{width:23px;height:23px}
+.be-text{flex:1 1 260px}
+.blog-empty.blog-empty--slim h3{font-size:16px;font-weight:700}
+.blog-empty.blog-empty--slim p{margin:4px 0 0;max-width:none;color:var(--ink-2);font-size:13px}
+.blog-empty.blog-empty--slim .be-note{margin-top:8px;font-size:12px}
+.blog-empty.blog-empty--slim .btn{margin-left:auto}
 .be-note{display:inline-flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-3);margin-top:22px}
 .be-note svg{width:15px;height:15px;color:var(--blue)}
+@media(max-width:600px){
+  .blog-empty.blog-empty--slim{padding:20px}
+  .blog-empty.blog-empty--slim .btn{margin-left:0;width:100%}
+  .fl-chip{display:none}
+}
 
 /* ============================================================
    PRIVATE VIEW — gate
@@ -675,6 +766,10 @@ footer{border-top:1px solid var(--line);background:var(--bg-2);margin-top:20px}
   .cta-band h2{font-size:clamp(1.7rem,3.6vw,2.5rem)}
   .hero-tagline{max-width:calc(600px * var(--ts))}
   .sec-desc{max-width:calc(640px * var(--ts))}
+  .bc-kicker,.bc-no,.bc-art-bottom,.bc-tags span,.bc-go .hint,.bc-sub{font-size:calc(11.5px * var(--ts))}
+  .bc-meta,.bc-go{font-size:calc(12.5px * var(--ts))}
+  .bc-body p{font-size:calc(13.5px * var(--ts))}
+  .bc-body h3{font-size:calc(18px * var(--ts))}
 }
 </style>
 </head>
@@ -807,6 +902,65 @@ function renderChrome(){
   document.title = STATE.lang==='zh'
     ? 'Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索'
     : 'Wendell Gong — Multi-Modal Representation · Generative Recall · Data Flywheel · Overseas Search';
+}
+
+/* ============================================================
+   BLOG CARDS — miniature previews of each page's design language
+   ============================================================ */
+function pianoArtSvg(){
+  const W=26, H=60, X0=24, Y=54, lit=[0,2,4,7], lbl=['C','E','G','C'];
+  let s=[8,16,24,32,40].map(y=>`<line x1="16" y1="${y}" x2="384" y2="${y}" stroke="#2a3142" stroke-width="1"/>`).join('');
+  const noteY=[32,24,16,24];
+  [112,172,232,292].forEach((x,i)=>{
+    s+=`<ellipse cx="${x}" cy="${noteY[i]}" rx="5.5" ry="3.6" fill="#f0b429" transform="rotate(-20 ${x} ${noteY[i]})"/>`+
+       `<line x1="${x+5}" y1="${noteY[i]}" x2="${x+5}" y2="${noteY[i]-20}" stroke="#f0b429" stroke-width="1.3"/>`;
+  });
+  for(let i=0;i<14;i++){
+    const on=lit.indexOf(i), x=X0+i*W;
+    s+=`<rect x="${x}" y="${Y}" width="${W-1}" height="${H}" rx="3" fill="${on>=0?'#f0b429':'#f5f2ea'}" stroke="#c8c4ba" stroke-width=".8"/>`;
+    if(on>=0) s+=`<text x="${x+12}" y="${Y+52}" text-anchor="middle" font-size="9" font-weight="700" fill="#5a4200" font-family="monospace">${lbl[on]}</text>`;
+  }
+  [0,1,3,4,5,7,8,10,11,12].forEach(wi=>{
+    s+=`<rect x="${X0+(wi+1)*W-8}" y="${Y}" width="16" height="38" rx="2" fill="#1a1d24"/>`;
+  });
+  return s;
+}
+function blogArt(p){
+  if(p.id==='piano') return `
+    <div class="bc-art bc-art--piano">
+      <div class="bc-art-top"><span class="bc-kicker">${p.kicker}</span><span class="bc-no">${p.no}</span></div>
+      <svg class="bc-keys-svg" viewBox="0 0 400 118" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${pianoArtSvg()}</svg>
+      <div class="bc-art-bottom">
+        <span>Cmaj · ROOT C · 1-3-5</span>
+        <span class="bc-levels"><i style="background:#4ade80"></i><i style="background:#60a5fa"></i><i style="background:#c084fc"></i><i style="background:#f87171"></i></span>
+      </div>
+    </div>`;
+  return `
+    <div class="bc-art bc-art--finlex">
+      <div class="bc-art-top"><span class="bc-kicker">${p.kicker}</span><span class="bc-no">${p.no}</span></div>
+      <div class="fl-mid">
+        <div>
+          <div class="fl-wordmark">FinLex<span>金融专业英语</span></div>
+          <div class="fl-chip"><b>Alpha (α)</b><small>超额收益 · 主动回报</small><i>TERM LIBRARY</i></div>
+        </div>
+        <div class="fl-bars"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="bc-art-bottom"><span>EQUITY · BOND · FUND · DERIVATIVES · RISK</span><span class="gold">◆ BILINGUAL</span></div>
+    </div>`;
+}
+function blogCard(p,i){
+  return `
+  <a class="blog-card blog-card--${p.id}" href="${p.url}" target="_blank" rel="noopener" data-reveal data-delay="${i*90}" aria-label="${esc(tr(p.title))}">
+    ${blogArt(p)}
+    <div class="bc-body bc-body--${p.id}">
+      <div class="bc-meta"><span class="bc-type">${tr(p.type)}</span><span class="bc-idx">${tr(p.badge)}</span></div>
+      <h3>${tr(p.title)}</h3>
+      <div class="bc-sub">${tr(p.sub)}</div>
+      <p>${tr(p.desc)}</p>
+      <div class="bc-tags">${p.tags[STATE.lang].map(x=>`<span>${x}</span>`).join('')}</div>
+      <div class="bc-go bc-go--${p.id}"><span>${t('blog.open')} ${icon('arrow',15)}</span><span class="hint">${t('blog.newTab')}</span></div>
+    </div>
+  </a>`;
 }
 
 /* ============================================================
@@ -1091,12 +1245,17 @@ const views = {
           <h2 class="sec-title">${b.title}</h2>
           <p class="sec-desc">${b.sub}</p>
         </div>
-        <div class="blog-empty" data-reveal>
-          <div class="be-ico">${icon('pen',36)}</div>
-          <h3>${b.emptyT}</h3>
-          <p>${b.emptyP}</p>
+        <div class="blog-grid">
+          ${DATA.blogPosts.map((p,i)=>blogCard(p,i)).join('')}
+        </div>
+        <div class="blog-empty blog-empty--slim" data-reveal>
+          <div class="be-ico">${icon('pen',23)}</div>
+          <div class="be-text">
+            <h3>${b.emptyT}</h3>
+            <p>${b.emptyP}</p>
+            <div class="be-note">${icon('shield',15)}${b.note}</div>
+          </div>
           <a class="btn btn-primary magnetic" href="mailto:?subject=${encodeURIComponent(STATE.lang==='zh'?'订阅「Wendell Gong」博客更新':'Subscribe to Wendell Gong blog')}&body=${encodeURIComponent(STATE.lang==='zh'?'请将「Wendell Gong」博客更新邮件发送至：':'Please send Wendell Gong blog updates to:')}">${icon('bell',17)}${b.cta}</a>
-          <div class="be-note">${icon('shield',15)}${b.note}</div>
         </div>
       </div>
     </section>`;
@@ -1628,11 +1787,13 @@ const L = {
       eyebrow: 'BLOG',
       eyebrowZh: '博客',
       title: '博客',
-      sub: '关于多模态、搜广推与大模型工程化的写作计划。',
-      emptyT: '博客正在路上',
-      emptyP: '这里将陆续发布技术笔记、模型拆解与工程实践。首篇已在筹备中——关于 VLM2Vec 的落地手记。',
+      sub: '把复杂概念做成能上手的工具——交互式图解与结构化知识库。',
+      emptyT: '更多文章正在路上',
+      emptyP: '技术笔记、模型拆解与工程实践会陆续发布。首篇已在筹备中——关于 VLM2Vec 的落地手记。',
       cta: '第一时间收到更新',
-      note: '更新后我会通过邮件通知你'
+      note: '更新后我会通过邮件通知你',
+      open: '打开',
+      newTab: '新标签页打开'
     },
     private: {
       eyebrow: 'PRIVATE',
@@ -1751,11 +1912,13 @@ const L = {
       eyebrow: 'BLOG',
       eyebrowZh: '',
       title: 'Blog',
-      sub: 'Writing plans on multi-modality, search/rec/ads and LLM engineering.',
-      emptyT: 'The blog is on its way',
+      sub: 'Turning complex ideas into hands-on tools — interactive diagrams and structured reference libraries.',
+      emptyT: 'More posts are on the way',
       emptyP: 'Technical notes, model deep-dives and engineering practice will land here. The first post — a VLM2Vec landing story — is in the works.',
       cta: 'Get notified',
-      note: 'I will email you when new posts arrive'
+      note: 'I will email you when new posts arrive',
+      open: 'Open',
+      newTab: 'Opens in a new tab'
     },
     private: {
       eyebrow: 'PRIVATE',
@@ -1786,6 +1949,44 @@ const L = {
    CONTENT DATA (bilingual)
    ============================================================ */
 const DATA = {
+  blogPosts: [
+    {
+      id: 'piano',
+      url: 'blog/piano-chord-atlas.html',
+      kicker: 'CHORD ATLAS · INTERACTIVE',
+      no: '01',
+      type: { zh: '交互工具', en: 'Interactive' },
+      title: { zh: '钢琴和弦键位图解 · 交互版', en: 'Piano Chord Atlas · Interactive' },
+      sub: { zh: 'Piano Chord Atlas', en: '钢琴和弦键位图解' },
+      desc: {
+        zh: '从三和弦到 10 音复合和弦，逐级查看键位、五线谱、指法与命名由来；可切换根音与乐器音色，并播放自定义和弦进行。',
+        en: 'From triads to 10-note compound chords: inspect keys, staff notation, fingering and chord naming level by level, switch roots and instrument timbres, or play a custom progression.'
+      },
+      tags: {
+        zh: ['和声学', '五线谱', 'Web Audio', '交互可视化'],
+        en: ['Harmony', 'Notation', 'Web Audio', 'Interactive']
+      },
+      badge: { zh: '5 级难度 · 40+ 和弦', en: '5 levels · 40+ chords' }
+    },
+    {
+      id: 'finlex',
+      url: 'blog/finance-english-lexicon.html',
+      kicker: 'FINANCIAL ENGLISH LEXICON',
+      no: '02',
+      type: { zh: '知识库', en: 'Reference' },
+      title: { zh: '金融专业英语术语库 · FinLex', en: 'Financial English Lexicon · FinLex' },
+      sub: { zh: 'Financial English Lexicon', en: '金融专业英语术语库' },
+      desc: {
+        zh: '覆盖股票、债券、基金、衍生品与风控等领域的专业词汇，附中文释义、双语例句、近义词辨析与易混词对照，支持搜索、分类与收藏。',
+        en: 'A searchable reference for equity, fixed income, funds, derivatives and risk terms — with bilingual definitions, example sentences, synonym discrimination and starred items.'
+      },
+      tags: {
+        zh: ['金融英语', '术语检索', '双语例句', '近义辨析'],
+        en: ['Finance English', 'Lookup', 'Bilingual', 'Synonyms']
+      },
+      badge: { zh: '搜索 · 分类 · 收藏', en: 'Search · Filter · Save' }
+    }
+  ],
   education: [
     { deg: { zh: '硕士 · 保送', en: 'M.Eng. (Recommended)' }, school: { zh: '华中科技大学', en: 'Huazhong University of Science & Technology' }, dept: { zh: '人工智能与自动化学院', en: 'School of Artificial Intelligence & Automation' }, per: '2020.09 – 2023.06' },
     { deg: { zh: '学士 · 前 5%', en: 'B.Eng. (Top 5%)' }, school: { zh: '西南交通大学', en: 'Southwest Jiaotong University' }, dept: { zh: '电气工程学院', en: 'School of Electrical Engineering' }, per: '2016.09 – 2020.06' }

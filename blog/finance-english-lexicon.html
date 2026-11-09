@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FinLex · 金融专业英语术语库</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A1E3C'/%3E%3Cpath d='M8 20v5M16 12v13M24 7v18' stroke='%236E9CF5' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://miaoda.feishu.cn">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Spectral:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   FinLex · 金融专业英语术语库 —— 视觉样式
+   设计语言：金融终端 × 财经期刊（深蓝 / 纸白 / 钴蓝）
+   ============================================================ */
+:root{
+  --ink:#0A1E3C;
+  --ink-2:#102A52;
+  --ink-3:#1B3A6B;
+  --paper:#EDF0F7;
+  --card:#FFFFFF;
+  --line:#DCE2EE;
+  --line-2:#E9EDF5;
+  --text:#1C2C47;
+  --muted:#5C6C88;
+  --faint:#8B98B0;
+  --blue:#1B54D8;
+  --blue-deep:#143FA8;
+  --blue-soft:#E7EEFD;
+  --blue-line:#C4D5F8;
+  --gold:#B07D1C;
+  --gold-soft:#F7EEDB;
+  --green:#0E9F6E;
+  --red:#DC2626;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(16,30,60,.05), 0 4px 14px rgba(16,30,60,.06);
+  --shadow-hover:0 2px 4px rgba(16,30,60,.07), 0 12px 28px rgba(16,30,60,.12);
+  --font-serif:"Spectral","Noto Sans SC",Georgia,serif;
+  --font-sans:"IBM Plex Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --font-mono:"IBM Plex Mono","Noto Sans SC",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);
+  background:var(--paper);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#BBD0F8;color:var(--ink)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* ---------- 顶部导航（含搜索与筛选） ---------- */
+.topnav{
+  background:var(--ink);
+  color:#DCE4F4;
+  position:sticky;top:0;z-index:90;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.topnav .wrap{display:flex;align-items:center;gap:14px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:.2px;color:#fff;flex:none}
+.brand-mark{width:26px;height:26px;flex:none;display:grid;place-items:center}
+.brand-mark svg{display:block}
+.brand small{font-weight:400;color:#93A4C6;font-size:12px;letter-spacing:.5px}
+
+.h-controls{display:flex;align-items:center;gap:10px;margin-left:auto;min-width:0}
+.h-search{position:relative;flex:1 1 auto;width:0;min-width:150px;max-width:440px}
+.h-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#8FA0C4;pointer-events:none}
+#search{
+  width:100%;height:38px;
+  border:1px solid rgba(255,255,255,.14);border-radius:9px;
+  background:rgba(255,255,255,.07);
+  padding:0 34px 0 36px;
+  font-size:13.5px;font-family:inherit;color:#EEF3FE;
+  transition:border-color .15s,background .15s,box-shadow .15s;
+}
+#search::placeholder{color:#8FA0C4}
+#search:focus{outline:none;border-color:#5E86DC;background:rgba(255,255,255,.1);box-shadow:0 0 0 3px rgba(94,134,220,.2)}
+.h-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;display:none;place-items:center;color:#B9C6E0;font-size:16px}
+.h-search-clear:hover{background:rgba(255,255,255,.12);color:#fff}
+.h-search.has-text .h-search-clear{display:grid}
+
+.h-cat{position:relative;flex:none}
+.h-cat-btn{
+  display:flex;align-items:center;gap:8px;height:38px;padding:0 12px;
+  border-radius:9px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.07);color:#DCE4F4;
+  font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.h-cat-btn:hover{border-color:#5E86DC;background:rgba(94,134,220,.15)}
+.h-cat-btn #catCurrent{color:#9FB6E6}
+.h-cat-btn svg{transition:transform .2s;color:#9FB6E6}
+.h-cat.open .h-cat-btn svg{transform:rotate(180deg)}
+.cat-panel{
+  position:absolute;top:calc(100% + 8px);right:0;width:292px;max-height:60vh;overflow:auto;
+  background:#fff;border-radius:12px;box-shadow:0 18px 50px rgba(10,30,60,.25);
+  padding:12px;display:none;
+}
+.h-cat.open .cat-panel{display:flex;flex-wrap:wrap;align-content:flex-start;gap:7px}
+.cat-panel .chip{
+  height:30px;padding:0 12px;border-radius:15px;font-size:12.5px;color:var(--muted);
+  background:#F1F4FA;border:1px solid transparent;display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s;cursor:pointer;
+}
+.cat-panel .chip .chip-n{font-family:var(--font-mono);font-size:10.5px;color:var(--faint)}
+.cat-panel .chip:hover{color:var(--blue);background:var(--blue-soft)}
+.cat-panel .chip.active{background:var(--blue);color:#fff}
+.cat-panel .chip.active .chip-n{color:#C9D9FA}
+
+.h-icons{display:flex;align-items:center;gap:2px;flex:none}
+.h-icon{
+  width:38px;height:38px;border-radius:9px;display:grid;place-items:center;
+  color:#B9C6E0;border:1px solid transparent;cursor:pointer;transition:all .15s;
+}
+.h-icon svg{width:17px;height:17px}
+.h-icon:hover{background:rgba(255,255,255,.1);color:#fff}
+.h-icon.active{background:var(--blue);color:#fff}
+.h-syn{
+  height:38px;padding:0 14px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);
+  color:#DCE4F4;font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.h-syn:hover{border-color:#5E86DC;background:rgba(94,134,220,.15)}
+.h-menu{
+  display:none;width:38px;height:38px;border-radius:9px;place-items:center;
+  color:#DCE4F4;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);
+  cursor:pointer;flex:none;
+}
+.h-menu svg{width:18px;height:18px}
+
+@media(max-width:768px){
+  .topnav .wrap{height:52px;gap:10px}
+  .h-menu{display:grid}
+  .h-controls{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    background:var(--ink-2);border-bottom:1px solid rgba(255,255,255,.1);
+    padding:14px 16px;flex-direction:column;align-items:stretch;gap:12px;
+  }
+  .topnav.open .h-controls{display:flex}
+  .h-search{max-width:none;min-width:0;width:100%}
+  #search{font-size:16px}
+  .h-cat{width:100%}
+  .h-cat-btn{width:100%;justify-content:space-between}
+  .cat-panel{position:static;width:100%;max-height:240px;margin-top:8px;box-shadow:none;border:1px solid var(--line)}
+  .h-icons{gap:6px}
+  .h-icon{flex:1}
+  .h-syn{flex:1;display:flex;align-items:center;justify-content:center}
+}
+
+/* ---------- Hero ---------- */
+.hero{
+  background:
+    radial-gradient(900px 320px at 78% -60%, rgba(59,108,224,.45), transparent 65%),
+    linear-gradient(180deg,var(--ink) 0%,var(--ink-2) 100%);
+  color:#E6EDFA;
+  position:relative;overflow:hidden;
+}
+.hero .wrap{padding-top:46px;padding-bottom:0}
+.hero-grid{
+  display:grid;grid-template-columns:1.5fr 1fr;gap:36px;align-items:end;
+  padding-bottom:38px;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:12px;letter-spacing:1.6px;color:#8FB0F2;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.hero-eyebrow::before{content:"";width:22px;height:1px;background:#5E86DC}
+.hero h1{
+  font-family:var(--font-serif);font-weight:700;
+  font-size:clamp(30px,4.2vw,46px);line-height:1.18;color:#fff;
+  letter-spacing:.2px;
+}
+.hero h1 .cn{font-family:"Noto Sans SC",sans-serif;font-weight:700;font-size:.62em;letter-spacing:2px;color:#9FB6E6;display:block;margin-top:8px}
+.hero p.lead{margin-top:16px;max-width:560px;color:#AEBEDA;font-size:15px}
+.hero-stats{display:flex;gap:0;align-self:stretch}
+.hero-stats .stat{
+  flex:1;padding:16px 18px;border-left:1px solid rgba(255,255,255,.12);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.hero-stats .stat:first-child{border-left:none}
+.stat b{font-family:var(--font-serif);font-size:30px;font-weight:700;color:#fff;line-height:1.1}
+.stat span{font-size:12.5px;color:#93A4C6;margin-top:4px}
+
+/* 滚动行情条 */
+.ticker{
+  border-top:1px solid rgba(255,255,255,.1);
+  background:rgba(4,15,33,.45);
+  overflow:hidden;
+}
+.ticker-track{
+  display:flex;width:max-content;
+  animation:ticker 60s linear infinite;
+}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-group{display:flex;flex:none}
+.tick{
+  display:flex;align-items:baseline;gap:7px;
+  padding:11px 20px;font-size:13px;white-space:nowrap;
+  border-right:1px solid rgba(255,255,255,.07);
+  cursor:pointer;transition:background .15s;
+}
+.tick:hover{background:rgba(94,134,220,.14)}
+.tick .t-en{font-family:var(--font-mono);color:#DCE6FA;font-weight:500}
+.tick .t-cn{color:#7E90B5;font-size:12px}
+.tick .t-x{color:#5E86DC;font-size:11px;font-weight:700}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+
+/* ---------- 通用区块 ---------- */
+.section{padding:52px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.sec-head h2{
+  font-family:var(--font-serif);font-size:27px;font-weight:700;color:var(--ink);
+  letter-spacing:.2px;
+}
+.sec-head .sec-sub{font-size:13.5px;color:var(--muted)}
+.sec-head .sec-anchor-tag{
+  margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--faint);
+  letter-spacing:1px;
+}
+
+/* 结果元信息 */
+.result-meta{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;color:var(--muted);margin-bottom:18px;
+}
+.result-meta b{color:var(--blue);font-weight:600;font-family:var(--font-mono)}
+.result-meta .rm-tag{
+  background:var(--gold-soft);color:var(--gold);font-size:11.5px;
+  padding:2px 9px;border-radius:11px;font-weight:500;
+}
+
+/* ---------- 术语卡片网格 ---------- */
+.term-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.term-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px 18px 15px;
+  display:flex;flex-direction:column;
+  transition:box-shadow .18s,border-color .18s,transform .18s;
+  cursor:pointer;
+  position:relative;
+}
+.term-card:hover{box-shadow:var(--shadow);border-color:var(--blue-line)}
+.term-card.flash{animation:flash 1.6s ease}
+@keyframes flash{
+  0%{box-shadow:0 0 0 3px rgba(27,84,216,.45)}
+  100%{box-shadow:var(--shadow)}
+}
+.tc-head{display:flex;align-items:flex-start;gap:8px}
+.tc-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;flex:1}
+.tc-title h3{
+  font-family:var(--font-serif);font-size:18.5px;font-weight:700;color:var(--ink);
+  line-height:1.3;
+}
+.tc-abbr{
+  font-family:var(--font-mono);font-size:11px;font-weight:500;
+  color:var(--blue-deep);background:var(--blue-soft);
+  padding:2px 7px;border-radius:5px;letter-spacing:.5px;
+}
+.tc-actions{display:flex;gap:2px;flex:none}
+.icon-btn{
+  width:32px;height:32px;border-radius:7px;display:grid;place-items:center;
+  color:var(--faint);transition:all .15s;
+}
+.icon-btn:hover{background:var(--blue-soft);color:var(--blue)}
+.icon-btn.starred{color:var(--gold)}
+.icon-btn.starred svg{fill:var(--gold)}
+.tc-cn{
+  font-size:14.5px;font-weight:500;color:var(--text);
+  margin-top:5px;display:flex;align-items:center;gap:10px;
+}
+.tc-meta{display:flex;align-items:center;gap:9px;margin-left:auto}
+.tc-cat{
+  font-size:11px;color:var(--muted);background:#F1F4FA;
+  padding:2px 8px;border-radius:5px;
+}
+.lv{display:inline-flex;gap:3px;align-items:center}
+.lv i{width:5px;height:5px;border-radius:50%;background:var(--line)}
+.lv i.on{background:var(--blue)}
+.tc-chevron{
+  margin-top:10px;display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--faint);
+}
+.tc-chevron svg{transition:transform .2s}
+.term-card.open .tc-chevron svg{transform:rotate(180deg)}
+.term-card.open .tc-chevron{color:var(--blue)}
+.tc-chevron-row{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tc-chevron-row .tc-chevron{margin-top:0}
+.tc-look-pill{
+  display:inline-flex;align-items:center;gap:5px;flex:none;
+  font-size:11px;font-weight:500;color:var(--blue);
+  border:1px solid var(--blue-line);background:var(--blue-soft);
+  border-radius:999px;padding:4px 11px;transition:all .15s;cursor:pointer;
+}
+.tc-look-pill:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.tc-look-pill .lp-words{font-family:var(--font-mono);font-weight:500}
+@media(max-width:520px){.tc-look-pill .lp-words{display:none}}
+.tc-body{
+  display:none;margin-top:12px;padding-top:13px;
+  border-top:1px dashed var(--line);
+}
+.term-card.open .tc-body{display:block}
+.tc-def{font-size:13.5px;color:var(--text);line-height:1.65}
+.tc-ex{
+  margin-top:12px;background:#F6F8FC;border-radius:8px;
+  padding:11px 13px;border-left:3px solid var(--blue);
+}
+.ex-en{font-size:13px;color:var(--ink-3);line-height:1.6;font-style:italic}
+.ex-en::before{content:"“";font-family:var(--font-serif);font-size:16px;color:var(--blue);margin-right:1px}
+.ex-en::after{content:"”";font-family:var(--font-serif);font-size:16px;color:var(--blue);margin-left:1px}
+.ex-cn{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.6}
+.tc-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tc-link{
+  font-size:11.5px;color:var(--muted);border:1px solid var(--line);
+  border-radius:6px;padding:2px 9px;transition:all .15s;
+}
+.tc-link:hover{color:var(--blue);border-color:var(--blue-line);background:var(--blue-soft)}
+
+/* 搜索高亮 */
+mark.hl{background:#FCE8A8;color:#7A5206;border-radius:3px;padding:0 1px}
+
+/* 空状态 */
+.empty{
+  display:none;text-align:center;padding:70px 20px;
+  border:1px dashed var(--line);border-radius:var(--radius);
+  background:#fff;
+}
+.empty svg{color:var(--faint)}
+.empty h3{font-family:var(--font-serif);font-size:19px;color:var(--ink);margin:14px 0 6px}
+.empty p{font-size:13.5px;color:var(--muted)}
+
+/* ---------- 卡片内形似词 ---------- */
+.tc-look{margin-top:12px;border-top:1px dashed var(--line);padding-top:11px}
+.tc-look-label{
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:1px;
+  color:var(--faint);text-transform:uppercase;margin-bottom:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.tc-look-chips{display:flex;flex-wrap:wrap;gap:6px}
+.lk-chip{
+  font-family:var(--font-mono);font-size:12px;
+  padding:4px 10px;border-radius:6px;
+  background:#fff;border:1px solid var(--line);color:var(--muted);
+  transition:all .15s;cursor:pointer;
+}
+.lk-chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+.lk-chip.self{background:var(--ink);border-color:var(--ink);color:#fff}
+.lk-chip.self:hover{background:var(--ink);color:#fff}
+
+/* ---------- 右侧易混淆词抽屉 ---------- */
+.drawer-overlay{
+  position:fixed;inset:0;background:rgba(10,30,60,.45);
+  opacity:0;pointer-events:none;transition:opacity .28s;z-index:300;
+}
+.drawer-overlay.show{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;height:100dvh;width:450px;max-width:100vw;
+  background:var(--paper);z-index:301;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);
+  box-shadow:-20px 60px 60px rgba(10,30,60,.22);
+}
+.drawer.show{transform:translateX(0)}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:17px 22px;background:var(--ink);color:#fff;flex:none;
+}
+.drawer-head h3{font-family:var(--font-serif);font-size:20px;font-weight:700}
+.drawer-head span{display:block;font-size:11.5px;color:#9FB6E6;margin-top:2px}
+.drawer-close{
+  width:36px;height:36px;border-radius:8px;display:grid;place-items:center;
+  background:rgba(255,255,255,.08);color:#fff;transition:background .15s;flex:none;
+}
+.drawer-close:hover{background:rgba(255,255,255,.18)}
+.drawer-switch{padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);flex:none}
+.drawer-switch select{
+  width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;
+  font-family:var(--font-mono);font-size:12.5px;color:var(--text);background:#fff;
+}
+.drawer-body{flex:1;overflow-y:auto;padding:18px 22px 30px}
+.lk-note{
+  background:var(--blue-soft);border:1px solid var(--blue-line);border-radius:10px;
+  padding:12px 14px;margin-bottom:14px;
+}
+.lk-note h4{
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:1px;
+  color:var(--blue);margin-bottom:5px;
+}
+.lk-note p{font-size:12.5px;color:var(--blue-deep);line-height:1.6}
+.lk-card{
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:15px 16px;margin-bottom:12px;box-shadow:var(--shadow);
+}
+.lk-card .lc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.lk-card h3{font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink)}
+.lk-card .lc-speak{
+  width:30px;height:30px;border-radius:7px;display:grid;place-items:center;flex:none;
+  border:1px solid var(--line);color:var(--muted);transition:all .15s;
+}
+.lk-card .lc-speak:hover{color:var(--blue);border-color:var(--blue);background:var(--blue-soft)}
+.lk-card .lc-cn{font-size:13.5px;color:var(--blue-deep);font-weight:500;margin:3px 0 7px}
+.lk-card .lc-desc{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.lk-card .lc-ex{border-top:1px dashed var(--line);padding-top:9px}
+.lk-card .ex-en{font-size:12.5px;color:var(--text);line-height:1.6}
+.lk-card .ex-cn{font-size:12px;color:var(--muted);line-height:1.6;margin-top:3px}
+/* 近义词抽屉卡片 */
+.sc-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--blue);margin:9px 0 4px;text-transform:uppercase}
+.sc-p{font-size:12.5px;color:var(--muted);line-height:1.6}
+.sc-use{font-size:12.5px;color:var(--blue-deep);background:var(--blue-soft);border-radius:8px;padding:9px 11px;line-height:1.6;margin-top:4px}
+
+/* ---------- 页脚 ---------- */
+.footer{
+  margin-top:60px;background:var(--ink);color:#93A4C6;
+  padding:34px 0 30px;border-top:1px solid rgba(255,255,255,.08);
+}
+.footer .wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.footer .f-brand{font-family:var(--font-serif);font-size:18px;color:#fff;font-weight:700}
+.footer p{font-size:12.5px;max-width:620px;line-height:1.7}
+.footer .f-right{margin-left:auto;font-size:12px;color:#6E7F9F}
+
+/* ---------- 提示 toast ---------- */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#E8EEFA;font-size:13.5px;
+  padding:11px 20px;border-radius:9px;z-index:200;
+  box-shadow:0 10px 30px rgba(10,30,60,.3);
+  opacity:0;pointer-events:none;transition:all .25s;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:1020px){
+  .term-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-grid{grid-template-columns:1fr;gap:22px}
+  .hero-stats{border-top:1px solid rgba(255,255,255,.12)}
+  .hero-stats .stat:first-child{padding-left:0}
+}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .term-grid{grid-template-columns:1fr;gap:12px}
+  .section{padding:38px 0 4px}
+  .sec-head h2{font-size:23px}
+  .hero .wrap{padding-top:34px}
+  .hero-stats .stat{padding:13px 10px}
+  .stat b{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 顶部导航（含搜索、分类、筛选） ===== -->
+<header class="topnav" id="topnav">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="brand-mark">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="7" fill="#1B54D8"/>
+          <path d="M8 20v5M16 12v13M24 7v18" stroke="#DCE6FA" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+      </span>
+      FinLex <small>金融专业英语</small>
+    </a>
+    <div class="h-controls" id="hControls">
+      <div class="h-search" id="searchBox">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="search" placeholder="搜索英文术语、缩写、中文释义…" autocomplete="off">
+        <button class="h-search-clear" id="searchClear" aria-label="清空">×</button>
+      </div>
+      <div class="h-cat" id="catWrap">
+        <button class="h-cat-btn" id="catBtn" aria-expanded="false">
+          <span>分类</span><span id="catCurrent">全部</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cat-panel" id="catPanel"></div>
+      </div>
+      <div class="h-icons">
+        <button class="h-icon" id="btnRandom" title="随机一个" aria-label="随机一个">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h.01M16 8h.01M8 16h.01M16 16h.01M12 12h.01"/></svg>
+        </button>
+        <button class="h-icon" id="btnStar" title="我的收藏" aria-label="我的收藏">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
+        <button class="h-icon" id="btnLook" title="筛选易混淆词" aria-label="筛选易混淆词">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M8 12h8"/></svg>
+        </button>
+        <button class="h-syn" id="btnSyn">近义词辨析</button>
+      </div>
+    </div>
+    <button class="h-menu" id="mobileMenu" aria-label="展开工具" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">Financial English Lexicon</div>
+        <h1>读懂金融世界的
+          <span class="cn">金融专业英语术语库</span>
+        </h1>
+        <p class="lead">覆盖股票、债券、基金、银行、公司金融、衍生品、风险管理、宏观经济、并购与量化交易的专业词汇，每条配中文释义与双语例句，并提供近义词辨析与易混淆词对比。</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b id="statTerms">0</b><span>专业术语</span></div>
+        <div class="stat"><b id="statCats">0</b><span>主题分类</span></div>
+        <div class="stat"><b id="statSyn">0</b><span>近义词组</span></div>
+        <div class="stat"><b id="statConf">0</b><span>易混词组</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ticker">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+</section>
+
+<main>
+<!-- ===== 术语库 ===== -->
+<section class="section" id="terms">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>术语库</h2>
+      <span class="sec-sub">点击卡片展开释义与例句，使用星标收藏，点击喇叭朗读英文</span>
+      <span class="sec-anchor-tag">TERM LIBRARY</span>
+    </div>
+    <div class="result-meta" id="resultMeta"></div>
+    <div class="term-grid" id="termGrid"></div>
+    <div class="empty" id="empty">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>
+      <h3>没有找到匹配的术语</h3>
+      <p>换个关键词试试，或点击右上角清空搜索条件</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== 右侧抽屉（易混淆词 / 近义词） ===== -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="lookDrawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div>
+      <h3 id="drawerTitle">易混淆词</h3>
+      <span id="drawerSubtitle">形似词对照 · 释义与例句</span>
+    </div>
+    <button class="drawer-close" id="drawerClose" aria-label="关闭">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer-switch">
+    <select id="drawerSelect" aria-label="选择易混淆词组"></select>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<!-- ===== 页脚 ===== -->
+<footer class="footer">
+  <div class="wrap">
+    <span class="f-brand">FinLex</span>
+    <p>金融专业英语学习工具 · 术语释义与例句用于学习参考，实际业务以正式法规、准则与合同文本为准。收藏数据保存在本地浏览器中。</p>
+    <span class="f-right">Keep learning, keep investing.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   数据区：术语 / 近义词组 / 易混淆对
+   ============================================================ */
+// [英文, 缩写, 中文, 分类, 中文释义, 英文例句, 中文例句, 难度1-3]
+const TERMS = [
+/* ---- 基础概念 ---- */
+["Asset","","资产","basic","个人或企业拥有的、具有经济价值并能在未来带来经济利益的资源。","The company's total assets grew by 12% to $50 billion.","公司总资产增长12%，达到500亿美元。",1],
+["Liability","","负债","basic","企业承担的、需在未来以资产或劳务偿付的现时义务。","Current liabilities are obligations due within one year.","流动负债是指一年内到期的义务。",1],
+["Equity","","权益；股本","basic","资产扣除负债后由所有者享有的剩余权益，也常泛指股票。","Shareholders' equity equals total assets minus total liabilities.","股东权益等于总资产减去总负债。",2],
+["Capital","","资本","basic","用于投资、生产或创办企业的资金或财富。","The startup raised $20 million in venture capital.","这家初创公司筹集了2000万美元风险资本。",1],
+["Return","","回报；收益","basic","投资在一定时期内产生的盈利或损失，通常以百分比表示。","The fund delivered an annualized return of 9% over five years.","该基金五年间年化回报率为9%。",1],
+["Yield","","收益率","basic","持有证券所获收益与本金或市价的比率，多指债券、存款的利息收益。","The 10-year bond yield rose to 4.2%.","10年期债券收益率升至4.2%。",2],
+["Risk","","风险","basic","投资收益的不确定性，即实际回报偏离预期的可能性。","Higher potential returns usually come with higher risk.","更高的潜在回报通常伴随着更高的风险。",1],
+["Volatility","","波动性","basic","资产价格或收益率随时间波动的幅度，常用标准差衡量。","Market volatility spiked after the unexpected rate decision.","意外的利率决议公布后，市场波动性急剧上升。",2],
+["Liquidity","","流动性","basic","资产以合理价格快速变现而不造成显著损失的能力。","Cash is the most liquid asset in any portfolio.","现金是任何投资组合中流动性最强的资产。",2],
+["Portfolio","","投资组合","basic","个人或机构持有的全部股票、债券、现金等资产的集合。","She rebalanced her portfolio to reduce equity exposure.","她调整投资组合，以降低股票仓位。",1],
+["Diversification","","分散化","basic","将资金配置于不同资产以降低单一资产风险的策略。","Diversification across sectors can reduce unsystematic risk.","跨行业分散投资可以降低非系统性风险。",2],
+["Leverage","","杠杆","basic","借助借入资金放大投资规模，同时放大潜在收益与亏损。","The hedge fund used high leverage to boost returns.","该对冲基金利用高杠杆来提高回报。",2],
+["Principal","","本金","basic","投资或借贷的原始金额，区别于利息或收益。","The bond repays its principal at maturity.","债券在到期时偿还本金。",1],
+["Compound Interest","","复利","basic","每期利息计入下一期本金继续生息，即“利滚利”。","Compound interest allows savings to grow exponentially over time.","复利使储蓄随时间呈指数级增长。",1],
+["Time Value of Money","TVM","货币时间价值","basic","当前持有的一元钱比未来等额的钱更有价值，因其可投资生息。","The time value of money is the foundation of discounted cash flow analysis.","货币时间价值是现金流折现分析的基础。",3],
+
+/* ---- 股票市场 ---- */
+["Stock","","股票","equity","代表公司所有权份额的证券，持有人享有分红与剩余财产分配权。","The stock gained 5% after the earnings beat.","财报超预期后，该股上涨5%。",1],
+["Share","","股份；股票","equity","公司所有权的最小单位，英式英语中也常直接指股票。","He owns 10,000 shares of the company.","他持有该公司1万股。",1],
+["Common Stock","","普通股","equity","享有投票权、分红随业绩浮动的最基本股份类别。","Common shareholders vote on the board of directors.","普通股股东对董事会人选进行投票。",2],
+["Preferred Stock","","优先股","equity","分红固定、分配顺序优先于普通股，但通常无投票权。","Preferred stock pays a fixed dividend before common shareholders.","优先股在普通股之前支付固定股息。",2],
+["Market Capitalization","Market Cap","市值","equity","上市公司全部股票按市价计算的总价值，即股价乘以总股本。","The firm reached a market capitalization of $1 trillion.","公司市值达到1万亿美元。",1],
+["Initial Public Offering","IPO","首次公开募股","equity","公司首次向公众发行股票并在交易所挂牌上市。","The IPO was oversubscribed more than 20 times.","此次IPO认购超额20多倍。",1],
+["Dividend","","股息；红利","equity","公司将盈利按持股比例分配给股东的现金或股票。","The company increased its quarterly dividend by 10%.","公司将季度股息提高了10%。",1],
+["Earnings Per Share","EPS","每股收益","equity","净利润除以流通股股数，衡量每股盈利水平。","Diluted EPS came in at $2.10, beating estimates.","摊薄每股收益为2.10美元，超出预期。",2],
+["Price-to-Earnings Ratio","P/E","市盈率","equity","股价除以每股收益，衡量市场为每元盈利支付的价格。","The stock trades at a P/E ratio of 15, below its five-year average.","该股市盈率为15倍，低于五年均值。",2],
+["Bull Market","","牛市","equity","市场价格持续上涨、投资者情绪乐观的行情。","The index entered a bull market after rising 20% from its low.","指数从低点上涨20%后进入牛市。",1],
+["Bear Market","","熊市","equity","市场价格持续下跌（通常跌幅超20%）、情绪悲观的行情。","Investors sought defensive assets during the bear market.","熊市期间投资者纷纷买入防御性资产。",1],
+["Blue Chip","","蓝筹股","equity","业绩稳定、规模大、分红可靠的行业龙头公司股票。","Blue chips are considered core holdings in conservative portfolios.","蓝筹股被视为保守组合的核心持仓。",2],
+["Index","","指数","equity","反映一篮子股票或债券整体价格走势的加权指标。","The S&P 500 index tracks 500 large U.S. companies.","标普500指数追踪美国500家大型公司。",1],
+["Bid Price","Bid","买入价","equity","做市商愿意买入证券的价格，即投资者卖出时的成交价。","The bid price is always lower than the ask price.","买入价总是低于卖出价。",2],
+["Ask Price","Ask / Offer","卖出价","equity","做市商愿意卖出证券的价格，即投资者买入时的成交价。","She placed a buy order at the ask price.","她按卖出价下达了买单。",2],
+["Bid-Ask Spread","Spread","买卖价差","equity","卖出价与买入价之差，是流动性与交易成本的重要指标。","Highly liquid stocks have a narrow bid-ask spread.","高流动性股票的买卖价差很窄。",2],
+["Market Order","","市价单","equity","要求立即按当前市场最优价格成交的订单。","A market order guarantees execution but not price.","市价单保证成交但不保证价格。",2],
+["Limit Order","","限价单","equity","仅在指定价格或更优价格成交的订单。","He placed a limit order to buy at $50 or below.","他下达了50美元或以下买入的限价单。",2],
+["Long Position","Long","多头头寸","equity","买入并持有资产，期待价格上涨获利。","The fund holds a long position in technology stocks.","该基金持有科技股多头头寸。",2],
+["Short Selling","Shorting","卖空","equity","借入证券卖出，待价格下跌后买回归还，赚取差价。","Short selling carries theoretically unlimited loss if prices keep rising.","若价格持续上涨，卖空的亏损理论上是无限的。",3],
+["Margin","","保证金","equity","向券商借入资金买入证券时缴纳的押金或账户资金。","Buying on margin amplifies both gains and losses.","融资买入会同时放大盈亏。",3],
+["Stock Split","","拆股","equity","公司将每股拆分为多股，股价同比例下调，持股比例不变。","The company announced a 2-for-1 stock split.","公司宣布进行1拆2的拆股。",2],
+["Share Buyback","Buyback","股票回购","equity","公司用自有资金在市场上购回自身股票，减少流通股数。","The board authorized a $5 billion share buyback program.","董事会批准了50亿美元的股票回购计划。",2],
+["Trading Volume","Volume","成交量","equity","某一时期内证券成交的股数或合约数。","Trading volume surged on the day of the announcement.","公告当天成交量激增。",1],
+["Ticker Symbol","Ticker","股票代码","equity","用于在交易所识别某只股票的字母缩写，如 AAPL。","The ticker symbol for Apple is AAPL.","苹果公司的股票代码是AAPL。",1],
+
+/* ---- 债券市场 ---- */
+["Bond","","债券","bond","发行人向投资者借款、承诺按期付息并到期还本的债务凭证。","Governments and corporations issue bonds to raise capital.","政府和企业通过发行债券筹集资金。",1],
+["Coupon","","票息","bond","债券按面值和票面利率定期支付的利息。","The bond pays a 5% annual coupon in two installments.","该债券每年分两次支付5%的票息。",2],
+["Par Value","Face Value","面值","bond","债券票面载明的本金金额，到期时按此偿还。","Most corporate bonds have a par value of $1,000.","多数公司债面值为1000美元。",2],
+["Maturity","Maturity Date","到期日","bond","债券本金偿还、合约终止的日期。","The bond has a maturity of ten years from issuance.","该债券自发行起十年到期。",1],
+["Yield to Maturity","YTM","到期收益率","bond","以当前市价买入并持有至到期的年化总收益率。","Yield to maturity accounts for both coupon payments and price gain or loss.","到期收益率同时考虑票息与价格盈亏。",3],
+["Credit Rating","","信用评级","bond","评级机构对发行人偿债能力与违约风险给出的等级评定。","The agency downgraded the company's credit rating to BBB.","评级机构将该公司信用评级下调至BBB。",2],
+["Investment Grade","","投资级","bond","信用评级在BBB-（或Baa3）及以上、违约风险较低的债券。","Pension funds are often restricted to investment-grade bonds.","养老金通常被限定只能投资投资级债券。",2],
+["Junk Bond","High-Yield Bond","垃圾债券","bond","评级低于投资级、违约风险高但票息也更高的债券。","Junk bonds offer high yields to compensate for default risk.","垃圾债券提供高收益以补偿违约风险。",3],
+["Treasury Bond","T-Bond","长期国债","bond","政府发行的长期债券，美国T-Bond期限通常为10至30年。","Treasury bonds are backed by the full faith of the government.","长期国债以政府信用为担保。",2],
+["Corporate Bond","","公司债","bond","企业为筹集资金发行的债券，风险与收益通常高于国债。","Corporate bonds yield more than Treasuries of similar maturity.","同期限公司债收益率高于国债。",2],
+["Zero-Coupon Bond","","零息债券","bond","存续期不付息、以折价发行、到期按面值偿付的债券。","Zero-coupon bonds are issued at a discount and redeemed at par.","零息债券折价发行、到期按面值赎回。",3],
+["Duration","","久期","bond","衡量债券价格对利率变动敏感程度的指标，以年为单位。","A bond with a duration of 7 years loses about 7% when rates rise 1%.","久期为7年的债券在利率上升1%时价格约下跌7%。",3],
+["Yield Curve","","收益率曲线","bond","描绘不同期限债券收益率关系的曲线，反映利率预期。","An inverted yield curve is often seen as a recession warning.","倒挂的收益率曲线常被视为衰退预警。",3],
+["Default","","违约","bond","债务人未能按合约偿付利息或本金。","The company defaulted on its debt after missing two coupon payments.","公司在两次未付票息后出现债务违约。",2],
+["Convertible Bond","Convertible","可转换债券","bond","持有人可按约定条件转换为发行公司股票的债券。","Convertible bonds combine bond income with equity upside.","可转债兼具债券利息与股票上涨潜力。",3],
+
+/* ---- 基金与投资 ---- */
+["Mutual Fund","","共同基金","fund","汇集众多投资者资金、由专业经理统一投资的基金，按净值申赎。","Mutual funds are priced once a day after market close.","共同基金每日收盘后定价一次。",2],
+["Exchange-Traded Fund","ETF","交易型开放式指数基金","fund","在交易所像股票一样实时交易、通常跟踪指数的基金。","The ETF tracks the Nasdaq 100 with very low fees.","该ETF以极低费率跟踪纳斯达克100指数。",1],
+["Hedge Fund","","对冲基金","fund","面向合格投资者、运用做空与杠杆等复杂策略追求绝对收益的私募基金。","Hedge funds typically charge a 2% management fee and 20% performance fee.","对冲基金通常收取2%管理费和20%业绩报酬。",3],
+["Private Equity","PE","私募股权","fund","投资于非上市公司股权、通过上市或出售实现退出的基金。","The private equity firm took the company private for $8 billion.","这家私募股权机构以80亿美元将公司私有化。",2],
+["Venture Capital","VC","风险投资","fund","向高成长初创企业提供股权资金，承担高失败风险换取高回报。","Venture capital backed the startup in its Series A round.","风险投资在A轮融资中投资了这家初创公司。",1],
+["Net Asset Value","NAV","基金净值","fund","基金总资产减去总负债后除以份额数，即每份基金的价值。","The fund's net asset value is calculated at the end of each trading day.","基金净值在每个交易日结束时计算。",2],
+["Expense Ratio","","费率","fund","基金每年运营费用占平均净资产的比例。","The index fund has an expense ratio of just 0.05%.","该指数基金费率仅为0.05%。",2],
+["Index Fund","","指数基金","fund","以复制某一指数成分股为目标、追求市场平均收益的基金。","Index funds outperform most active funds over the long run.","长期来看指数基金跑赢多数主动基金。",1],
+["Active Management","","主动管理","fund","基金经理通过选股和择时试图跑赢基准指数。","Active management relies on research to identify undervalued stocks.","主动管理依靠研究寻找被低估的股票。",2],
+["Passive Management","","被动管理","fund","不主动选股，仅跟踪指数、追求与基准一致的收益。","Passive management generally features lower fees and turnover.","被动管理通常费率更低、换手率更低。",2],
+["Assets Under Management","AUM","管理资产规模","fund","机构为客户管理的全部资产总市值。","The firm's assets under management exceeded $1 trillion.","该机构管理资产规模超过1万亿美元。",2],
+["Closed-End Fund","","封闭式基金","fund","发行份额固定、上市后在交易所交易、不接受申赎的基金。","Closed-end funds may trade at a premium or discount to NAV.","封闭式基金可能以高于或低于净值的价格交易。",3],
+["Performance Fee","Carried Interest","业绩报酬","fund","基金收益超过约定基准后按比例提取的报酬。","The performance fee is 20% of returns above an 8% hurdle rate.","超过8%门槛收益率的部分提取20%业绩报酬。",3],
+
+/* ---- 银行与货币 ---- */
+["Deposit","","存款","banking","客户存入银行或其他金融机构的资金。","Demand deposits can be withdrawn at any time.","活期存款可随时支取。",1],
+["Loan","","贷款","banking","银行或出借人按约定利率和期限借给借款人的资金。","The bank approved a five-year business loan.","银行批准了一笔五年期商业贷款。",1],
+["Mortgage","","住房抵押贷款","banking","以所购房产作抵押、分期偿还的长期贷款。","They took out a 30-year mortgage to buy the house.","他们办理了30年期住房抵押贷款购房。",1],
+["Collateral","","抵押品","banking","借款人用以担保贷款、违约时贷款人可没收的资产。","The loan is secured by real estate collateral.","该贷款以房地产作抵押。",2],
+["Credit","","信贷；信用","banking","基于信任提供的资金借贷，或指借款人的偿债信誉。","The bank extended a credit line of $2 million.","银行给予200万美元的信贷额度。",2],
+["Reserve Requirement","RRR","存款准备金率","banking","商业银行按存款规模必须缴存央行的准备金比例。","Lowering the reserve requirement frees up funds for lending.","降低存款准备金率可释放资金用于放贷。",3],
+["Central Bank","","中央银行","banking","负责发行货币、制定货币政策、监管银行体系的国家机构。","The central bank cut interest rates to stimulate the economy.","中央银行降息以刺激经济。",1],
+["Monetary Policy","","货币政策","banking","央行通过利率、准备金与公开市场操作调节货币供应的政策。","Tight monetary policy is used to curb inflation.","紧缩性货币政策用于抑制通胀。",1],
+["Fiscal Policy","","财政政策","banking","政府通过调整税收与支出影响经济的政策。","The government used fiscal policy to support employment.","政府运用财政政策支持就业。",1],
+["Money Supply","","货币供应量","banking","经济体中流通的现金与存款货币总量。","Expanding the money supply can weaken the currency.","扩大货币供应量可能导致货币走弱。",2],
+["Net Interest Margin","NIM","净息差","banking","银行生息资产平均收益率与付息负债平均成本率之差。","Net interest margin is a key measure of bank profitability.","净息差是衡量银行盈利能力的关键指标。",3],
+["Non-Performing Loan","NPL","不良贷款","banking","借款人未能按期还本付息、存在违约风险的贷款。","The bank's non-performing loan ratio fell to 1.2%.","银行不良贷款率降至1.2%。",2],
+["Overdraft","","透支","banking","银行允许客户在账户余额不足时按额度超额支取的安排。","She arranged an overdraft to cover short-term cash needs.","她安排了透支额度以应付短期资金需求。",2],
+["Letter of Credit","L/C","信用证","banking","银行应进口商申请、向出口商承诺付款的书面担保文件。","Payment will be made by irrevocable letter of credit.","付款将通过不可撤销信用证进行。",3],
+
+/* ---- 公司金融 ---- */
+["Weighted Average Cost of Capital","WACC","加权平均资本成本","corp","按股权与债务比例加权计算的企业综合融资成本。","Projects must return more than the weighted average cost of capital.","项目回报必须高于加权平均资本成本。",3],
+["Return on Assets","ROA","资产收益率","corp","净利润与平均总资产之比，衡量资产盈利效率。","A higher return on assets indicates better asset utilization.","资产收益率越高，说明资产利用效率越好。",2],
+["Return on Equity","ROE","净资产收益率","corp","净利润与股东权益之比，衡量股东资金的回报水平。","The firm maintains a return on equity above 15%.","公司净资产收益率保持在15%以上。",2],
+["EBITDA","","息税折旧摊销前利润","corp","扣除利息、所得税、折旧与摊销前的利润，便于跨企业比较经营表现。","Adjusted EBITDA rose 18% year over year.","调整后息税折旧摊销前利润同比增长18%。",2],
+["Net Income","","净利润","corp","企业收入扣除全部成本、费用、利息与所得税后的利润。","Net income fell due to higher financing costs.","因融资成本上升，净利润下降。",1],
+["Gross Profit","","毛利润","corp","营业收入减去营业成本后的利润，尚未扣除期间费用。","Gross profit margin improved to 42%.","毛利率提升至42%。",1],
+["Operating Profit","EBIT","营业利润","corp","毛利润扣除销售、管理等经营费用后的利润，未计利息与税。","Operating profit reflects the performance of the core business.","营业利润反映核心业务的表现。",2],
+["Balance Sheet","","资产负债表","corp","反映企业在特定日期资产、负债与所有者权益状况的报表。","The balance sheet shows a strong cash position.","资产负债表显示公司现金状况充裕。",1],
+["Income Statement","P&L","利润表","corp","反映企业一定期间收入、成本与利润情况的财务报表。","The income statement records revenue and expenses over the year.","利润表记录全年的收入与费用。",1],
+["Cash Flow Statement","","现金流量表","corp","反映企业一定期间经营、投资与筹资活动现金收支的报表。","The cash flow statement reveals whether the business generates cash.","现金流量表揭示企业能否产生现金。",2],
+["Depreciation","","折旧","corp","固定资产成本在使用年限内系统分摊为费用的过程。","Annual depreciation on the equipment is $1 million.","设备年折旧额为100万美元。",2],
+["Amortization","","摊销","corp","无形资产成本或贷款本金在一定期限内分期分摊。","Amortization of intangible assets is recorded over their useful life.","无形资产在其使用年限内摊销。",2],
+["Working Capital","","营运资金","corp","流动资产减去流动负债，衡量短期偿债与日常运营能力。","The business needs more working capital to fund inventory.","企业需要更多营运资金来支撑库存。",2],
+["Capital Expenditure","CapEx","资本支出","corp","购置固定资产等长期资产的支出。","Capital expenditure was cut to preserve free cash flow.","为保留自由现金流，公司削减了资本支出。",2],
+["Operating Expenditure","OpEx","运营支出","corp","日常经营中发生的费用，如租金、工资与水电费。","Operating expenditure is fully expensed in the period incurred.","运营支出在发生当期全额费用化。",2],
+["Goodwill","","商誉","corp","并购中支付价格超过被购方可辨认净资产公允价值的部分。","Goodwill is tested annually for impairment.","商誉每年进行减值测试。",3],
+["Retained Earnings","","留存收益","corp","企业历年净利润中未分配、留存在企业的部分。","Retained earnings are reinvested in the business.","留存收益被再投资于企业经营。",2],
+["Solvency","","偿付能力","corp","企业拥有足够资产以清偿全部长期债务的能力。","The auditor questioned the company's solvency.","审计师对公司偿付能力提出质疑。",3],
+
+/* ---- 衍生品 ---- */
+["Derivative","","衍生品","deriv","价值依赖于股票、债券、商品等标的资产价格的金融合约。","Derivatives can be used to hedge or to speculate.","衍生品可用于套期保值或投机。",2],
+["Futures","Futures Contract","期货","deriv","在交易所交易、约定未来某日按约定价格买卖标的资产的标准化合约。","Oil futures fell on weaker demand forecasts.","因需求预期走弱，原油期货下跌。",2],
+["Forward Contract","Forward","远期合约","deriv","双方在场外约定未来按约定价格交易资产的非标准化合约。","The exporter used a forward contract to lock in the exchange rate.","出口商利用远期合约锁定汇率。",3],
+["Option","","期权","deriv","赋予持有人在约定日期前以约定价格买入或卖出资产权利的合约。","An option gives the holder the right, not the obligation.","期权赋予持有人权利而非义务。",2],
+["Call Option","Call","看涨期权","deriv","按约定价格买入标的资产的权利，预期价格上涨时买入。","He bought a call option to profit from a rise in the stock.","他买入看涨期权以从股价上涨中获利。",2],
+["Put Option","Put","看跌期权","deriv","按约定价格卖出标的资产的权利，预期价格下跌时买入。","A put option protects against a decline in the share price.","看跌期权可防范股价下跌。",2],
+["Strike Price","Strike","行权价","deriv","期权合约约定的买入或卖出标的资产的价格。","The option has a strike price of $100.","该期权行权价为100美元。",3],
+["Option Premium","Premium","期权费","deriv","购买期权时支付的价格，由内在价值与时间价值构成。","The call option premium was $3 per share.","该看涨期权费为每股3美元。",3],
+["In the Money","ITM","实值","deriv","期权立即行权具有内在价值的状态，如看涨期权市价高于行权价。","The call is in the money when the stock trades above the strike.","股价高于行权价时，看涨期权处于实值状态。",3],
+["Out of the Money","OTM","虚值","deriv","期权立即行权不具有内在价值的状态。","Out-of-the-money options expire worthless if prices don't move.","若价格不发生变动，虚值期权到期将一文不值。",3],
+["Swap","","互换","deriv","双方约定在未来按规则交换一系列现金流的合约。","The two parties entered a five-year currency swap.","双方达成了一笔五年期货币互换。",3],
+["Interest Rate Swap","IRS","利率互换","deriv","一方以固定利率现金流交换另一方浮动利率现金流。","The company converted floating-rate debt to fixed via an interest rate swap.","公司通过利率互换将浮动利率债务转为固定利率。",3],
+["Credit Default Swap","CDS","信用违约互换","deriv","买方向卖方定期付费、参照实体违约时获得赔付的信用保险合约。","Credit default swap spreads widened as default fears grew.","随着违约担忧加剧，信用违约互换价差扩大。",3],
+["Hedging","Hedge","套期保值","deriv","通过衍生品等对冲头寸降低已有资产价格波动风险。","The airline hedged its fuel costs with futures.","航空公司用期货对冲燃油成本。",2],
+["Speculation","Speculating","投机","deriv","承担较高风险、通过价格方向性变动获取利润的交易行为。","Speculation seeks profit from price moves rather than risk reduction.","投机追求价格变动利润，而非降低风险。",2],
+["Arbitrage","","套利","deriv","利用同一资产在不同市场的价差同时买卖、获取无风险利润。","Traders engaged in arbitrage between the two exchanges.","交易员在两个交易所之间进行套利。",2],
+["Mark to Market","MTM","逐日盯市","deriv","每个交易日按市价结算持仓盈亏并调整保证金。","Futures positions are marked to market daily.","期货头寸每日按市价结算。",3],
+
+/* ---- 风险管理 ---- */
+["Value at Risk","VaR","风险价值","risk","在给定置信水平和期限内，投资组合可能发生的最大损失。","The daily VaR at the 99% confidence level was $5 million.","99%置信水平下的日风险价值为500万美元。",3],
+["Alpha","","阿尔法收益","risk","投资组合跑赢基准的超额收益，代表主动管理能力。","The fund generated positive alpha despite a flat market.","市场持平情况下，该基金仍取得正阿尔法收益。",2],
+["Beta","","贝塔系数","risk","衡量个股或组合相对于整体市场波动的敏感程度。","A stock with a beta of 1.2 tends to move 20% more than the market.","贝塔为1.2的股票波动通常比市场大20%。",2],
+["Sharpe Ratio","Sharpe","夏普比率","risk","超额收益与组合总波动率之比，衡量单位风险的回报。","A Sharpe ratio above 1 is considered good.","夏普比率大于1通常被认为表现良好。",2],
+["Systematic Risk","Market Risk","系统性风险","risk","影响整个市场、无法通过分散化消除的风险。","Interest rate changes are a source of systematic risk.","利率变动是系统性风险的来源之一。",2],
+["Unsystematic Risk","Specific Risk","非系统性风险","risk","仅影响个别公司或行业、可通过分散化降低的风险。","Unsystematic risk can be reduced through diversification.","非系统性风险可通过分散化投资降低。",2],
+["Counterparty Risk","","交易对手风险","risk","合约一方未能履行付款或交割义务的风险。","Exchange clearing reduces counterparty risk.","交易所清算可降低交易对手风险。",3],
+["Stress Test","","压力测试","risk","在极端但可能的市场情景下评估组合或银行损失的方法。","Banks must pass annual stress tests imposed by regulators.","银行必须通过监管机构的年度压力测试。",3],
+["Margin Call","","追加保证金通知","risk","保证金不足时券商要求客户追加资金或自行平仓。","The sharp price drop triggered a margin call.","价格暴跌触发了追加保证金通知。",3],
+
+/* ---- 宏观经济与外汇 ---- */
+["Gross Domestic Product","GDP","国内生产总值","macro","一国境内一定时期内生产的全部最终产品与服务的市场价值。","GDP grew at an annual rate of 2.4% in the quarter.","本季度国内生产总值年化增长2.4%。",1],
+["Consumer Price Index","CPI","居民消费价格指数","macro","衡量一篮子消费品与服务价格变动的指标，是通胀的核心度量。","The consumer price index rose 3.2% from a year earlier.","居民消费价格指数同比上涨3.2%。",1],
+["Producer Price Index","PPI","生产者价格指数","macro","衡量企业出厂价格平均变动的指标。","The producer price index is seen as a leading inflation gauge.","生产者价格指数被视为通胀的先行指标。",2],
+["Purchasing Managers' Index","PMI","采购经理指数","macro","反映制造业或服务业景气度的月度调查指数。","A PMI above 50 indicates economic expansion.","采购经理指数高于50表明经济扩张。",2],
+["Recession","","衰退","macro","经济活动连续两个季度以上出现显著收缩。","The economy slipped into recession in the second half.","经济在下半年陷入衰退。",1],
+["Deflation","","通货紧缩","macro","物价总水平持续下跌、货币购买力上升的现象。","Deflation can delay spending and worsen debt burdens.","通缩会推迟消费并加重债务负担。",2],
+["Stagflation","","滞胀","macro","经济停滞与高通胀并存、失业率居高的局面。","Stagflation leaves policymakers with few good options.","滞胀使政策制定者几乎没有好的选择。",3],
+["Quantitative Easing","QE","量化宽松","macro","央行购买国债等资产以压低利率、扩张货币的政策。","Quantitative easing was deployed after the financial crisis.","金融危机后推出了量化宽松政策。",2],
+["Trade Surplus","","贸易顺差","macro","出口总额大于进口总额的差额。","The country reported a record trade surplus.","该国录得创纪录贸易顺差。",1],
+["Trade Deficit","","贸易逆差","macro","进口总额大于出口总额的差额。","A widening trade deficit may weigh on the currency.","贸易逆差扩大可能对货币形成压力。",1],
+["Foreign Exchange","Forex / FX","外汇","macro","以外币表示的支付手段，也指各国货币兑换市场。","The foreign exchange market trades around the clock.","外汇市场全天候交易。",2],
+["Exchange Rate","","汇率","macro","一种货币兑换另一种货币的比价。","A stronger exchange rate makes imports cheaper.","汇率走强会使进口商品更便宜。",1],
+["Appreciation","","升值","macro","货币或资产价值相对其他货币或历史成本上升。","Currency appreciation hurt export competitiveness.","货币升值削弱了出口竞争力。",2],
+["Depreciation","","贬值","macro","货币价值相对其他货币下降；在会计中也指折旧。","Rapid depreciation fueled imported inflation.","快速贬值加剧了输入性通胀。",2],
+["Hawkish","","鹰派","macro","倾向于收紧货币政策、强硬对抗通胀的立场。","Hawkish central bank comments lifted bond yields.","央行鹰派言论推升了债券收益率。",2],
+["Dovish","","鸽派","macro","倾向于宽松货币政策、支持就业与增长的立场。","Dovish signals boosted equity markets.","鸽派信号提振了股市。",2],
+
+/* ---- 并购与发行 ---- */
+["Mergers and Acquisitions","M&A","并购","ma","企业之间合并或收购的交易活动总称。","M&A activity slowed amid higher financing costs.","融资成本上升导致并购活动放缓。",2],
+["Acquisition","","收购","ma","一家企业购买另一家企业的股权或资产以取得控制权。","The acquisition expanded the firm's European footprint.","此次收购扩大了公司在欧洲的布局。",1],
+["Leveraged Buyout","LBO","杠杆收购","ma","收购方主要以债务融资购买目标公司，再以目标公司现金流偿债。","The deal was a classic leveraged buyout funded by bank debt.","该交易是由银行贷款资助的典型杠杆收购。",3],
+["Due Diligence","DD","尽职调查","ma","交易前对目标公司财务、法律与经营状况的全面核查。","Due diligence uncovered several undisclosed liabilities.","尽职调查发现了若干未披露的负债。",1],
+["Valuation","","估值","ma","对企业、证券或资产价值的评估过程与结果。","The valuation was based on a multiple of 10 times EBITDA.","估值基于10倍息税折旧摊销前利润。",2],
+["Synergy","","协同效应","ma","并购后双方在成本、收入上产生的“1+1大于2”的增量价值。","The deal promised annual cost synergies of $300 million.","该交易承诺每年实现3亿美元成本协同效应。",2],
+["Hostile Takeover","","恶意收购","ma","未经目标公司管理层同意、直接向股东发起的收购。","The target adopted defenses against the hostile takeover.","目标公司采取措施抵御恶意收购。",3],
+["Tender Offer","","要约收购","ma","收购方公开向目标公司股东发出、以特定价格购买股份的要约。","The bidder launched a tender offer at a 30% premium.","收购方以30%溢价发起要约收购。",3],
+["Underwriter","","承销商","ma","为发行人销售证券并承担发行风险的投资银行。","The underwriter guaranteed the share placement at the offer price.","承销商保证按发行价完成股票配售。",2],
+["Prospectus","","招股说明书","ma","公开发行证券时披露公司业务、风险与财务的正式文件。","Investors should read the prospectus before subscribing.","投资者认购前应阅读招股说明书。",2],
+["Roadshow","","路演","ma","发行前管理层向机构投资者推介股票的系列活动。","The IPO roadshow covered eight financial centers.","IPO路演覆盖了八个金融中心。",2],
+["Private Placement","","私募配售","ma","向少数特定投资者非公开发行证券的方式。","The company raised funds through a private placement to institutions.","公司通过向机构私募配售筹集资金。",3],
+["Term Sheet","","投资条款清单","ma","载明投资估值、股权与治理安排的框架性文件。","Both parties signed a non-binding term sheet.","双方签署了不具约束力的投资条款清单。",2],
+
+/* ---- 量化交易 ---- */
+["Algorithmic Trading","Algo Trading","算法交易","quant","使用预设程序与规则自动执行交易。","Algorithmic trading accounts for the majority of equity volume.","算法交易占股票成交量的大部分。",2],
+["High-Frequency Trading","HFT","高频交易","quant","以极快速度和极高频率执行大量小额订单的策略。","High-frequency trading profits from tiny, fleeting price differences.","高频交易从微小且短暂的价差中获利。",3],
+["Market Maker","","做市商","quant","持续报出买卖价、为市场提供流动性并赚取价差的机构。","Market makers are obliged to quote firm prices continuously.","做市商有义务持续报出确定价格。",2],
+["Statistical Arbitrage","Stat Arb","统计套利","quant","基于统计模型寻找价差偏离、进行均值回归交易。","Statistical arbitrage often involves hundreds of positions.","统计套利通常同时持有数百个头寸。",3],
+["Backtesting","Backtest","回测","quant","用历史数据检验交易策略在过去的表现。","The strategy showed strong returns in backtesting.","该策略在回测中表现出强劲收益。",2],
+["Slippage","","滑点","quant","预期成交价与实际成交价之间的差异。","Large orders can cause significant slippage.","大额订单可能造成显著滑点。",2],
+["Factor","","因子","quant","解释证券收益共同变动的特征，如价值、动量与规模。","Value and momentum are widely studied equity factors.","价值与动量是被广泛研究的股票因子。",2],
+["Momentum","","动量","quant","价格沿既有趋势延续的效应，即“强者恒强”。","Momentum strategies buy recent winners and sell recent losers.","动量策略买入近期赢家、卖出近期输家。",2],
+["Mean Reversion","","均值回归","quant","价格偏离均值后倾向于回归长期平均水平的现象。","Mean reversion strategies bet that extremes will correct.","均值回归策略押注极端价格将会修正。",3],
+["Pairs Trading","","配对交易","quant","同时做多与做空两只高度相关的证券，赚取价差收敛。","Pairs trading is market-neutral when properly constructed.","构建得当的配对交易具有市场中性特征。",3],
+["Drawdown","","回撤","quant","组合净值从历史峰值回落的幅度，衡量下行风险。","The fund's maximum drawdown during the crash was 22%.","暴跌期间该基金最大回撤为22%。",2],
+["Tracking Error","","跟踪误差","quant","组合收益与基准收益之差的标准差，衡量偏离程度。","Index funds aim to keep tracking error minimal.","指数基金力求将跟踪误差降至最低。",3],
+["Turnover Rate","Turnover","换手率","quant","一定期间内证券买卖金额占组合规模或市值的比例。","High turnover increases transaction costs and taxes.","高换手率会增加交易成本与税负。",2],
+
+/* ---- 职业道德（CFA Code & Standards） ---- */
+["Code of Ethics","","道德准则","ethics","CFA 会员与候选人必须遵守的价值与行为总纲，涵盖诚信、专业、客户利益与资本市场诚信。","The CFA Code of Ethics requires members to place client interests ahead of their own.","CFA道德准则要求会员将客户利益置于个人利益之上。",1],
+["Standards of Professional Conduct","","职业行为准则","ethics","CFA 道德准则的具体执行条款，共七大项，覆盖专业精神、资本市场、客户与雇主关系等。","Breaching the Standards of Professional Conduct can result in a CFA charter suspension.","违反职业行为准则可能导致CFA资格被暂停。",2],
+["Fiduciary Duty","","受托义务","ethics","受托人对受益人负有的最高忠诚义务，须以受益人利益最大化行事。","Pension trustees owe a fiduciary duty to plan beneficiaries, not the sponsor.","养老金受托人对计划受益人负有受托义务，而非对出资企业。",2],
+["Duty of Loyalty","","忠诚义务","ethics","雇员在职期间须维护雇主利益，不得从事损害雇主的活动。","An analyst who takes a client list to a new firm violates the duty of loyalty.","分析师把客户名单带到新公司属于违反忠诚义务。",2],
+["Material Nonpublic Information","MNPI","重大非公开信息","ethics","可能影响证券价格、且尚未公开的信息，禁止用于交易。","Martha Stewart was convicted in 2004 for trading on material nonpublic information about ImClone.","玛莎·斯图尔特2004年因利用英克隆公司的重大非公开信息交易而被定罪。",2],
+["Insider Trading","","内幕交易","ethics","利用内幕信息买卖证券，属违法行为，各国均禁止。","Raj Rajaratnam of the Galleon Group was sentenced to 11 years for insider trading in 2011.","帆船集团创始人拉杰·拉贾拉特南2011年因内幕交易被判11年。",2],
+["Market Manipulation","","市场操纵","ethics","通过散布虚假信息或操纵交易扭曲价格、误导市场参与者的行为。","The 2010 Dodd-Frank Act strengthened penalties for market manipulation.","2010年多德-弗兰克法案加重了对市场操纵的处罚。",2],
+["Mosaic Theory","","马赛克理论","ethics","分析师可基于公开信息与非重大非公开信息“拼凑”出投资结论，不构成违规。","Under the mosaic theory, combining public data with trivial observations is permitted.","根据马赛克理论，将公开数据与零星观察结合分析是允许的。",3],
+["Front-Running","","抢先交易","ethics","在客户大额订单执行前、先用个人账户抢先下单的违规行为。","A hedge fund trader was fined for front-running a client's block order.","一名对冲基金交易员因在客户大单前抢跑而被罚款。",3],
+["Soft Dollars","","软美元","ethics","客户佣金中用于购买研究或经纪服务的部分，须向客户披露且服务于客户。","Soft dollars must be used to obtain research that benefits the client.","软美元必须用于购买能使客户受益的研究服务。",3],
+["Best Execution","","最佳执行","ethics","经纪商须在合理条件下为客户争取最有利的成交价格与条件。","MiFID II requires brokers to take all sufficient steps to achieve best execution.","欧盟金融工具指令II要求券商采取一切充分措施实现最佳执行。",2],
+["Due Care","","应有的谨慎","ethics","专业人士在工作中应达到的合理、审慎、勤勉的标准。","An adviser who recommends a product without due care may be liable for losses.","顾问未经应有谨慎就推荐产品，可能需要承担损失责任。",2],
+["Prudent Investor Rule","","审慎投资者规则","ethics","受托人应像审慎人一样管理资产，关注组合整体而非单笔投资。","The prudent investor rule allows trust managers to diversify across modern asset classes.","审慎投资者规则允许信托管理人在现代资产类别间分散投资。",3],
+["Conflicts of Interest","","利益冲突","ethics","个人或机构的自身利益与客户或雇主利益发生冲突的情形，须披露或回避。","Credit rating agencies' conflicts of interest were criticized after the 2008 crisis.","2008年危机后，评级机构的利益冲突问题受到批评。",1],
+["Disclosure","","披露","ethics","将利益冲突、风险与费用等信息如实告知客户或市场的义务。","Full disclosure of fees is required before a client signs an advisory contract.","客户签署顾问合同前必须充分披露费用。",1],
+["Independence and Objectivity","","独立性与客观性","ethics","专业人士应保持判断独立，不受礼物、关系或压力影响。","Sell-side analysts must preserve independence and objectivity despite pressure from investment banking.","卖方分析师即使面对投行部门压力，也必须保持独立性与客观性。",2],
+["Misrepresentation","","虚假陈述","ethics","对投资业绩、资质或事实作出不实或误导性陈述的行为。","Advertising guaranteed returns is a clear misrepresentation.","宣传“保本保收益”属于明显的虚假陈述。",2],
+["Plagiarism","","剽窃","ethics","在研究报告中使用他人成果而不注明出处，违反CFA准则。","Copying another firm's model into a report without attribution is plagiarism.","把别家公司的模型直接写进报告而不注明出处属于剽窃。",1],
+["Suitability","","适当性","ethics","投资建议必须与客户的财务状况、风险承受能力和投资目标相匹配。","Regulators fined brokerages for selling risky products without suitability checks.","监管机构因券商未做适当性审查就销售高风险产品而对其罚款。",2],
+["Know Your Customer","KYC","了解客户","ethics","开户与建立业务关系时核实客户身份、资金来源与风险画像的合规要求。","Banks must apply KYC checks to prevent money laundering.","银行必须执行了解客户程序，以防范洗钱。",1],
+["Chinese Wall","Information Barrier","信息隔离墙","ethics","投行、研究与经纪等部门之间防止内幕信息流动的内部隔离机制。","The Chinese Wall separates investment banking from research analysts.","信息隔离墙将投行部门与研究分析师隔开。",2],
+["Beneficial Ownership","","受益所有权","ethics","虽非名义持有人、但实际享有资产收益或控制权的人。","AML rules require identifying the beneficial owner behind shell companies.","反洗钱规则要求识别空壳公司背后的受益所有人。",3],
+["Whistleblower","","举报人","ethics","向监管或内部合规部门报告违法违规行为的人，受法律保护。","The SEC whistleblower program paid awards to tipsters who exposed fraud.","美国证监会举报人制度向揭露欺诈的线人颁发奖金。",2],
+["GIPS","Global Investment Performance Standards","全球投资业绩标准","ethics","CFA 主导的投资业绩展示与计算的全球自愿标准，保证业绩披露公平可比。","Asset managers claim GIPS compliance to win institutional mandates.","资产管理机构宣称符合GIPS标准以争取机构客户委托。",3],
+["Compliance Officer","","合规官","ethics","负责监督机构及员工遵守法规、准则与内部制度的专职人员。","The compliance officer reviews employee personal trades each month.","合规官每月审查员工个人交易。",1],
+["Referral Fee","","推荐费","ethics","因向他人推荐客户或业务而收取的费用，须事先向客户披露。","An adviser must disclose any referral fee before the client signs up.","顾问必须在客户签约前披露任何推荐费。",3],
+["Gifts and Entertainment","","礼品与招待","ethics","接受客户或交易对手的礼品招待可能影响独立性，须遵守限额与申报。","The compliance manual limits gifts to $100 per recipient per year.","合规手册规定每人每年收受礼品价值不得超过100美元。",2],
+["Fair Dealing","","公平交易","ethics","对所有客户一视同仁，公平分配投资建议与新股认购机会。","The standard on fair dealing prohibits favoring favored clients in IPO allocations.","公平交易准则禁止在新股分配中偏袒关系客户。",2],
+["Preservation of Confidentiality","","保密义务","ethics","对客户的身份、交易与财务信息保密，除非法律要求披露。","An adviser cannot reveal a client's holdings without consent.","未经客户同意，顾问不得透露其持仓信息。",1],
+["Loyalty, Prudence and Care","","忠诚、审慎与尽责","ethics","CFA 客户关系准则，要求以客户利益为最高准则进行投资管理。","The standard of loyalty, prudence and care applies to all client accounts.","忠诚、审慎与尽责准则适用于所有客户账户。",2],
+
+/* ---- 量化方法（CFA Quantitative Methods） ---- */
+["Descriptive Statistics","","描述性统计","qmethods","用于整理、概括数据特征的统计方法，如均值、方差与频数分布。","The report uses descriptive statistics to summarize 20 years of returns.","报告用描述性统计概括20年的收益数据。",1],
+["Inferential Statistics","","推断性统计","qmethods","基于样本数据推断总体特征的统计方法，如估计与假设检验。","Inferential statistics lets analysts estimate market-wide returns from a sample.","推断性统计让分析师能从样本推断全市场收益。",2],
+["Population","","总体","qmethods","研究对象的全部个体或全部观测值的集合。","The population of S&P 500 stocks is studied at each year-end.","每年年末对全部标普500成分股进行研究。",1],
+["Sample","","样本","qmethods","从总体中抽取的部分个体，用于推断总体特征。","A sample of 300 stocks was used to estimate the factor premium.","抽取300只股票的样本估计因子溢价。",1],
+["Parameter","","参数","qmethods","描述总体特征的数值，如总体均值、总体标准差。","The true mean return is an unknown population parameter.","真实平均收益是一个未知的总体参数。",2],
+["Frequency Distribution","","频数分布","qmethods","将数据按区间分组、统计各组观测个数的表格。","A frequency distribution of monthly returns shows how often losses occur.","月度收益的频数分布可显示亏损出现的频率。",2],
+["Relative Frequency","","相对频数","qmethods","某组观测个数占总观测数的比例。","The relative frequency of negative quarters was about 15%.","出现负收益季度的相对频数约为15%。",2],
+["Cumulative Relative Frequency","","累积相对频数","qmethods","小于等于某一区间上限的观测占全部观测的比例。","The cumulative relative frequency shows 80% of months returned below 4%.","累积相对频数显示80%的月份收益低于4%。",3],
+["Mean","Arithmetic Mean","均值；算术平均","qmethods","全部观测值之和除以观测个数，是最常用的集中趋势指标。","The mean annual return of the index is 8.5%.","该指数的年平均收益为8.5%。",1],
+["Median","","中位数","qmethods","数据按大小排列后处于中间位置的数值，不受极端值影响。","Median household income is more representative than the mean.","家庭收入中位数比平均数更具代表性。",1],
+["Mode","","众数","qmethods","数据中出现次数最多的数值。","The most common P/E multiple is the mode of the distribution.","最常见的市盈率倍数就是该分布的众数。",1],
+["Geometric Mean","","几何平均","qmethods","n 个数值乘积开 n 次方，用于计算多期复利平均收益。","The fund's geometric mean return over 10 years was 7.8%.","该基金10年的几何平均收益为7.8%。",2],
+["Harmonic Mean","","调和平均","qmethods","各数值倒数的平均数的倒数，常用于等额定投的平均成本。","Analysts use the harmonic mean to average P/E ratios.","分析师用调和平均计算市盈率的平均值。",3],
+["Weighted Mean","","加权平均","qmethods","各数值按其重要性（权重）加权计算的平均。","Portfolio return is the weighted mean of individual asset returns.","组合收益是各资产收益的加权平均。",2],
+["Quantile","","分位数","qmethods","将排序数据划分为若干等份的位置点。","The return ranked at the 5% quantile is the typical tail loss.","排在5%分位数的收益就是典型的尾部亏损。",2],
+["Percentile","","百分位数","qmethods","将数据分为100等份的位置，如第90百分位。","A child's height at the 90th percentile is above most peers.","身高处于第90百分位的孩子高于大多数同龄人。",1],
+["Quartile","","四分位数","qmethods","将排序数据分为四等份的三个位置点。","Funds in the top quartile outperformed three quarters of peers.","处于前四分位的基金跑赢了四分之三的同类。",2],
+["Range","","极差","qmethods","数据最大值与最小值之差，是最简单的离散度指标。","The range of daily returns widened during the crisis.","危机期间日收益的极差扩大。",1],
+["Mean Absolute Deviation","MAD","平均绝对偏差","qmethods","各观测值与均值之差的绝对值的平均。","MAD measures dispersion without squaring deviations.","平均绝对偏差衡量离散度，无需对偏差取平方。",3],
+["Variance","","方差","qmethods","各观测值与均值之差的平方的平均，衡量离散程度。","High variance means returns are widely spread.","方差大意味着收益分布分散。",2],
+["Standard Deviation","SD","标准差","qmethods","方差的算术平方根，与原数据单位一致，是最常用的风险度量。","The standard deviation of equity returns is roughly 15% a year.","股票年收益的标准差约为15%。",2],
+["Coefficient of Variation","CV","变异系数","qmethods","标准差与均值之比，用于比较不同量纲数据的相对离散程度。","The coefficient of variation compares risk per unit of return.","变异系数用于比较单位收益承担的风险。",3],
+["Chebyshev's Inequality","","切比雪夫不等式","qmethods","对任意分布，至少有 (1−1/k²) 的观测落在均值 k 个标准差内。","Chebyshev's inequality guarantees at least 75% of data within 2 SD.","切比雪夫不等式保证至少75%的数据落在2个标准差内。",3],
+["Expected Value","","期望值","qmethods","随机变量各种可能结果按概率加权的平均值。","The expected value of the project is $12 million.","该项目的期望价值为1200万美元。",1],
+["Probability","","概率","qmethods","随机事件发生可能性的数值，介于0和1之间。","The probability of a recession next year was priced at 30%.","市场定价显示明年衰退的概率为30%。",1],
+["Conditional Probability","","条件概率","qmethods","在另一事件已发生的条件下某事件发生的概率，记为 P(A|B)。","The conditional probability of default rises in a recession.","衰退条件下违约的条件概率会上升。",2],
+["Joint Probability","","联合概率","qmethods","两个事件同时发生的概率，记为 P(AB)。","The joint probability of a rate cut and a rally is small.","降息与上涨同时发生的联合概率很小。",2],
+["Bayes' Formula","","贝叶斯公式","qmethods","根据新信息更新事件概率的公式。","Bayes' formula updates the default probability after a missed payment.","贝叶斯公式可在逾期发生后更新违约概率。",3],
+["Independent Events","","独立事件","qmethods","一个事件的发生不影响另一事件发生概率的事件。","Asset returns are rarely fully independent events.","资产收益很少是完全独立的事件。",2],
+["Mutually Exclusive Events","","互斥事件","qmethods","不可能同时发生的事件。","A single coin flip's heads and tails are mutually exclusive events.","一次掷硬币的正面与反面是互斥事件。",1],
+["Permutation","","排列","qmethods","从 n 个元素中取 r 个并考虑顺序的排列方式数。","Permutation counts ordered outcomes, such as rankings.","排列计算有顺序的结果，如排名。",2],
+["Combination","","组合","qmethods","从 n 个元素中取 r 个、不考虑顺序的方式数。","A combination chooses stocks without ordering them.","组合选股不考虑顺序。",2],
+["Probability Density Function","PDF","概率密度函数","qmethods","描述连续随机变量在各取值点相对可能性的函数。","The PDF of a normal distribution is bell-shaped.","正态分布的概率密度函数呈钟形。",3],
+["Cumulative Distribution Function","CDF","累积分布函数","qmethods","随机变量小于等于某取值的概率函数。","The CDF at zero gives the probability of a loss.","累积分布函数在零点的取值就是亏损概率。",3],
+["Binomial Distribution","","二项分布","qmethods","n 次独立、成功概率固定的试验中成功次数的离散分布。","The binomial distribution models the number of defaults in a bond pool.","二项分布可模拟债券池中违约债券的数量。",3],
+["Normal Distribution","","正态分布","qmethods","均值与方差决定的对称钟形连续分布，约68%观测落在均值±1个标准差内。","Many models assume returns follow a normal distribution.","许多模型假设收益服从正态分布。",2],
+["Standard Normal Distribution","","标准正态分布","qmethods","均值为0、标准差为1的正态分布，记为 Z。","Z-scores convert any normal variable to the standard normal distribution.","Z值可将任意正态变量转换为标准正态分布。",2],
+["Lognormal Distribution","","对数正态分布","qmethods","取对数后服从正态分布的分布，取值为正、右偏，适合描述资产价格。","Stock prices are often modeled with a lognormal distribution.","股价常用对数正态分布模拟。",3],
+["Skewness","","偏度","qmethods","分布不对称的程度与方向，正偏（右偏）时右侧尾部更长。","Positive skewness means occasional large gains.","正偏意味着偶尔出现极大收益。",3],
+["Kurtosis","","峰度","qmethods","分布尾部厚度与峰部尖度的度量。","High kurtosis indicates frequent extreme returns.","高峰度意味着极端收益频繁出现。",3],
+["Leptokurtic","","尖峰厚尾","qmethods","分布比正态分布更尖、尾部更厚，极端值更多。","Equity returns are leptokurtic, with more crashes than predicted.","股票收益呈尖峰厚尾，暴跌次数多于正态预测。",3],
+["Covariance","","协方差","qmethods","两个随机变量共同变动程度的度量，可正可负。","Stocks and bonds sometimes show negative covariance.","股票与债券有时呈现负协方差。",2],
+["Correlation Coefficient","Correlation","相关系数","qmethods","两变量协方差除以各自标准差，取值在−1到1之间。","A correlation coefficient of 0.8 indicates strong co-movement.","相关系数0.8表明联动性很强。",2],
+["Central Limit Theorem","CLT","中心极限定理","qmethods","大样本下样本均值的分布趋近正态分布，与总体分布无关。","The central limit theorem justifies normality for large samples.","中心极限定理为大样本下的正态近似提供依据。",2],
+["Standard Error","","标准误","qmethods","样本统计量抽样分布的标准差，衡量估计的精度。","Standard error falls as sample size rises.","样本量越大，标准误越小。",2],
+["Student's t-Distribution","t分布","t分布","qmethods","小样本、总体方差未知时使用的对称分布，尾部比正态更厚。","Use the t-distribution for confidence intervals with small samples.","小样本置信区间应使用t分布。",3],
+["Confidence Interval","","置信区间","qmethods","以一定置信水平包含总体参数的区间估计。","The 95% confidence interval for mean return is 6% to 11%.","平均收益的95%置信区间为6%至11%。",2],
+["Hypothesis Testing","","假设检验","qmethods","依据样本判断关于总体的假设是否成立的统计方法。","Hypothesis testing can check whether the mean return exceeds zero.","假设检验可检验平均收益是否大于零。",2],
+["Type I Error","","第一类错误","qmethods","原假设为真却被错误拒绝的概率，即“弃真”。","The significance level is the probability of a Type I error.","显著性水平就是犯第一类错误的概率。",3],
+["Type II Error","","第二类错误","qmethods","原假设为假却未被拒绝的概率，即“取伪”。","A larger sample reduces the Type II error.","扩大样本可降低第二类错误。",3],
+["p-Value","p值","p值","qmethods","原假设成立时观测到当前或更极端结果的概率。","A p-value below 0.05 is typically called significant.","p值小于0.05通常称为显著。",2],
+["Monte Carlo Simulation","","蒙特卡洛模拟","qmethods","通过大量随机抽样模拟未来结果分布的方法。","Risk teams use Monte Carlo simulation to estimate tail losses.","风险团队用蒙特卡洛模拟估计尾部损失。",2],
+["Time-Weighted Return","TWR","时间加权收益率","qmethods","剔除资金进出影响、按复利衔接各期收益的收益率，是评估经理业绩的标准。","GIPS requires time-weighted returns for performance reporting.","GIPS要求业绩报告使用时间加权收益率。",2],
+["Money-Weighted Return","MWR","货币加权收益率","qmethods","使现金流现值等于期末价值的内部收益率，受客户申购赎回时点影响。","The money-weighted return punishes investors who bought at the top.","货币加权收益率会惩罚在高点买入的投资者。",2],
+["Effective Annual Rate","EAR","有效年利率","qmethods","考虑年内复利后的实际年利率。","1% per month compounds to an effective annual rate of about 12.7%.","月息1%复利后的有效年利率约为12.7%。",2],
+["Survivorship Bias","","幸存者偏差","qmethods","样本只保留存续下来的实体、剔除已消失实体所造成的偏差。","Hedge fund indexes overstate returns due to survivorship bias.","因幸存者偏差，对冲基金指数高估了真实收益。",2],
+["Look-Ahead Bias","","前视偏差","qmethods","回测中使用了当时尚不可获得的信息所造成的偏差。","Using fundamentals reported later creates look-ahead bias.","使用滞后披露的基本面数据会造成前视偏差。",3],
+["Data Mining","","数据挖掘","qmethods","在大量数据中反复寻找模式，容易得到虚假的统计规律。","Excessive data mining turns noise into fake signals.","过度数据挖掘会把噪声变成虚假信号。",2],
+
+/* ---- 微观经济（CFA Economics） ---- */
+["Demand","","需求","micro","消费者在一定价格下愿意且能够购买的商品数量。","Demand for electric vehicles surged as battery costs fell.","电池成本下降后，电动汽车需求激增。",1],
+["Supply","","供给","micro","生产者在一定价格下愿意且能够出售的商品数量。","Oil supply was cut by OPEC+ to support prices.","OPEC+削减石油供应以支撑油价。",1],
+["Law of Demand","","需求定律","micro","其他条件不变时，价格上升则需求量下降的基本规律。","The law of demand explains why higher prices curb consumption.","需求定律解释了价格上升为何抑制消费。",2],
+["Demand Curve","","需求曲线","micro","表示价格与需求量关系的曲线，通常向右下方倾斜。","A downward-sloping demand curve reflects the law of demand.","向右下倾斜的需求曲线反映了需求定律。",2],
+["Elasticity","","弹性","micro","需求量或供给量对价格或收入变动的敏感程度。","Airline demand shows high elasticity during recessions.","衰退期间航空需求弹性很高。",2],
+["Price Elasticity of Demand","","需求价格弹性","micro","需求量变动百分比与价格变动百分比之比。","Gasoline has low price elasticity of demand in the short run.","短期内汽油需求价格弹性很低。",2],
+["Income Elasticity of Demand","","需求收入弹性","micro","需求量变动百分比与收入变动百分比之比。","Luxury goods have high income elasticity of demand.","奢侈品的需求收入弹性很高。",3],
+["Cross Elasticity of Demand","","需求交叉弹性","micro","一种商品需求量变动对另一种商品价格变动的敏感程度。","Positive cross elasticity means the goods are substitutes.","交叉弹性为正说明两种商品互为替代品。",3],
+["Substitute Goods","Substitutes","替代品","micro","功能相近、可相互替代的商品，如茶与咖啡。","Tea and coffee are substitute goods.","茶与咖啡互为替代品。",1],
+["Complementary Goods","Complements","互补品","micro","需搭配使用的商品，如汽车与汽油。","Printers and ink cartridges are complementary goods.","打印机与墨盒互为互补品。",1],
+["Normal Goods","","正常品","micro","需求随收入增加而增加的商品。","Restaurant meals are normal goods.","外出就餐属于正常品。",2],
+["Inferior Goods","","低档品","micro","收入提高后需求反而下降的商品。","Bus travel is often cited as inferior goods.","乘坐公交常被视为低档品。",2],
+["Giffen Goods","","吉芬商品","micro","价格上升需求反而增加的特殊低档品，需求曲线向右上方倾斜。","Giffen goods are rare theoretical exceptions to the demand law.","吉芬商品是需求定律的罕见理论例外。",3],
+["Utility","","效用","micro","消费者从商品或服务中获得的满足程度。","Rational consumers maximize utility within their budget.","理性消费者在预算内追求效用最大化。",2],
+["Marginal Utility","","边际效用","micro","每增加一单位消费所带来的额外满足。","The marginal utility of the second slice of pizza is smaller.","第二块披萨的边际效用更小。",2],
+["Indifference Curve","","无差异曲线","micro","给消费者带来相同效用的两种商品组合的曲线。","An indifference curve shows combinations of equal satisfaction.","无差异曲线表示满足程度相同的组合。",3],
+["Budget Constraint","","预算约束","micro","在收入和价格既定下消费者可购买的商品组合范围。","The budget constraint limits how much of each good is affordable.","预算约束限定了每种商品可购买的数量。",3],
+["Consumer Surplus","","消费者剩余","micro","消费者愿意支付的价格与实际支付价格之差。","Buyers at the sale price enjoy extra consumer surplus.","以折扣价购买的消费者获得了额外消费者剩余。",2],
+["Producer Surplus","","生产者剩余","micro","生产者实际售价与愿意接受的最低价格之差。","Producer surplus rises when market prices increase.","市场价格上涨时生产者剩余增加。",2],
+["Deadweight Loss","","无谓损失","micro","市场偏离均衡或存在税收、垄断时造成的社会总福利净损失。","A monopoly creates deadweight loss by restricting output.","垄断通过限制产量造成无谓损失。",2],
+["Market Equilibrium","","市场均衡","micro","供给量等于需求量、价格不再调整的状态。","Market equilibrium occurs where supply and demand curves intersect.","供给曲线与需求曲线相交处即为市场均衡。",1],
+["Price Ceiling","","价格上限","micro","政府规定的最高交易价格，低于均衡价时造成短缺。","Rent control is a classic price ceiling.","租金管制是典型的价格上限。",2],
+["Price Floor","","价格下限","micro","政府规定的最低交易价格，高于均衡价时造成过剩。","A minimum wage acts as a price floor for labor.","最低工资相当于劳动力市场的价格下限。",2],
+["Marginal Cost","MC","边际成本","micro","每增加一单位产量所增加的总成本。","The marginal cost of streaming one more user is near zero.","流媒体多服务一个用户的边际成本几乎为零。",2],
+["Marginal Revenue","MR","边际收益","micro","每增加一单位销售所增加的总收入。","Firms expand output until marginal revenue equals marginal cost.","企业会持续增产，直到边际收益等于边际成本。",2],
+["Fixed Costs","TFC","固定成本","micro","不随产量变化的成本，如租金与设备折旧。","Fixed costs must be paid even if output is zero.","即使产量为零也必须支付固定成本。",2],
+["Variable Costs","TVC","可变成本","micro","随产量变化的成本，如原材料与计件工资。","Variable costs fall when production is cut.","减产时可变成本随之下降。",2],
+["Economies of Scale","","规模经济","micro","产量扩大时平均成本下降的现象。","Walmart's economies of scale let it undercut smaller rivals.","沃尔玛的规模经济使其能以低价压制小竞争对手。",2],
+["Diseconomies of Scale","","规模不经济","micro","规模过大导致平均成本上升，多因管理失控。","Overexpansion can bring diseconomies of scale.","过度扩张可能带来规模不经济。",3],
+["Perfect Competition","","完全竞争","micro","厂商众多、产品同质、自由进出、价格由市场决定的市场结构。","Agricultural markets approximate perfect competition.","农产品市场接近完全竞争。",2],
+["Monopoly","","垄断","micro","单一厂商控制整个市场、具有定价权的市场结构。","A local utility often operates as a regulated monopoly.","当地公用事业通常是受监管的垄断企业。",2],
+["Oligopoly","","寡头垄断","micro","少数几家大厂商主导、决策相互影响的市场结构。","The aircraft duopoly is an oligopoly between Boeing and Airbus.","波音与空客的双寡头格局是典型的寡头垄断。",2],
+["Monopolistic Competition","","垄断竞争","micro","厂商众多、产品有差异、可自由进出的市场结构，如餐饮。","Restaurants compete under monopolistic competition.","餐饮业处于垄断竞争结构。",3],
+["Barriers to Entry","","进入壁垒","micro","阻止新厂商进入市场的障碍，如专利、资本与牌照。","High barriers to entry protect incumbents' profits.","高进入壁垒保护在位企业的利润。",2],
+["Price Discrimination","","价格歧视","micro","厂商对同一商品向不同客户收取不同价格。","Airlines use price discrimination between business and leisure travelers.","航空公司对商务旅客和休闲旅客实行价格歧视。",2],
+["Herfindahl-Hirschman Index","HHI","赫芬达尔指数","micro","行业内各厂商市场份额平方和，衡量市场集中度。","Regulators use the Herfindahl-Hirschman Index to review mergers.","监管机构用赫芬达尔指数审查并购。",3],
+["Cartel","","卡特尔","micro","生产者之间为控制产量与价格而结成的同盟。","OPEC is the best-known cartel in oil markets.","OPEC是石油市场最知名的卡特尔。",2],
+["Nash Equilibrium","","纳什均衡","micro","博弈中各方在他方策略既定时都不愿改变的状态。","A Nash equilibrium leaves no player able to gain by switching alone.","纳什均衡下没有任何一方能单独改变策略而获益。",3],
+["Comparative Advantage","","比较优势","micro","以较低机会成本生产某商品的能力，是国际贸易的基础。","Nations trade based on comparative advantage, not absolute advantage.","各国按比较优势而非绝对优势进行贸易。",2],
+["Diminishing Marginal Returns","","边际收益递减","micro","其他投入不变时，连续增加某投入的边际产量最终递减。","Diminishing marginal returns explain why adding workers alone has limits.","边际收益递减解释了为何只增加工人存在上限。",3],
+["Economic Profit","","经济利润","micro","收入扣除显性成本与隐性机会成本后的利润。","Economic profit equals accounting profit minus the opportunity cost of capital.","经济利润等于会计利润减去资本的机会成本。",2],
+["Accounting Profit","","会计利润","micro","按会计准则计算的收入减显性成本，即税前利润。","Accounting profit ignores the owners' opportunity cost.","会计利润未考虑所有者的机会成本。",2],
+
+/* ---- 审计与鉴证（CPA/ACCA） ---- */
+["Audit","","审计","audit","由独立专业人员对财务报表是否公允反映发表意见的系统检查。","The annual audit gives shareholders confidence in the accounts.","年度审计让股东对账目产生信心。",1],
+["Assurance","","鉴证","audit","由专业人员对信息的可靠性发表结论、提升使用者信任的服务。","Auditors also provide assurance on sustainability reports.","审计师也为可持续发展报告提供鉴证。",2],
+["External Audit","","外部审计","audit","由独立第三方事务所进行的法定审计，服务于股东与公众。","The external audit is conducted by a firm appointed by shareholders.","外部审计由股东任命的事务所执行。",1],
+["Internal Audit","","内部审计","audit","组织内部对风险管理、控制与治理进行评价的独立职能。","Internal audit reports directly to the audit committee.","内部审计直接向审计委员会汇报。",2],
+["Statutory Audit","","法定审计","audit","法律强制要求进行的审计，如上市公司年度审计。","Most jurisdictions require a statutory audit for large companies.","多数司法辖区要求大型公司接受法定审计。",2],
+["Audit Opinion","","审计意见","audit","审计师在审计报告中对财务报表是否公允出具的结论。","The audit opinion is the core output of an external audit.","审计意见是外部审计的核心产出。",1],
+["Unmodified Opinion","Unqualified Opinion","无保留意见","audit","审计师认为报表在所有重大方面公允反映的“干净”意见。","An unmodified opinion is the standard result for healthy firms.","无保留意见是健康公司的标准结果。",2],
+["Qualified Opinion","","保留意见","audit","审计师认为除特定事项外报表整体公允的意见。","A qualified opinion was issued due to inventory scope limitations.","因存货审计范围受限，事务所出具了保留意见。",2],
+["Adverse Opinion","","否定意见","audit","审计师认为报表存在重大且广泛错报、整体不公允的意见。","An adverse opinion is the most serious audit conclusion.","否定意见是最严重的审计结论。",3],
+["Disclaimer of Opinion","","无法表示意见","audit","审计师因审计范围严重受限而无法形成结论的意见。","The auditor issued a disclaimer of opinion when management blocked access.","管理层阻挠审计时，审计师出具无法表示意见。",3],
+["Going Concern","","持续经营","audit","企业在可预见未来能够继续经营、不打算清算的假设。","Auditors flagged going-concern doubts for the struggling retailer.","审计师对这家陷入困境的零售商提出持续经营疑虑。",2],
+["Audit Evidence","","审计证据","audit","审计师据以发表意见的信息，包括会计记录与其他佐证。","Sufficient appropriate audit evidence supports the opinion.","充分、适当的审计证据支撑审计意见。",2],
+["Audit Risk","","审计风险","audit","审计师对存在重大错报的报表发表不恰当意见的风险。","Audit risk equals inherent risk times control risk times detection risk.","审计风险等于固有风险、控制风险与检查风险的乘积。",2],
+["Inherent Risk","","固有风险","audit","在不考虑内部控制的情况下，认定本身发生重大错报的可能性。","Complex fair-value estimates carry high inherent risk.","复杂的公允价值估计固有风险很高。",3],
+["Control Risk","","控制风险","audit","内部控制未能及时防止或发现重大错报的风险。","Weak oversight raises control risk.","监督薄弱会提高控制风险。",3],
+["Detection Risk","","检查风险","audit","审计程序未能发现已存在的重大错报的风险。","More substantive testing lowers detection risk.","增加实质性程序可降低检查风险。",3],
+["Materiality","","重要性","audit","错报或漏报足以影响使用者经济决策的程度。","Auditors set materiality at the planning stage.","审计师在计划阶段确定重要性水平。",2],
+["Material Misstatement","","重大错报","audit","报表中存在的、达到重要性水平的错误或舞弊。","The goal is to obtain reasonable assurance that no material misstatement exists.","审计目标是取得不存在重大错报的合理保证。",2],
+["Internal Control","","内部控制","audit","为实现经营效率、报告可靠与合规而建立的政策与程序。","Strong internal control reduces fraud opportunities.","健全的内部控制能减少舞弊机会。",2],
+["Test of Controls","","控制测试","audit","测试内部控制设计与运行有效性的审计程序。","The auditor performed tests of controls before relying on them.","审计师在依赖内部控制前先进行控制测试。",3],
+["Substantive Procedures","","实质性程序","audit","直接发现认定层次重大错报的程序，包括细节测试与分析程序。","Substantive procedures verify account balances directly.","实质性程序直接核实账户余额。",3],
+["Analytical Procedures","","分析程序","audit","通过研究财务数据间合理关系评价信息的审计方法。","Analytical procedures compare current margins with prior years.","分析程序将当期利润率与往年比较。",3],
+["Audit Sampling","","审计抽样","audit","对账户中低于100%的项目实施程序、以推断整体。","Audit sampling is used when testing every item is impractical.","无法逐笔检查时使用审计抽样。",3],
+["Audit Documentation","Working Papers","审计工作底稿","audit","记录审计计划、程序、证据与结论的资料。","Audit documentation must be retained for the required period.","审计工作底稿须按规定期限保存。",2],
+["Management Representation Letter","","管理层声明书","audit","管理层向审计师书面确认报表责任与特定事项的文件。","The management representation letter is dated near the audit report date.","管理层声明书的日期接近审计报告日。",3],
+["Fraud Triangle","","舞弊三角","audit","解释舞弊成因的三要素：压力、机会与合理化借口。","The fraud triangle explains why an employee might falsify expense claims.","舞弊三角解释了员工为何可能虚报费用。",2],
+["Emphasis of Matter Paragraph","","强调事项段","audit","审计报告中提醒使用者关注已在报表中恰当披露的重要事项的段落。","An emphasis of matter paragraph highlighted the subsequent litigation.","强调事项段提醒关注期后诉讼。",3],
+["Key Audit Matters","KAM","关键审计事项","audit","上市实体审计报告中披露的最重要事项，如商誉减值。","Goodwill impairment is commonly listed among key audit matters.","商誉减值通常被列为关键审计事项。",2],
+["Reasonable Assurance","","合理保证","audit","审计师通过充分程序提供的高水平但非绝对的保证。","An audit provides reasonable assurance, not a guarantee.","审计提供的是合理保证，而非绝对保证。",2],
+["Assertion","","认定","audit","管理层对报表各项目所做的明示或暗示的声明，如存在性、完整性。","Auditors test the completeness assertion for recorded liabilities.","审计师测试已记录负债的完整性认定。",3],
+["Subsequent Events","","期后事项","audit","资产负债表日至审计报告日之间发生的事项。","A major warehouse fire after year-end is a subsequent event.","年末后发生的重大仓库火灾属于期后事项。",2],
+["Related Party","","关联方","audit","对企业能够实施控制或重大影响的各方，如母公司与关键管理人员。","Transactions with a related party must be disclosed.","与关联方的交易必须披露。",2],
+["Audit Committee","","审计委员会","audit","董事会下设的监督财务报告、审计与内部控制的专门委员会。","The audit committee hires and oversees the external auditor.","审计委员会负责聘任与监督外部审计师。",2],
+["Confirmation","","函证","audit","审计师直接从第三方获取书面答复作为证据的程序。","Bank confirmation verifies cash and loan balances.","银行函证可核实存款与贷款余额。",2],
+["Walk-Through Test","","穿行测试","audit","追踪某笔交易从发生到记录全过程以了解控制的程序。","A walk-through test confirms the documented controls actually operate.","穿行测试确认书面控制确实在运行。",3],
+["Cut-off Test","","截止测试","audit","检查交易是否记录于正确会计期间的程序。","The cut-off test ensures sales near year-end are not early-recorded.","截止测试确保年末销售未被提前确认。",3],
+["Professional Skepticism","","职业怀疑","audit","审计师保持质疑、警觉矛盾证据的态度。","Professional skepticism requires challenging management assumptions.","职业怀疑要求对管理层假设保持质疑。",2],
+["Professional Judgment","","职业判断","audit","审计师基于培训与经验做出有依据的决策。","Setting materiality requires professional judgment.","确定重要性需要运用职业判断。",2],
+["Self-Interest Threat","","自身利益威胁","audit","审计师因财务或个人利益影响独立性的情形。","Holding shares in an audit client creates a self-interest threat.","持有审计客户的股份会产生自身利益威胁。",3],
+["Self-Review Threat","","自我审查威胁","audit","审计师审查自己或所在事务所先前工作所形成的独立性威胁。","Auditing books your firm kept causes a self-review threat.","审计本所代编的账目会产生自我审查威胁。",3],
+["Familiarity Threat","","密切关系威胁","audit","因与客户关系过久而影响客观性的独立性威胁。","A long-serving partner may create a familiarity threat.","长期服务同一客户的合伙人可能产生密切关系威胁。",3],
+["Intimidation Threat","","外在压力威胁","audit","审计师受到客户压力或威胁而无法客观行事的情形。","Threats to replace the auditor constitute an intimidation threat.","威胁更换审计师构成外在压力威胁。",3],
+["Engagement Letter","","审计业务约定书","audit","事务所与客户约定审计目标、范围、责任与费用的书面合同。","The engagement letter is signed before audit work begins.","审计开始前须签署业务约定书。",2],
+["Audit Risk Model","","审计风险模型","audit","审计风险=固有风险×控制风险×检查风险的关系式。","The audit risk model guides the extent of testing.","审计风险模型指导测试的范围。",3],
+["Internal Control Deficiency","","内部控制缺陷","audit","控制设计或运行无法防止错报的情形，分一般、重要与重大缺陷。","A material weakness is a severe internal control deficiency.","重大缺陷是严重的内部控制缺陷。",3],
+["Review Engagement","","审阅业务","audit","以消极保证方式提供有限保证的鉴证业务。","A review engagement offers less assurance than an audit.","审阅业务提供的保证程度低于审计。",3],
+["Positive Confirmation","","积极式函证","audit","要求第三方无论信息是否相符都必须回函的函证方式。","Positive confirmation is used for large receivable balances.","大额应收账款采用积极式函证。",3],
+["Negative Confirmation","","消极式函证","audit","第三方仅在信息不符时才回函的函证方式。","Negative confirmation is suitable when risk is assessed as low.","风险评估为低时可采用消极式函证。",3],
+["Tolerable Misstatement","","可容忍错报","audit","审计师设定的、不至于影响总体结论的错报上限。","Tolerable misstatement is derived from overall materiality.","可容忍错报由整体重要性推导得出。",3],
+["Material Weakness","","重大缺陷","audit","内部控制中合理可能导致重大错报无法被及时发现的缺陷。","A material weakness must be reported to the audit committee.","重大缺陷必须向审计委员会报告。",3],
+
+/* ---- 税务（CPA/ACCA） ---- */
+["Taxation","","税收；税制","tax","政府依法强制、无偿取得财政收入的分配形式。","The reform modernized the taxation of digital services.","这项改革使数字服务税收制度现代化。",1],
+["Direct Tax","","直接税","tax","由纳税人直接负担、不能转嫁的税，如所得税、财产税。","Income tax is the main direct tax for individuals.","所得税是个人最主要的直接税。",2],
+["Indirect Tax","","间接税","tax","税负可通过价格转嫁给他人的税，如增值税、消费税。","VAT is the largest source of indirect tax revenue.","增值税是最大的间接税收入来源。",2],
+["Income Tax","","所得税","tax","对个人或企业所得征收的税。","Apple's global income tax disputes with the EU reached $15 billion.","苹果与欧盟的全球所得税争议金额高达150亿美元。",1],
+["Corporate Income Tax","CIT","企业所得税","tax","对企业生产经营所得和其他所得征收的税。","The federal corporate income tax rate was cut to 21% in the U.S. in 2018.","2018年美国联邦企业所得税率降至21%。",1],
+["Individual Income Tax","IIT","个人所得税","tax","对个人工资、薪金、劳务报酬等所得征收的税。","China's individual income tax system uses seven progressive brackets.","中国个人所得税实行七级累进税率。",1],
+["Value-Added Tax","VAT","增值税","tax","对商品和服务流转过程中的增值额征收的税。","UK VAT is charged at 20% on most goods.","英国大多数商品按20%征收增值税。",1],
+["Goods and Services Tax","GST","商品及服务税","tax","增值税的一种，在澳大利亚、新加坡、加拿大等国使用。","Singapore's GST rate was raised to 9% in 2024.","新加坡商品及服务税率2024年上调至9%。",2],
+["Sales Tax","","销售税","tax","在商品零售环节按销售额征收的税，美国各州普遍使用。","State sales tax varies across the United States.","美国各州销售税率不同。",2],
+["Excise Duty","Excise","消费税；货物税","tax","对烟酒、燃油、汽车等特定商品征收的税。","Excise duty on fuel is built into pump prices.","燃油消费税已包含在加油站售价中。",3],
+["Customs Duty","Tariff","关税","tax","货物进出关境时由海关征收的税。","Customs duties rose during the U.S.-China trade dispute.","中美贸易争端期间关税上升。",2],
+["Property Tax","","财产税","tax","对不动产等财产的价值或数量征收的税。","Municipalities fund schools partly through property tax.","地方政府的学校经费部分来自财产税。",2],
+["Capital Gains Tax","CGT","资本利得税","tax","对出售资产取得的增值收益征收的税。","Long-term holdings face lower capital gains tax in the U.S.","美国长期持有适用更低的资本利得税。",2],
+["Inheritance Tax","","遗产税","tax","对被继承人遗留财产征收的税。","Inheritance tax is levied on the estate before distribution.","遗产在分配前先缴纳遗产税。",2],
+["Withholding Tax","WHT","预提税","tax","支付款项时由付款人代扣代缴的税，常见于股息、利息、特许权使用费。","Cross-border dividends often incur withholding tax.","跨境股息通常要缴纳预提税。",3],
+["Payroll Tax","","工资税","tax","雇主按工资薪金总额缴纳的税，用于社保等项目。","Payroll tax funds social security programs.","工资税用于社会保障项目。",3],
+["Stamp Duty","","印花税","tax","对合同、产权转移书据、营业账簿等凭证征收的税。","Stamp duty is charged on property purchases in the UK.","英国购房需缴纳印花税。",2],
+["Taxable Income","","应纳税所得额","tax","收入总额减除扣除项后据以计税的金额。","Taxable income is reduced by charitable contributions.","慈善捐赠可以减少应纳税所得额。",2],
+["Tax Deduction","","税前扣除","tax","依法可从应税收入中扣减的项目。","Mortgage interest is a common tax deduction.","房贷利息是常见的税前扣除项目。",2],
+["Tax Exemption","","免税","tax","依法对特定所得或纳税人免于征税。","Charities enjoy tax exemption on qualifying income.","慈善机构符合条件的收入享受免税。",2],
+["Tax Credit","","税收抵免","tax","直接从应纳税额中扣减的金额，比扣除更“值钱”。","R&D tax credits reduce the final tax bill dollar for dollar.","研发税收抵免可等额减少最终应纳税额。",3],
+["Tax Allowance","","免税额","tax","税法规定可从收入中减除的基本金额。","The personal tax allowance is indexed to inflation.","个人免税额随通胀调整。",3],
+["Marginal Tax Rate","","边际税率","tax","每增加一元所得所适用的税率。","High earners pay the top marginal tax rate.","高收入者适用最高边际税率。",2],
+["Progressive Tax","","累进税","tax","税率随所得增加而提高的税制。","Income tax is typically a progressive tax.","所得税通常是累进税。",2],
+["Proportional Tax","Flat Tax","比例税","tax","不论所得多少均按同一比例征收的税。","A flat proportional tax treats all earners equally in rate.","比例税对所有收入者适用同一税率。",3],
+["Regressive Tax","","累退税","tax","收入越低、实际负担比例越高的税，如多数间接税。","A cigarette tax is regressive relative to income.","烟草税相对收入而言具有累退性。",3],
+["Tax Evasion","","逃税","tax","以隐瞒、伪造等非法手段不缴或少缴税款的行为。","Tax evasion can lead to criminal prosecution.","逃税可能导致刑事追诉。",2],
+["Tax Avoidance","","避税","tax","利用税法漏洞或安排减少税负，形式合法但可能被反避税规则否定。","Aggressive tax avoidance schemes are challenged by authorities.","激进的避税安排会受到税务机关挑战。",3],
+["Tax Planning","","税务筹划","tax","在合法合规前提下提前安排交易以优化税负。","Legitimate tax planning aligns with the intent of the law.","正当税务筹划与立法意图一致。",2],
+["Deferred Tax","","递延所得税","tax","会计利润与应税所得之间的时间性差异所形成的未来税款。","Deferred tax balances are common in capital-intensive firms.","资本密集型企业普遍存在递延所得税余额。",3],
+["Deferred Tax Asset","DTA","递延所得税资产","tax","可抵扣暂时性差异形成的、未来可少缴税款的资产。","Loss carryforwards create a deferred tax asset.","可结转亏损会形成递延所得税资产。",3],
+["Deferred Tax Liability","DTL","递延所得税负债","tax","应纳税暂时性差异形成的、未来应补缴税款的负债。","Accelerated tax depreciation often creates a deferred tax liability.","税务上加速折旧通常形成递延所得税负债。",3],
+["Temporary Difference","","暂时性差异","tax","资产或负债账面价值与计税基础之间的差额，未来会转回。","Temporary differences give rise to deferred tax.","暂时性差异会产生递延所得税。",3],
+["Permanent Difference","","永久性差异","tax","税法与会计口径不同、未来不会转回的差异。","Fines are a permanent difference, never deductible.","罚款属于永久性差异，永远不能税前扣除。",3],
+["Tax Base","","计税基础","tax","税法规定资产或负债在未来期间可予计税或扣除的金额。","The tax base of an asset determines its future deductions.","资产的计税基础决定其未来可扣除金额。",3],
+["Tax Return","","纳税申报表","tax","纳税人按期向税务机关申报所得与税款的正式文件。","The company files its tax return within five months of year-end.","公司在年末后五个月内提交纳税申报表。",2],
+["Double Taxation","","双重征税","tax","同一所得在两个或多个环节或国家被重复征税。","Tax treaties relieve double taxation on cross-border income.","税收协定可消除跨境所得的双重征税。",3],
+["Tax Treaty","Double Tax Agreement","税收协定","tax","两国之间划分征税权、避免双重征税的双边协议。","The tax treaty lowers withholding tax on dividends.","税收协定降低了股息预提税。",3],
+["Transfer Pricing","","转让定价","tax","关联企业之间交易的定价，须符合独立交易原则。","Amazon's transfer pricing was challenged for $270 million in back taxes.","亚马逊因转让定价被追缴2.7亿美元税款。",3],
+["Arm's Length Principle","","独立交易原则","tax","关联交易应按无关联的独立企业间的价格定价。","The arm's length principle is the global transfer pricing standard.","独立交易原则是全球转让定价的标准。",3],
+["Tax Haven","","避税天堂","tax","税率极低或不征税、信息保密程度高的国家或地区。","The Paradise Papers exposed use of tax haven structures.","天堂文件曝光了避税天堂架构的使用。",2],
+["Thin Capitalization","","资本弱化","tax","企业以过高比例的债务融资，通过利息扣除侵蚀税基。","Thin capitalization rules limit interest deductions.","资本弱化规则限制利息扣除。",3],
+["Advance Pricing Agreement","APA","预约定价安排","tax","企业与税务机关事先约定关联交易定价原则的协议。","An advance pricing agreement provides certainty for years.","预约定价安排可提供多年的税务确定性。",3],
+["Input VAT","","进项税额","tax","购进货物或服务时支付的增值税，可抵扣。","Input VAT is credited against output VAT.","进项税额可用于抵扣销项税额。",3],
+["Output VAT","","销项税额","tax","销售货物或服务时向购买方收取的增值税。","Output VAT minus input VAT is the VAT payable.","销项税额减去进项税额即为应缴增值税。",3],
+
+/* ---- 管理会计（ACCA Management Accounting） ---- */
+["Management Accounting","","管理会计","macc","为内部管理者的计划、控制与决策提供信息的会计分支。","Management accounting reports need not follow IFRS.","管理会计报告无需遵循IFRS。",1],
+["Cost Accounting","","成本会计","macc","归集、计算与分析成本的方法体系，是管理会计的基础。","Cost accounting revealed the true margin of each product line.","成本会计揭示了每条产品线的真实利润率。",2],
+["Cost","","成本","macc","为生产产品或提供服务所耗费的资源的货币表现。","The cost of shipping rose after fuel surcharges.","燃油附加费上调后运输成本上升。",1],
+["Direct Cost","","直接成本","macc","可直接追溯到某成本对象的成本，如直接材料、直接人工。","Direct costs of a smartphone include chips and assembly labor.","智能手机的直接成本包括芯片和组装人工。",2],
+["Indirect Cost","Overhead","间接成本","macc","不能直接追溯、需分摊到成本对象的成本，如厂房租金。","Factory utilities are an indirect cost shared by products.","厂房水电费是由各产品分摊的间接成本。",2],
+["Direct Material","","直接材料","macc","构成产品实体、可直接计入的材料。","Lithium is a major direct material in EV batteries.","锂是电动汽车电池的主要直接材料。",2],
+["Direct Labor","","直接人工","macc","直接从事产品生产的工人的工资。","Direct labor is tracked per unit on the assembly line.","组装线上每个产品的直接人工都单独记录。",2],
+["Production Overhead","Factory Overhead","制造费用","macc","生产环节发生的、除直接材料与直接人工之外的间接费用。","Production overhead includes depreciation and foreman wages.","制造费用包括折旧与车间主管工资。",3],
+["Fixed Cost","","固定成本","macc","在相关范围内不随业务量变动的成本。","The fixed cost of the lease is paid monthly.","租赁固定成本按月支付。",1],
+["Variable Cost","","变动成本","macc","总额随业务量成正比变动的成本。","Packaging is a variable cost per unit.","包装是按件计算的变动成本。",1],
+["Semi-Variable Cost","Mixed Cost","半变动成本","macc","同时包含固定与变动两部分的成本，如电费（基本费+用量费）。","A phone bill is a semi-variable cost with a fixed monthly fee.","含固定月租的话费账单是半变动成本。",3],
+["Stepped Cost","Step Cost","阶梯式成本","macc","在一定业务量内固定、超过临界点后跳跃式上升的成本。","Supervisor salaries are a stepped cost when shifts expand.","班次增加时，主管工资是阶梯式成本。",3],
+["Product Cost","","产品成本","macc","与产品生产相关、计入存货的成本。","Product costs are expensed only when goods are sold.","产品成本只有在售出时才转为费用。",2],
+["Period Cost","","期间成本","macc","与时间相关、不计入存货而在当期费用化的成本。","Selling and administrative costs are period costs.","销售与管理费用属于期间成本。",2],
+["Cost Center","","成本中心","macc","对成本负责、不对收入与利润负责的责任单位。","The maintenance department is a cost center.","维修部门是一个成本中心。",2],
+["Profit Center","","利润中心","macc","同时对收入与成本、利润负责的责任单位。","Each regional store is treated as a profit center.","每家区域门店都作为利润中心。",2],
+["Investment Center","","投资中心","macc","对利润和资产投资决策负责的责任单位。","A division with its own capital budget is an investment center.","拥有独立资本预算的事业部是投资中心。",3],
+["Absorption Costing","Full Costing","吸收成本法","macc","将固定制造费用分摊计入产品成本的成本计算方法。","Absorption costing is required for external reporting.","对外报告必须采用吸收成本法。",3],
+["Marginal Costing","Variable Costing","边际成本法","macc","产品成本只含变动成本、固定制造费用作为期间费用的方法。","Marginal costing helps short-term pricing decisions.","边际成本法有助于短期定价决策。",3],
+["Activity-Based Costing","ABC","作业成本法","macc","以作业为归集对象、按成本动因分配间接费用的方法。","Activity-based costing exposed that low-volume products were unprofitable.","作业成本法揭示了小批量产品其实不赚钱。",3],
+["Standard Costing","","标准成本法","macc","预先设定标准成本、与实际比较并分析差异的控制方法。","Standard costing simplifies inventory valuation.","标准成本法简化了存货计价。",3],
+["Variance Analysis","","差异分析","macc","比较实际成本与标准成本、解释差异原因的方法。","Variance analysis explained why material costs exceeded budget.","差异分析解释了材料成本为何超预算。",2],
+["Favorable Variance","Fav Variance","有利差异","macc","实际结果优于标准或预算的差异。","A favorable variance in labor cost came from higher productivity.","劳动成本的有利差异来自生产率提升。",3],
+["Adverse Variance","Unfavorable Variance","不利差异","macc","实际结果劣于标准或预算的差异。","An adverse variance flagged wasted raw material.","不利差异表明原材料出现浪费。",3],
+["Budget","","预算","macc","以数量和金额表述的未来计划。","The annual budget is approved by the board.","年度预算由董事会批准。",1],
+["Budgeting","","预算编制","macc","将战略目标转化为财务计划的过程。","Budgeting coordinates spending across departments.","预算编制协调各部门开支。",2],
+["Master Budget","","总预算","macc","汇总经营预算与财务预算的综合性预算。","The master budget includes a budgeted balance sheet.","总预算包含预计资产负债表。",3],
+["Flexible Budget","","弹性预算","macc","按实际业务量调整的预算，便于公平比较。","A flexible budget adjusts for lower-than-planned output.","弹性预算会按实际产量调整。",3],
+["Zero-Based Budgeting","ZBB","零基预算","macc","每个预算期从零开始论证全部支出，不以上年为基数。","Zero-based budgeting was used to cut corporate overhead.","零基预算被用于削减公司管理费用。",3],
+["Incremental Budgeting","","增量预算","macc","在上期预算基础上按增减调整的预算方法。","Incremental budgeting is simple but can perpetuate waste.","增量预算简单，但可能延续浪费。",3],
+["Rolling Budget","Continuous Budget","滚动预算","macc","预算期保持固定长度、定期向前延伸的预算。","A rolling budget always covers the next 12 months.","滚动预算始终覆盖未来12个月。",3],
+["Cash Budget","","现金预算","macc","预测未来现金收入、支出与余额的预算。","The cash budget warned of a seasonal funding gap.","现金预算预警了季节性资金缺口。",2],
+["Cost-Volume-Profit Analysis","CVP","本量利分析","macc","研究成本、业务量与利润关系的分析方法。","CVP analysis shows how many units must be sold to break even.","本量利分析显示需卖出多少件才能保本。",3],
+["Break-Even Point","BEP","盈亏平衡点","macc","收入等于总成本、利润为零时的业务量。","The café reached its break-even point in month four.","咖啡馆在第四个月达到盈亏平衡点。",1],
+["Contribution Margin","Contribution","边际贡献","macc","销售收入减去变动成本后的金额，用于覆盖固定成本。","The contribution margin per unit is $6.","每件产品的边际贡献为6美元。",2],
+["Margin of Safety","","安全边际","macc","实际或预计销售量超过盈亏平衡点的部分。","A large margin of safety cushions a sales downturn.","较大的安全边际可以缓冲销量下滑。",3],
+["Relevant Cost","","相关成本","macc","与决策相关、会因决策而改变的未来成本。","Only relevant costs are considered in the make-or-buy decision.","自制或外购决策只考虑相关成本。",3],
+["Sunk Cost","","沉没成本","macc","已经发生、无法收回、与未来决策无关的成本。","Sunk costs are ignored when deciding whether to abandon a project.","决定是否放弃项目时应忽略沉没成本。",2],
+["Opportunity Cost","","机会成本","macc","选择某一方案而放弃的其他方案中价值最高的收益。","The opportunity cost of idle cash is the interest forgone.","闲置现金的机会成本是放弃的利息。",1],
+["Incremental Cost","Differential Cost","增量成本","macc","因选择某方案而增加的成本。","The incremental cost of the special order is below its price.","这笔特殊订单的增量成本低于其报价。",3],
+["Avoidable Cost","","可避免成本","macc","取消某产品或业务即可不再发生的成本。","Avoidable costs are relevant when dropping a product line.","砍掉产品线时，可避免成本属于相关成本。",3],
+["Cost Allocation","","成本分摊","macc","将共同成本分配到各成本对象的过程。","Rent allocation uses floor area as the basis.","租金按各部门占用面积分摊。",3],
+["Cost Driver","","成本动因","macc","驱动作业成本发生的因素，如订单次数、机器工时。","Number of setups is a cost driver in ABC.","在作业成本法中，换产次数是一个成本动因。",3],
+["Target Costing","","目标成本法","macc","由目标售价倒推目标成本、再组织设计与生产实现的成本管理方法。","Target costing sets cost as market price minus desired profit.","目标成本法用市价减去目标利润确定成本。",3],
+["Life Cycle Costing","","生命周期成本法","macc","计算产品从设计、生产、使用到废弃全过程成本的方法。","Life cycle costing includes after-sales and disposal costs.","生命周期成本法包含售后与报废成本。",3],
+["Balanced Scorecard","BSC","平衡计分卡","macc","从财务、客户、内部流程、学习与成长四个维度计量业绩的框架。","The balanced scorecard links non-financial measures to strategy.","平衡计分卡将非财务指标与战略挂钩。",2],
+["Economic Value Added","EVA","经济增加值","macc","税后净营业利润减去资本成本后的价值，衡量价值创造。","Economic value added is positive only when returns exceed WACC.","只有回报超过资本成本时，经济增加值才为正。",3],
+["Transfer Price","","内部转移价格","macc","企业内部责任中心之间转移产品或服务的定价。","The transfer price affects divisional profit and tax.","转移价格影响分部利润与税负。",3],
+["Learning Curve","","学习曲线","macc","随累计产量增加、单位工时按规律下降的效应。","The learning curve justifies lower quotes as output doubles.","学习曲线表明产量翻倍时工时会下降。",3],
+["Residual Income","RI","剩余收益","macc","部门利润扣除其占用资本的要求回报后的余额。","Residual income discourages managers rejecting positive-return projects.","剩余收益可避免经理拒绝回报高于资本成本的项目。",3],
+
+/* ---- 商法（ACCA Corporate & Business Law） ---- */
+["Contract Law","","合同法","law","规范合同订立、效力、履行与违约的法律部门。","Contract law governs the supply agreement between the firms.","合同法规范两家公司之间的供应协议。",2],
+["Offer","","要约","law","一方以订立合同为目的、向对方作出的明确意思表示。","The supplier's quote was a valid offer.","供应商的报价构成有效要约。",2],
+["Acceptance","","承诺","law","受要约人无条件同意要约的意思表示，承诺生效合同成立。","Acceptance must mirror the terms of the offer.","承诺必须与要约条款完全一致。",2],
+["Consideration","","对价","law","合同一方为换取对方承诺而付出的金钱、行为或容忍。","A promise without consideration is generally unenforceable.","没有对价的承诺通常无法强制执行。",3],
+["Breach of Contract","","违约","law","合同一方未履行或未适当履行合同义务。","The supplier's late delivery was a breach of contract.","供应商延迟交货构成违约。",1],
+["Damages","","损害赔偿","law","违约或侵权后对受损方给予的金钱补偿。","The court awarded damages for the lost profits.","法院就利润损失判予损害赔偿。",2],
+["Liquidated Damages","","约定违约金","law","合同中事先约定的违约赔偿金额，须为合理预估而非惩罚。","The construction contract capped liquidated damages at 5% of value.","建筑合同约定违约金上限为合同金额的5%。",3],
+["Tort","","侵权行为","law","除违约外、侵害他人合法权益的民事不法行为。","Negligence is the most common tort in business.","过失是商业中最常见的侵权行为。",3],
+["Negligence","","过失","law","未尽到合理注意义务而致人损害的行为。","Auditors may be sued for negligence if they ignore obvious fraud.","审计师若忽视明显舞弊，可能因过失被诉。",2],
+["Duty of Care","","注意义务","law","一个人对可预见的受影响方负有的谨慎行事义务。","Manufacturers owe a duty of care to end users.","制造商对最终用户负有注意义务。",3],
+["Agency","","代理","law","代理人在授权范围内以被代理人名义行事、后果归属于被代理人的关系。","Agency lets the broker sign on behalf of the client.","代理关系使经纪人可代表客户签约。",2],
+["Agent","","代理人","law","受委托代为实施法律行为的人。","The sales agent has no authority to bind the principal.","销售代理人无权使委托人承担义务。",2],
+["Partnership","","合伙","law","两人以上共同经营、共负盈亏的企业组织形式。","A partnership exposes partners to unlimited liability.","合伙企业中合伙人承担无限责任。",2],
+["Limited Liability","","有限责任","law","投资者仅以出资额为限对企业债务负责。","Shareholders enjoy limited liability for corporate debts.","股东对公司债务承担有限责任。",1],
+["Unlimited Liability","","无限责任","law","所有者以全部个人财产对企业债务负责。","Sole traders carry unlimited liability.","个体经营者承担无限责任。",2],
+["Limited Company","Ltd","有限责任公司","law","股东责任有限、具有独立法人资格的公司。","The limited company files annual accounts at the registry.","有限责任公司须向登记机关提交年度账目。",1],
+["Corporation","","法人公司","law","依法设立、独立于成员的法律实体。","A corporation can sue and be sued in its own name.","法人公司可以自己的名义起诉与应诉。",2],
+["Memorandum of Association","","公司组织大纲","law","载明公司名称、住所、宗旨与资本等基本事项的文件。","The memorandum of association defines the company's scope.","公司组织大纲界定公司的经营范围。",3],
+["Articles of Association","","公司章程","law","规范公司内部管理、股东权利与董事会议事规则的文件。","The articles of association set dividend and voting rules.","公司章程规定分红与表决规则。",3],
+["Corporate Governance","","公司治理","law","指挥和控制公司的制度安排，包括董事会、股东与信息披露。","Good corporate governance was demanded after the scandals.","系列丑闻后，良好公司治理成为普遍要求。",2],
+["Board of Directors","Board","董事会","law","由董事组成、负责公司经营决策的机构。","The board of directors approved the capital raise.","董事会批准了融资方案。",1],
+["Director","","董事","law","经股东选举、负责公司决策与管理的人。","A director must act in the company's best interests.","董事必须以公司最大利益行事。",1],
+["Liquidation","","清算","law","公司终止时变卖资产、清偿债务并分配剩余财产的程序。","The insolvent firm entered compulsory liquidation.","资不抵债的公司进入强制清算。",2],
+["Winding Up","","清盘","law","公司解散、结束全部业务的过程。","Creditors filed a petition for winding up.","债权人提交了清盘申请。",3],
+["Bankruptcy","","破产","law","债务人无力偿债时由法院依法处理其财产的程序。","Personal bankruptcy provides a fresh start for honest debtors.","个人破产为诚实债务人提供重新开始的机会。",2],
+["Administration","","破产管理","law","由管理人接管困境企业、以拯救企业为目标的程序。","Administration kept the retailer trading while a buyer was sought.","破产管理期间零售商继续营业以寻找买家。",3],
+["Fixed Charge","","固定担保","law","以特定资产设定的担保，未经债权人同意不得处置。","The bank holds a fixed charge over the factory.","银行对该工厂享有固定担保。",3],
+["Floating Charge","","浮动担保","law","覆盖企业全部或某类变动资产、结晶前企业可自由处置的担保。","A floating charge covers inventory and receivables.","浮动担保覆盖存货与应收账款。",3],
+["Debenture","","公司债券；信用债券","law","公司发行的、载明借款条款的债券，常以担保为支持。","The debenture holder appointed an administrative receiver.","公司债券持有人指定了破产接管人。",3],
+["Employment Law","","劳动法","law","规范雇佣关系、工资、解雇与劳动保护的法律。","Employment law requires consultation before mass redundancies.","劳动法要求大规模裁员前进行协商。",2],
+["Unfair Dismissal","","不公平解雇","law","雇主无正当理由或未按程序解雇员工。","The employee won an unfair dismissal claim.","员工赢得了不公平解雇之诉。",3],
+["Redundancy","","裁员","law","岗位消失导致的解雇，雇主须支付经济补偿。","The factory closure led to 300 redundancies.","工厂关闭导致300人被裁。",2],
+["Intellectual Property","IP","知识产权","law","对智力成果享有的专有权利，包括专利、商标、版权等。","The deal valued the firm's intellectual property at $2 billion.","该交易对公司知识产权的估值为20亿美元。",2],
+["Copyright","","版权","law","对文学、艺术、软件等作品的复制与传播专有权。","Copyright protects the code for 70 years after the author's death.","代码在作者去世后仍受版权保护70年。",2],
+["Patent","","专利","law","国家授予发明人在一定期限内独占实施发明的权利。","The drug patent protected sales for 20 years.","药品专利保护销售长达20年。",2],
+["Trademark","","商标","law","用于区分商品来源的标志，可注册保护。","The brand's trademark is enforced worldwide.","该品牌商标在全球范围内受到保护。",2],
+["Anti-Money Laundering","AML","反洗钱","law","防范犯罪所得通过金融系统合法化的制度。","Anti-money laundering rules require reporting suspicious transactions.","反洗钱规则要求报告可疑交易。",1],
+["Bribery","","贿赂","law","为影响公务或商业行为而给予或收受不正当利益。","The Bribery Act holds firms liable for failing to prevent corruption.","反贿赂法要求企业对未能防止腐败承担责任。",3],
+["Antitrust Law","","反垄断法","law","防止垄断、限制竞争协议与滥用市场支配地位的法律。","The antitrust regulator blocked the merger.","反垄断监管机构阻止了该并购。",2],
+["Fraudulent Trading","","欺诈交易","law","公司在明知无力偿债时仍继续经营、意图欺诈债权人的行为。","Directors were disqualified for fraudulent trading.","董事因欺诈交易被取消任职资格。",3],
+["Lifting the Veil","Piercing the Corporate Veil","揭开公司面纱","law","法院仅在滥用法人资格时才考虑揭开面纱。","Courts consider lifting the veil only in abuse cases.","法院仅在滥用法人资格时才考虑揭开面纱。",3],
+
+/* ---- 另类投资（CFA Alternative Investments） ---- */
+["Alternative Investments","Alternatives","另类投资","alt","传统股票、债券、现金之外的投资，包括房产、大宗商品、对冲基金、私募股权等。","Pension funds raised allocations to alternative investments for diversification.","养老金为分散投资提高了另类投资配置。",1],
+["Real Estate","Property","房地产","alt","土地及附着于土地的建筑物，兼具消费与投资属性。","Commercial real estate values fell as office vacancies rose.","写字楼空置率上升，商业地产价值下跌。",1],
+["Real Estate Investment Trust","REIT","房地产投资信托","alt","汇集资金投资并持有物业或抵押贷款、收益主要分配给投资者的上市工具。","Simon Property Group is one of the largest REITs in the U.S.","西蒙地产集团是美国最大的房地产投资信托之一。",2],
+["Commodity","","大宗商品","alt","可在交易所交易的初级产品，如原油、金属、农产品。","Gold is the commodity investors buy in times of uncertainty.","黄金是投资者在不确定时期买入的大宗商品。",1],
+["Commodity Futures","","商品期货","alt","以大宗商品为标的的期货合约。","Commodity futures help producers hedge price swings.","商品期货帮助生产商对冲价格波动。",2],
+["Spot Price","","现货价格","alt","商品在现货市场立即交割的价格。","The spot price of Brent crude briefly fell below $70.","布伦特原油现货价格一度跌破70美元。",2],
+["Contango","","期货升水","alt","远期合约价格高于现货价格的市场结构。","Oil markets were in contango as storage filled.","库存增加时石油市场处于期货升水状态。",3],
+["Backwardation","","期货贴水","alt","现货价格高于远期价格的市场结构。","Backwardation signals tight current supply.","期货贴水表明当前供应紧张。",3],
+["Convenience Yield","","便利收益","alt","持有实物商品相对于持有期货所获得的隐含好处。","A high convenience yield explains backwardation.","较高的便利收益解释了期货贴水。",3],
+["Event-Driven Strategy","","事件驱动策略","alt","利用并购、重组、破产等公司事件获利的对冲基金策略。","Event-driven strategies profited from merger announcements.","事件驱动策略从并购公告中获利。",3],
+["Distressed Securities","","困境证券","alt","经营或财务困境企业发行的证券，价格低、风险高。","Distressed securities funds bought Lehman claims at cents on the dollar.","困境证券基金以面值的零头买入雷曼债权。",3],
+["Merger Arbitrage","","并购套利","alt","并购宣布后买入目标公司股票、对冲交易失败风险的策略。","Merger arbitrage spreads widened when regulators reviewed the deal.","监管审查交易时，并购套利价差扩大。",3],
+["Global Macro","","全球宏观策略","alt","基于对各国经济、利率与汇率的判断在全球市场布局的策略。","George Soros's Quantum Fund was a global macro pioneer.","索罗斯的量子基金是全球宏观策略的先驱。",3],
+["Managed Futures","CTA","管理期货","alt","由商品交易顾问在期货市场按趋势模型交易的策略。","Managed futures performed well in the 2008 sell-off.","管理期货在2008年抛售中表现出色。",3],
+["Fund of Funds","FoF","基金中的基金","alt","投资于多个基金的组合，分散管理人风险但增加一层费用。","A fund of funds gives small investors access to top hedge funds.","基金中的基金让小投资者得以投资顶级对冲基金。",3],
+["Buyout Fund","","并购基金","alt","以控股方式收购成熟企业、改善后退出的私募股权基金。","KKR's buyout fund took RJR Nabisco private in 1989.","KKR的并购基金于1989年将雷诺兹-纳贝斯克私有化。",3],
+["Mezzanine Financing","","夹层融资","alt","介于优先债务与股权之间、常附认股权的融资工具。","Mezzanine financing fills the gap in buyout structures.","夹层融资填补杠杆收购结构中的资金缺口。",3],
+["Infrastructure","","基础设施","alt","交通、能源、公用事业等寿命长、现金流稳定的实物资产。","Infrastructure funds bid for toll roads and airports.","基础设施基金竞标收费公路与机场。",2],
+["Farmland","","农田","alt","用于农业生产的土地，收益来自地租与农产品。","Institutions bought farmland as an inflation hedge.","机构买入农田作为通胀对冲。",3],
+["Collectibles","","收藏品","alt","邮票、钱币、艺术品等因稀缺而具有收藏价值的物品。","Collectibles are illiquid and hard to value.","收藏品流动性差且难以估值。",3],
+["J-Curve","","J曲线","alt","私募股权基金前期亏损、后期收益转升的净值轨迹。","The J-curve means buyout funds lose money in early years.","J曲线意味着并购基金前期处于亏损。",3],
+["Vintage Year","","基金成立年份","alt","私募股权基金开始投资的年份，用于比较不同批次基金。","Performance varies sharply by vintage year.","不同成立年份的基金业绩差异显著。",3],
+["Capital Call","Drawdown Notice","资本召唤","alt","GP要求LP按承诺出资的通知。","The fund issued a capital call to fund the acquisition.","基金发出资本召唤以支付收购款。",3],
+["Committed Capital","Commitment","承诺资本","alt","LP承诺向基金出资的总额。","Committed capital is drawn down over the fund's life.","承诺资本在基金存续期内分期到位。",3],
+["Distribution Waterfall","Waterfall","分配瀑布","alt","基金退出收益在GP与LP之间分配的规则。","The distribution waterfall sets the order of payouts.","分配瀑布规定了收益支付的顺序。",3],
+["Clawback","","回拨条款","alt","GP已分配收益超过其应得份额时须返还的条款。","The clawback forced the manager to return excess carried interest.","回拨条款迫使管理人返还超额业绩报酬。",3],
+["Hurdle Rate","Preferred Return","门槛收益率","alt","GP参与分配前基金必须达到的最低收益率。","The fund's hurdle rate was set at 8%.","该基金门槛收益率定为8%。",3],
+["Lock-Up Period","","锁定期","alt","投资者不得赎回投资的期间。","Hedge funds impose a one-year lock-up period.","对冲基金设定一年锁定期。",3],
+["Side Pocket","","侧袋账户","alt","基金将难以估值的资产单独存放、不按正常净值赎回的安排。","Illiquid stakes were moved into a side pocket.","非流动性资产被放入侧袋账户。",3],
+["High-Water Mark","HWM","高水位线","alt","基金净值必须超过历史最高值才能计提业绩报酬。","The high-water mark prevents charging twice for the same gains.","高水位线避免就同一收益重复收费。",3],
+["Absolute Return","","绝对收益","alt","不与市场基准挂钩、追求正收益的投资目标。","Absolute return funds aim to make money in all markets.","绝对收益基金力求在任何市场中盈利。",2],
+["Private Credit","Direct Lending","私募信贷","alt","非银行机构直接向企业提供的贷款。","Private credit grew as banks pulled back from leveraged lending.","银行退出杠杆贷款后私募信贷发展起来。",3],
+["Distressed Debt","","困境债务","alt","处于违约或破产风险中的企业的债务。","Distressed debt investors bought defaulted bonds at 30 cents.","困境债务投资者以30美分的价格买入违约债券。",3],
+["Digital Assets","","数字资产","alt","以数字形式存在的资产，包括加密货币与代币。","CME bitcoin futures brought digital assets into institutional portfolios.","芝商所比特币期货使数字资产进入机构组合。",3],
+["Cryptocurrency","Crypto","加密货币","alt","基于密码学和分布式账本的数字货币。","Bitcoin became the largest cryptocurrency by market value.","比特币成为市值最大的加密货币。",2],
+["Tokenization","","代币化","alt","将实物或金融资产的权益以区块链代币表示。","Tokenization can split real estate into tradable shares.","代币化可将房地产拆分为可交易的份额。",3],
+["ESG Investing","Responsible Investing","ESG投资","alt","在投资决策中纳入环境、社会与治理因素。","ESG investing screens out firms with poor governance.","ESG投资会剔除治理较差的公司。",2],
+["Art","","艺术品投资","alt","以绘画、雕塑等艺术品为投资对象的另类投资。","Art prices are opaque and driven by rarity.","艺术品价格不透明且受稀缺性驱动。",3],
+["Natural Resources","","自然资源","alt","矿产、能源、林地等取自自然的资源类资产。","Natural resources equities hedge against inflation.","自然资源类股票可对冲通胀。",3],
+["Infrastructure Fund","","基础设施基金","alt","投资于基础设施项目的基金，追求长期稳定现金流。","The infrastructure fund acquired a portfolio of wind farms.","该基础设施基金收购了一组风电场。",3],
+
+/* ---- 组合管理（CFA Portfolio Management） ---- */
+["Portfolio Management","","投资组合管理","pm","以实现客户目标为目的、对组合进行规划、执行与监控的过程。","Portfolio management balances risk and return over the horizon.","组合管理在投资期限内平衡风险与收益。",1],
+["Investment Policy Statement","IPS","投资政策说明书","pm","载明客户收益目标、风险承受力与约束条件的书面文件。","The investment policy statement is reviewed every two years.","投资政策说明书每两年审查一次。",2],
+["Investment Objectives","","投资目标","pm","客户希望实现的收益与风险目标，是组合构建的起点。","Investment objectives must be realistic given the client's constraints.","投资目标必须结合客户约束、切实可行。",2],
+["Risk Tolerance","","风险承受能力","pm","客户承受组合波动与亏损的意愿与能力。","A retiree's risk tolerance is typically lower.","退休人士的风险承受能力通常较低。",2],
+["Constraints","","投资约束","pm","限制组合的因素，包括流动性、期限、税收、法规与特殊需求。","The IPS lists five types of constraints.","投资政策说明书列出五类投资约束。",3],
+["Investment Horizon","","投资期限","pm","投资者计划持有投资的时间长度。","Endowments have a very long investment horizon.","捐赠基金的投资期限很长。",2],
+["Asset Allocation","","资产配置","pm","在各大类资产之间分配资金的决策，是组合收益的主要来源。","Studies show asset allocation drives most long-term returns.","研究表明资产配置决定大部分长期收益。",2],
+["Strategic Asset Allocation","SAA","战略资产配置","pm","基于长期目标确定的各资产目标比例。","Strategic asset allocation sets the policy weights.","战略资产配置确定政策性权重。",3],
+["Tactical Asset Allocation","TAA","战术资产配置","pm","基于短期市场判断主动偏离战略配置的操作。","Tactical asset allocation underweighted bonds ahead of hikes.","战术资产配置在加息前降低了债券仓位。",3],
+["Rebalancing","","再平衡","pm","将因市场涨跌偏离目标的组合权重调整回目标的过程。","Annual rebalancing disciplined the fund's risk level.","年度再平衡使基金风险水平保持纪律。",2],
+["Efficient Frontier","","有效前沿","pm","给定风险水平下预期收益最高的组合构成的曲线。","The efficient frontier lies at the northwest of the opportunity set.","有效前沿位于可行集的西北边界。",2],
+["Modern Portfolio Theory","MPT","现代投资组合理论","pm","Markowitz 提出的以均值—方差框架构建最优组合的理论。","Modern portfolio theory shows diversification improves the risk-return tradeoff.","现代投资组合理论表明分散化能改善风险收益比。",2],
+["Capital Allocation Line","CAL","资本配置线","pm","无风险资产与风险组合之间的配置线。","The capital allocation line blends cash with the risky portfolio.","资本配置线将现金与风险组合连接。",3],
+["Capital Market Line","CML","资本市场线","pm","无风险资产与市场组合（切点组合）构成的配置线。","Only efficient portfolios lie on the capital market line.","只有有效组合才位于资本市场线上。",3],
+["Security Market Line","SML","证券市场线","pm","CAPM 中以 beta 为横轴、预期收益为纵轴的直线。","Underpriced assets plot above the security market line.","被低估的资产位于证券市场线上方。",3],
+["Capital Asset Pricing Model","CAPM","资本资产定价模型","pm","以 beta 衡量风险、E(R)=Rf+β[E(Rm)−Rf] 的定价模型。","The capital asset pricing model links expected return to beta.","资本资产定价模型将预期收益与beta联系起来。",2],
+["Market Portfolio","","市场组合","pm","包含全部风险资产、按市值加权的组合。","A broad index proxies the theoretical market portfolio.","宽基指数是理论市场组合的近似。",3],
+["Risk-Free Rate","Rf","无风险利率","pm","投资于无违约风险资产获得的收益率，如短期国债收益率。","The risk-free rate fell to near zero after the crisis.","危机后无风险利率降至接近零。",1],
+["Active Risk","Tracking Risk","主动风险","pm","组合收益相对基准偏离的标准差。","Active risk reflects how far the manager deviates from the benchmark.","主动风险反映经理偏离基准的程度。",3],
+["Active Return","","主动收益","pm","组合收益超过基准收益的部分。","Positive active return is the manager's value added.","正主动收益是经理创造的增值。",3],
+["Information Ratio","IR","信息比率","pm","主动收益与主动风险之比，衡量单位主动风险的回报。","An information ratio of 0.5 is considered strong.","信息比率0.5即被认为表现优秀。",3],
+["Passive Investing","","被动投资","pm","不主动选股、只跟踪市场或基准的投资方式。","Passive investing minimizes fees and turnover.","被动投资将费率与换手降至最低。",2],
+["Indexing","","指数化","pm","通过复制指数获得市场收益的方法。","Bond indexing is harder due to thousands of issues.","债券指数化因券种众多而更难实施。",3],
+["Full Replication","","完全复制","pm","按指数权重买入全部成分证券的方法。","Full replication works for liquid large-cap indexes.","完全复制适用于流动性好的大盘指数。",3],
+["Optimization","","最优化法","pm","用数量模型选择成分证券以最小化跟踪误差的方法。","Optimization balances tracking error against transaction costs.","最优化法在跟踪误差与交易成本间取得平衡。",3],
+["Behavioral Finance","","行为金融学","pm","研究心理因素如何影响投资者与市场的学科。","Behavioral finance explains underreaction and overreaction.","行为金融学解释了反应不足与过度反应。",2],
+["Loss Aversion","","损失厌恶","pm","人们对损失的痛苦大于等额收益的快乐。","Loss aversion leads investors to hold losers too long.","损失厌恶使投资者过久持有亏损股票。",2],
+["Overconfidence","","过度自信","pm","投资者高估自己的判断与信息准确性的偏差。","Overconfidence drives excessive trading.","过度自信导致过度交易。",3],
+["Anchoring","Anchoring Bias","锚定效应","pm","决策时过度依赖最初获得的信息或价格。","Anchoring on purchase price makes selling losers hard.","锚定买入价会使投资者难以卖出亏损股。",3],
+["Herding","Herd Behavior","羊群效应","pm","投资者模仿他人、跟风交易的行为。","Herding amplified the dot-com bubble.","羊群效应放大了互联网泡沫。",3],
+["Mental Accounting","","心理账户","pm","人们将不同来源或用途的钱在心理上分开对待的倾向。","Mental accounting treats tax refunds differently from salary.","心理账户使人们把退税与工资区别对待。",3],
+["Disposition Effect","","处置效应","pm","投资者急于卖出盈利股、却长期持有亏损股的倾向。","The disposition effect is well documented in retail accounts.","处置效应在散户账户中得到充分验证。",3],
+["Confirmation Bias","","确认偏差","pm","人们倾向于寻找支持自己观点的信息。","Confirmation bias blinds investors to bearish evidence.","确认偏差使投资者对利空证据视而不见。",3],
+["Representativeness Bias","","代表性偏差","pm","人们以事物的相似性代替概率判断的偏差。","Representativeness bias makes investors chase recent winners.","代表性偏差使投资者追逐近期赢家。",3],
+["Availability Bias","","可得性偏差","pm","人们依据容易想到的信息判断事件概率。","Availability bias overstates crash risk after a crisis.","可得性偏差使人们在危机后高估暴跌概率。",3],
+["Prospect Theory","","前景理论","pm","Kahneman 与 Tversky 提出的、以价值函数描述风险决策的理论。","Prospect theory replaces expected utility with gains and losses.","前景理论以盈亏框架取代期望效用。",3],
+["Bounded Rationality","","有限理性","pm","Simon 提出的人在决策中受信息与认知限制、只能“满意”而非最优。","Bounded rationality explains simplified decision rules.","有限理性解释了简化决策规则的存在。",3],
+["Limits to Arbitrage","","套利限制","pm","错误定价因套利成本、风险与资金约束而持续存在。","Limits to arbitrage explain why anomalies persist.","套利限制解释了市场异象为何持续。",3],
+["Value Investing","","价值投资","pm","以低于内在价值的价格买入股票的投资方法。","Value investing seeks low P/B and high free cash flow.","价值投资寻找低市净率、高自由现金流的股票。",2],
+["Growth Investing","","成长投资","pm","投资于预期高速增长公司的方法。","Growth investing accepts high multiples for future growth.","成长投资为未来增长接受高估值。",2],
+["Factor Investing","","因子投资","pm","通过价值、动量、质量等系统性因子获取溢价的方法。","Factor investing packages decades of empirical research.","因子投资汇集数十年实证研究成果。",3],
+["Liability-Driven Investing","LDI","负债驱动投资","pm","以匹配未来负债为目标的组合管理，养老基金常用。","The 2022 UK gilt crisis exposed leveraged LDI strategies.","2022年英国国债危机暴露了杠杆LDI策略的风险。",3],
+["Goals-Based Investing","","目标导向投资","pm","将财富按不同生活目标分组合管理的方法。","Goals-based investing labels buckets for education and retirement.","目标导向投资把资金按教育、退休等目标分桶管理。",3],
+["Endowment","","捐赠基金","pm","由大学、医院等非营利机构设立、以投资收益支持运营的基金。","The Yale Model modernized endowment investing.","耶鲁模式革新了捐赠基金的投资方式。",3],
+["Foundation","","基金会","pm","以公益慈善为目的、靠投资收益资助项目的机构。","The Gates Foundation is the largest private foundation.","盖茨基金会是最大的私人基金会。",3],
+["Pension Fund","","养老基金","pm","为支付退休待遇而设立并管理的基金。","Pension funds match long-duration assets with long liabilities.","养老基金用长久期资产匹配长期负债。",2],
+["Defined Benefit Plan","DB Plan","固定收益型养老金","pm","退休待遇按公式确定、风险由雇主承担的养老金计划。","Defined benefit plans hedge with long bonds.","固定收益型养老金用长期债券对冲。",3],
+["Defined Contribution Plan","DC Plan","固定缴款型养老金","pm","缴费确定、退休待遇取决于投资结果的计划，如 401(k)。","Defined contribution plans shift investment risk to employees.","固定缴款型养老金把投资风险转移给员工。",3],
+["Insurance Company","","保险公司","pm","收取保费、承担保险赔付责任的金融机构。","Insurance companies invest premiums in long-duration bonds.","保险公司将保费投资于长久期债券。",2],
+["Float","Insurance Float","浮存金","pm","保险公司已收保费、尚未支付赔款所形成的可投资资金。","Berkshire's float is essentially a low-cost source of capital.","伯克希尔的浮存金本质上是低成本资金来源。",2],
+
+/* ---- 固定收益增补（CFA Fixed Income） ---- */
+["Securitization","","资产证券化","bond","将缺乏流动性的贷款等资产打包、以其现金流为支持发行证券的过程。","Subprime mortgages were pooled through securitization into MBS before 2008.","2008年前，次级贷款通过证券化被打包成MBS。",2],
+["Mortgage-Backed Security","MBS","住房抵押贷款支持证券","bond","以住房抵押贷款池现金流为支持的证券。","MBS values collapsed as subprime defaults surged.","次级违约激增后，MBS价值暴跌。",2],
+["Asset-Backed Security","ABS","资产支持证券","bond","以汽车贷款、信用卡应收款等非房贷资产为支持的证券。","The auto ABS market stayed liquid through the crisis.","汽车贷款ABS市场在危机期间仍保持流动性。",3],
+["Collateralized Debt Obligation","CDO","担保债务凭证","bond","以债券、贷款等债务资产为支持、分层发行的证券。","CDOs backed by MBS were at the center of the 2008 crisis.","以MBS为支持的CDO是2008年危机的核心。",3],
+["Collateralized Mortgage Obligation","CMO","抵押担保债券","bond","将MBS现金流按规则重新分配给不同期限层级的证券。","CMO tranching redirects prepayment risk.","CMO分层重新分配了提前还款风险。",3],
+["Tranche","","分层（份额）","bond","结构化证券中按受偿顺序与风险划分的不同层级。","The senior tranche is paid before the equity tranche.","优先层级在权益层级之前受偿。",3],
+["Credit Enhancement","","信用增级","bond","通过超额抵押、利差账户、担保等方式提高证券信用等级的安排。","Internal credit enhancement includes overcollateralization.","超额抵押属于内部信用增级。",3],
+["Subprime Mortgage","","次级抵押贷款","bond","向信用记录较差、还款能力弱的借款人发放的住房贷款。","Subprime mortgage defaults triggered the 2008 crisis.","次级抵押贷款违约引发了2008年危机。",2],
+["Prepayment Risk","","提前还款风险","bond","借款人提前偿还本金、导致投资者再投资安排被打乱的风险。","MBS investors bear prepayment risk when rates fall.","利率下降时MBS投资者承担提前还款风险。",3],
+["Sinking Fund","","偿债基金","bond","发行人按约定定期提取、用于逐步偿还债券本金的安排。","The sinking fund reduces the final repayment burden.","偿债基金减轻了到期偿还压力。",3],
+["Callable Bond","","可赎回债券","bond","发行人有权在到期前按约定价格提前赎回的债券。","Callable bonds compensate investors with a higher yield.","可赎回债券以更高收益率补偿投资者。",3],
+["Putable Bond","","可回售债券","bond","持有人有权在到期前按约定价格将债券卖回给发行人。","Putable bonds protect investors from rising rates.","可回售债券可保护投资者免受利率上升损失。",3],
+["Floating-Rate Note","FRN","浮动利率票据","bond","票息随参考利率（如SOFR）定期调整的债券。","Floating-rate notes have stable prices when rates change.","利率变动时浮动利率票据价格稳定。",3],
+["G-Spread","","G利差","bond","债券收益率与同期限国债收益率之差。","The G-spread widened for risky issuers.","高风险发行人的G利差扩大。",3],
+["I-Spread","Interpolated Spread","I利差","bond","债券收益率与互换利率之差。","The I-spread uses swaps as the benchmark.","I利差以互换利率为基准。",3],
+["Z-Spread","Zero-Volatility Spread","Z利差","bond","使债券现金流折现等于市价的、相对于国债即期曲线的恒定利差。","The Z-spread is added to each spot rate.","Z利差是加在每个即期利率上的恒定利差。",3],
+["Option-Adjusted Spread","OAS","期权调整利差","bond","剔除内嵌期权影响后、相对基准曲线的利差。","OAS is used for callable bonds and MBS.","可赎回债券与MBS通常使用OAS。",3],
+["Spot Rate","","即期利率","bond","零息债券从今天起至某一期限的收益率。","Spot rates are the building blocks of bond valuation.","即期利率是债券估值的基础构件。",3],
+["Forward Rate","","远期利率","bond","今天约定的、未来某一时点开始的利率。","Forward rates are implied by the yield curve.","远期利率由收益率曲线隐含。",3],
+["Bootstrapping","","息票剥离法","bond","从附息债券价格逐步推算各期限即期利率的方法。","Bootstrapping derives the spot curve from par yields.","息票剥离法从平价收益率推导即期曲线。",3],
+["Repurchase Agreement","Repo","回购协议","bond","卖出证券并约定未来按约定价格买回，实质为短期抵押融资。","The repo market froze during the 2008 liquidity crisis.","2008年流动性危机期间回购市场冻结。",3],
+["Reverse Repo","","逆回购","bond","买入证券并约定未来卖回，是回购交易对手方的视角。","The Fed uses reverse repos to absorb reserves.","美联储用逆回购吸收准备金。",3],
+["Haircut","","折扣率","bond","回购中抵押品市值高于融资额的比例，保护贷款人。","Lenders raised haircuts on risky collateral.","贷款人对高风险抵押品提高了折扣率。",3],
+["Secured Overnight Financing Rate","SOFR","担保隔夜融资利率","bond","美国以国债回购交易为基础的隔夜基准利率，替代LIBOR。","U.S. issuers shifted debt from LIBOR to SOFR after 2021.","2021年后美国债券从LIBOR转向SOFR。",3],
+["London Interbank Offered Rate","LIBOR","伦敦银行同业拆借利率","bond","曾广泛使用的银行间无担保拆借参考利率，2023年起停止主流报价。","The 2012 LIBOR scandal revealed rate manipulation.","2012年LIBOR丑闻暴露了利率操纵。",3],
+["Commercial Paper","CP","商业票据","bond","信用好的大企业发行的短期、无担保融资工具。","Lehman's commercial paper losses made Reserve Primary break the buck.","雷曼商业票据的损失使储备Primary基金跌破净值。",3],
+["Certificate of Deposit","CD","大额可转让存单","bond","银行发行的、证明存款并可在市场转让的凭证。","The CD market offers higher yields than demand deposits.","存单收益率高于活期存款。",3],
+["Syndicated Loan","","银团贷款","bond","由多家银行组成银团、共同向借款人提供的贷款。","The syndicated loan was arranged for the leveraged buyout.","这笔银团贷款为杠杆收购安排。",3],
+["Bond Covenants","Covenants","债券契约","bond","债券合同中约束发行人行为的条款，保护债权人。","Negative covenants limit additional borrowing.","否定性契约限制发行人继续举债。",3],
+["Recovery Rate","","回收率","bond","违约后通过清算或重组实际收回的比例。","Senior secured debt has the highest recovery rate.","优先担保债务的回收率最高。",3],
+["Loss Given Default","LGD","违约损失率","bond","违约时无法收回的部分，等于1减回收率。","Loss given default rises for unsecured creditors.","无担保债权人的违约损失率更高。",3],
+["Credit Migration","","信用迁移","bond","债券信用评级随时间上升或下降的变化。","Credit migration risk is shown in a transition matrix.","信用迁移风险通过转移矩阵呈现。",3],
+["Eurobond","","欧洲债券","bond","在发行国以外、以离岸货币计价的债券。","A dollar Eurobond issued in London is free of U.S. registration.","在伦敦发行的美元欧洲债券无需在美国注册。",3],
+["Foreign Bond","","外国债券","bond","外国发行人在某国市场、以该国货币发行的债券。","Yankee bonds are foreign bonds issued in the U.S.","扬基债券是外国机构在美国发行的外国债券。",3],
+["Sukuk","","伊斯兰债券","bond","符合伊斯兰教法、不收取利息、以资产收益为回报的债券。","Sukuk structures share profits rather than paying interest.","伊斯兰债券以收益分成代替利息。",3],
+["Catastrophe Bond","Cat Bond","巨灾债券","bond","约定特定巨灾发生时可减免偿付的高收益债券。","Cat bonds transfer hurricane risk to capital markets.","巨灾债券将飓风风险转移给资本市场。",3],
+["Green Bond","","绿色债券","bond","募集资金专项用于环保或气候项目的债券。","The green bond market exceeded $2 trillion in cumulative issuance.","绿色债券累计发行规模超过2万亿美元。",3],
+["Inflation-Linked Bond","Linker","通胀挂钩债券","bond","本金或票息随通胀指数调整的债券。","TIPS are the main U.S. inflation-linked bonds.","TIPS是美国主要的通胀挂钩债券。",3],
+["Convexity","","凸性","bond","债券价格与收益率关系的弯曲程度，修正久期未捕捉的二阶效应。","Positive convexity benefits investors when rates move.","利率变动时正凸性对投资者有利。",3],
+["Effective Duration","","有效久期","bond","考虑内嵌期权、用收益率变动测算的债券价格敏感度。","Effective duration is used for bonds with embedded options.","含内嵌期权的债券使用有效久期。",3],
+["Covered Bond","","担保债券","bond","以贷款池为担保、同时发行人仍负责偿付的债券，欧洲常见。","Covered bonds fared better than MBS in the crisis.","危机期间担保债券表现优于MBS。",3],
+["Contingent Convertible Bond","CoCo / AT1","应急可转债","bond","银行资本工具，约定触发条件时可减记或转股。","Credit Suisse's AT1 bonds were written to zero in 2023.","瑞信AT1债券在2023年被减记为零。",3],
+
+/* ---- 财务报表分析（CFA FSA / CPA FAR） ---- */
+["Accounts Receivable","AR","应收账款","corp","企业因销售商品或提供服务而应向客户收取的款项。","Accounts receivable fell after the firm tightened credit terms.","公司收紧信用政策后，应收账款下降。",1],
+["Accounts Payable","AP","应付账款","corp","企业因采购商品或接受服务而应付给供应商的款项。","Stretching accounts payable is a common source of free financing.","拖延应付账款是一种常见的免费融资方式。",1],
+["Inventory","","存货","corp","企业持有以备出售的产成品、在产品和原材料。","Nike's inventory piled up as demand shifted.","需求变化后耐克存货积压。",1],
+["Prepaid Expenses","","预付费用","corp","已经支付但尚未耗用的费用，如预付租金。","Prepaid expenses are classified as current assets.","预付费用归类为流动资产。",2],
+["Accrued Expenses","Accruals","应计费用","corp","已经发生但尚未支付的费用，如应付工资。","Accrued expenses are recognized before cash is paid.","应计费用在现金支付前就予以确认。",2],
+["Deferred Revenue","Unearned Revenue","递延收入","corp","已经收款但尚未交付商品或服务，属负债。","SaaS firms carry large deferred revenue from annual subscriptions.","SaaS企业因年付订阅产生大量递延收入。",2],
+["Allowance for Doubtful Accounts","","坏账准备","corp","对应收账款中预计无法收回部分计提的备抵。","The allowance for doubtful accounts rose in the downturn.","经济下行期间坏账准备增加。",3],
+["Contra Account","","备抵账户","corp","用于抵减相关账户余额的账户，如累计折旧、坏账准备。","Accumulated depreciation is a contra account to fixed assets.","累计折旧是固定资产的备抵账户。",3],
+["Book Value","Carrying Amount","账面价值","corp","资产或负债在报表上列示的金额，即原值减备抵。","The book value of the loan was written down.","该贷款的账面价值被减记。",2],
+["Historical Cost","","历史成本","corp","资产取得时实际支付的金额，是传统会计计量基础。","Property is recorded at historical cost under the model.","该模式下不动产按历史成本入账。",2],
+["Fair Value","","公允价值","corp","市场参与者在有序交易中出售资产或转移负债的价格。","Level 1 fair value is based on quoted market prices.","第一层级公允价值基于市场报价。",2],
+["Finance Lease","Capital Lease","融资租赁","corp","实质上转移了资产所有权风险与报酬的租赁，承租人确认资产与负债。","Finance leases appear on the balance sheet as right-of-use assets.","融资租赁在报表上确认为使用权资产。",3],
+["Operating Lease","","经营租赁","corp","不转移所有权实质、按期支付租金的租赁。","Operating lease costs are recognized straight-line over the term.","经营租赁费用在租期内按直线法确认。",3],
+["Stock-Based Compensation","Share-Based Payment","股权激励费用","corp","企业以股票、期权等支付员工报酬所确认的费用。","Big tech's stock-based compensation runs into tens of billions.","大型科技公司的股权激励费用高达数百亿美元。",3],
+["Treasury Stock","Treasury Shares","库存股","corp","公司回购并持有、尚未注销的本公司股票。","Treasury stock reduces shareholders' equity.","库存股会减少股东权益。",3],
+["Additional Paid-In Capital","APIC","资本公积","corp","股东实际出资超过股票面值的部分。","Additional paid-in capital grows with premium share issuance.","溢价发行股票会增加资本公积。",3],
+["Non-Controlling Interest","NCI / Minority Interest","少数股东权益","corp","子公司净资产中不属于母公司股东的部分。","Non-controlling interest is shown within consolidated equity.","少数股东权益列示在合并权益中。",3],
+["Other Comprehensive Income","OCI","其他综合收益","corp","未计入当期损益、直接计入权益的利得与损失，如外币折算调整。","Unrealized pension losses flow through other comprehensive income.","未实现的养老金损失计入其他综合收益。",3],
+["Revenue Recognition","","收入确认","corp","确定收入在何时、以多少金额计入报表的规则。","Under new rules, revenue is recognized when control transfers.","新准则下，控制权转移时确认收入。",2],
+["Accrual Basis Accounting","Accrual Accounting","权责发生制","corp","以权利义务发生为标准确认收入费用，不论现金是否收付。","Accrual accounting records sales when earned, not when paid.","权责发生制在收入赚得时确认，而非收款时。",2],
+["Cash Basis Accounting","","收付实现制","corp","以现金实际收付为标准确认收入费用。","Small businesses may use cash basis for simplicity.","小企业为简便可能采用收付实现制。",2],
+["Double-Entry Bookkeeping","","复式记账法","corp","每笔交易同时记录借方与贷方、保持会计恒等式平衡的方法。","Double-entry bookkeeping is the foundation of modern accounting.","复式记账法是现代会计的基础。",2],
+["Debit","Dr","借方","corp","账户左方记录，资产与费用增加、负债与权益减少。","A debit entry increases the cash account.","借记分录会增加现金账户。",2],
+["Credit","Cr","贷方","corp","账户右方记录，负债、权益与收入增加。","A credit entry increases sales revenue.","贷记分录会增加销售收入。",2],
+["Journal Entry","","会计分录","corp","记录一笔交易借贷方向与金额的记录。","The journal entry debited inventory and credited cash.","该分录借记存货、贷记现金。",2],
+["General Ledger","GL","总账","corp","汇总全部账户及交易记录的账簿。","The general ledger feeds the trial balance.","总账数据生成试算平衡表。",2],
+["Trial Balance","","试算平衡表","corp","列示全部账户借贷余额、检查是否平衡的表。","The trial balance debits and credits must equal.","试算平衡表借贷必须相等。",3],
+["International Financial Reporting Standards","IFRS","国际财务报告准则","corp","IASB 发布的、140多个国家采用的会计准则。","IFRS is principle-based rather than rule-based.","IFRS以原则为导向，而非规则导向。",2],
+["US GAAP","GAAP","美国通用会计准则","corp","美国企业财务报告遵循的会计准则体系。","US GAAP is more detailed and rule-based.","US GAAP更详细、更以规则为导向。",2],
+["Consolidated Financial Statements","","合并财务报表","corp","将母公司与子公司视为单一主体编制的报表。","The group prepares consolidated statements in IFRS.","集团按IFRS编制合并报表。",2],
+["Equity Method","","权益法","corp","对联营企业投资按享有净资产份额变动计量的方法。","The 20% stake is accounted for under the equity method.","20%持股采用权益法核算。",3],
+["Cash Equivalents","","现金等价物","corp","期限短、流动性强、价值变动小的投资，如国库券。","Cash equivalents are combined with cash on the balance sheet.","现金等价物在报表上与现金合并列示。",2],
+["FIFO","First-In, First-Out","先进先出法","corp","假设先购入的存货先发出的计价方法。","FIFO leaves recent costs in ending inventory.","FIFO将近期成本留在期末存货中。",3],
+["LIFO","Last-In, First-Out","后进先出法","corp","假设后购入的存货先发出，仅US GAAP允许。","LIFO reduces profits and taxes when prices rise.","物价上涨时LIFO会降低利润与税负。",3],
+["Restructuring Charges","","重组费用","corp","企业关闭业务、裁员等重组所确认的费用。","The firm booked restructuring charges for the plant closure.","公司因关闭工厂计提重组费用。",3],
+["Earnings Quality","","盈利质量","corp","收益反映真实经营、可持续且可预测的程度。","High accruals can signal low earnings quality.","应计项目过高可能意味着盈利质量差。",3],
+["Cash Conversion Cycle","CCC","现金周转周期","corp","从支付采购款到收回销售款所需的天数。","A shorter cash conversion cycle means less working capital tied up.","现金周转周期越短，占用的营运资金越少。",3],
+["Current Ratio","","流动比率","corp","流动资产除以流动负债，衡量短期偿债能力。","A current ratio above 2 signals ample short-term liquidity.","流动比率大于2表明短期流动性充裕。",2],
+["Quick Ratio","Acid-Test Ratio","速动比率","corp","速动资产（除存货）除以流动负债。","The quick ratio is a stricter liquidity test.","速动比率是更严格的流动性测试。",2],
+["Debt-to-Equity Ratio","D/E","产权比率","corp","总负债除以股东权益，衡量杠杆水平。","A high debt-to-equity ratio increases financial risk.","产权比率越高，财务风险越大。",2],
+["Interest Coverage Ratio","Times Interest Earned","利息保障倍数","corp","息税前利润除以利息支出，衡量付息能力。","The interest coverage ratio fell below 2, alarming creditors.","利息保障倍数跌破2，使债权人警觉。",3],
+["Return on Invested Capital","ROIC","投入资本回报率","corp","税后经营利润除以全部投入资本，衡量资本回报。","ROIC above WACC indicates value creation.","ROIC高于WACC才表明创造价值。",3],
+["DuPont Analysis","DuPont","杜邦分析","corp","将ROE分解为净利率、资产周转率与杠杆的分析体系。","DuPont analysis showed leverage drove the ROE improvement.","杜邦分析表明杠杆推动了ROE提升。",3],
+["Free Cash Flow","FCF","自由现金流","corp","经营现金流减去维持性资本支出后可自由支配的现金。","Apple's free cash flow funds its buyback program.","苹果的自由现金流支撑其回购计划。",2],
+["Dividend Discount Model","DDM","股利贴现模型","corp","以未来股利现值评估股票内在价值的模型。","The dividend discount model suits mature dividend-paying firms.","股利贴现模型适用于成熟分红企业。",3],
+["Enterprise Value","EV","企业价值","corp","市值加净负债后的整体收购价值。","Enterprise value is the numerator in EV/EBITDA.","企业价值是EV/EBITDA的分子。",3],
+["Price-to-Book Ratio","P/B","市净率","corp","股价除以每股净资产。","Banks are often valued on price-to-book.","银行常按市净率估值。",3],
+["PEG Ratio","PEG","市盈率相对盈利增长比率","corp","市盈率除以盈利增速，衡量估值与成长匹配度。","A PEG near 1 suggests a fairly priced growth stock.","PEG接近1说明成长股估值合理。",3],
+["Net Realizable Value","NRV","可变现净值","corp","存货预计售价减去完工与销售成本。","Inventory is carried at the lower of cost or net realizable value.","存货按成本与可变现净值孰低计量。",3],
+["Impairment Loss","","减值损失","corp","资产可收回金额低于账面价值时确认的损失。","GE's power division booked a multibillion impairment loss.","GE电力部门计提了数十亿美元减值损失。",3]
+];
+
+// 近义词辨析组：{title, note, items:[{t,cn,focus,use}]}
+const SYNS = [
+{
+ title:"“收入”家族", note:"四个词都与“收到的钱”有关，但口径、来源与场景不同：Revenue 强调经营总额，Income 强调净得，Turnover 是英式口径，Proceeds 多指单笔交易。",
+ items:[
+  {t:"Revenue",cn:"营业收入",focus:"企业日常经营活动取得的总收入总额，通常是扣除折扣、退货之前的口径，出现在利润表第一行。",use:"generate revenue（创造收入）；annual revenue（年度营收）；revenue growth（营收增长）"},
+  {t:"Income",cn:"收入；所得",focus:"含义最宽，可指个人的工资、投资所得，也可指企业扣除成本后的净得（如 net income）。",use:"disposable income（可支配收入）；fixed income（固定收益）；income statement（利润表）"},
+  {t:"Turnover",cn:"营业额；周转率",focus:"英式英语中常等同于 revenue；在美式语境中更多指周转率，如 asset turnover、staff turnover。",use:"annual turnover（年营业额）；turnover rate（换手率）；inventory turnover（存货周转率）"},
+  {t:"Proceeds",cn:"（交易）所得款",focus:"多指某次具体出售、发行或募集后实际拿到的钱，常用复数形式。",use:"net proceeds（净所得）；the proceeds from the sale（出售所得）"}
+ ]
+},
+{
+ title:"股票 / 权益", note:"三者都指向“所有权”，但 Stock 是证券化的股票，Share 是所有权单位，Equity 是会计意义上的剩余权益。",
+ items:[
+  {t:"Stock",cn:"股票",focus:"证券市场上可交易的所有权凭证，美式英语的常用词，侧重“金融产品”。",use:"buy stock（买股票）；stock price（股价）；stock exchange（证券交易所）"},
+  {t:"Share",cn:"股份；一股",focus:"公司所有权的最小计量单位，强调“份额”；英式英语中也直接指股票。",use:"100 shares（100股）；shareholder（股东）；ordinary shares（普通股）"},
+  {t:"Equity",cn:"权益；股本",focus:"会计恒等式中“资产减负债”的剩余索取权；语境中也泛指股票类资产（equities）。",use:"shareholders' equity（股东权益）；private equity（私募股权）；equity market（股票市场）"}
+ ]
+},
+{
+ title:"收益三兄弟", note:"Return 是总回报，Yield 侧重“生息能力”，Gain 是已经落袋的价差收益。",
+ items:[
+  {t:"Return",cn:"回报；收益率",focus:"投资在一段时间内的全部盈亏，包括价差与利息、股息，是最总括的词。",use:"rate of return（回报率）；total return（总回报）；annualized return（年化收益）"},
+  {t:"Yield",cn:"收益率",focus:"利息或股息相对本金或市价的比率，强调“持有期间能产出多少”，债券中最常用。",use:"yield to maturity（到期收益率）；dividend yield（股息率）；high yield（高收益）"},
+  {t:"Gain",cn:"利得；增值",focus:"低买高卖实现的价差收益，未实现的叫 unrealized gain，已实现的叫 realized gain。",use:"capital gain（资本利得）；realized gain（已实现收益）；gain on sale（出售利得）"}
+ ]
+},
+{
+ title:"三种交易动机", note:"Hedge 是为了“降风险”，Arbitrage 是赚“无风险价差”，Speculation 是主动承担方向性风险博利润。",
+ items:[
+  {t:"Hedging",cn:"套期保值",focus:"已有风险敞口，用相反头寸对冲，目的是锁定价格、降低波动，不是为了赚差价。",use:"hedge against inflation（对冲通胀）；hedge fuel costs（对冲燃油成本）"},
+  {t:"Arbitrage",cn:"套利",focus:"同一资产在不同市场有价差，同时一买一卖，理论上无风险、收益薄。",use:"merger arbitrage（并购套利）；statistical arbitrage（统计套利）"},
+  {t:"Speculation",cn:"投机",focus:"不持有基础敞口，单纯押注价格方向，愿承担高风险换取高利润。",use:"speculation on price moves（押注价格波动）；speculative trading（投机交易）"}
+ ]
+},
+{
+ title:"利润的说法", note:"Profit 是利润统称，Margin 是“利润率”（比率），Earnings 多指公司层面的盈利。",
+ items:[
+  {t:"Profit",cn:"利润",focus:"收入减成本费用后的绝对金额，按层级分 gross profit、operating profit、net profit。",use:"gross profit（毛利）；profit margin（利润率）；make a profit（获利）"},
+  {t:"Margin",cn:"利润率；保证金",focus:"多数语境指利润占收入的比率；在交易语境中也指保证金。",use:"gross margin（毛利率）；net margin（净利率）；margin account（保证金账户）"},
+  {t:"Earnings",cn:"盈利；盈余",focus:"公司在一定期间赚得的利润，财报语境中最常见，如 earnings per share。",use:"earnings per share（每股收益）；earnings season（财报季）；retained earnings（留存收益）"}
+ ]
+},
+{
+ title:"借钱三种表达", note:"Loan 是具体的贷款，Credit 是银行给予的“信用额度”，Debt 是债务人视角的“欠债”。",
+ items:[
+  {t:"Loan",cn:"贷款",focus:"一笔有明确金额、利率、期限的借贷，常指银行放出的具体款项。",use:"bank loan（银行贷款）；mortgage loan（抵押贷款）；loan repayment（还贷）"},
+  {t:"Credit",cn:"信贷；信用",focus:"基于信任授予的借贷能力或额度，不一定已实际支用。",use:"credit line（信贷额度）；letter of credit（信用证）；credit rating（信用评级）"},
+  {t:"Debt",cn:"债务；欠款",focus:"债务人视角下应偿还的全部义务，包括贷款、债券等。",use:"in debt（负债）；bad debt（坏账）；debt restructuring（债务重组）"}
+ ]
+},
+{
+ title:"钱的三种身份", note:"Asset 是能带来利益的资源，Capital 是投入经营的本钱，Equity 是归属于所有者的部分。",
+ items:[
+  {t:"Asset",cn:"资产",focus:"企业拥有或控制、预期带来经济利益的资源，强调“资源”。",use:"fixed assets（固定资产）；asset allocation（资产配置）；total assets（总资产）"},
+  {t:"Capital",cn:"资本",focus:"用于创办企业、投资或生产的资金，强调“投入的本钱”。",use:"working capital（营运资金）；capital expenditure（资本支出）；venture capital（风投）"},
+  {t:"Equity",cn:"所有者权益",focus:"资产扣除负债后真正属于所有者的部分，强调“剩余归属”。",use:"owner's equity（所有者权益）；equity financing（股权融资）"}
+ ]
+},
+{
+ title:"市场中的三类人", note:"Broker 代理客户下单，Dealer 自营买卖，Market Maker 持续报价提供流动性。",
+ items:[
+  {t:"Broker",cn:"经纪人；券商",focus:"受客户委托代为买卖、赚取佣金，不持有头寸。",use:"brokerage firm（券商）；broker commission（佣金）"},
+  {t:"Dealer",cn:"交易商",focus:"以自己的账户和资金买卖证券，赚取价差，承担持仓风险。",use:"dealer market（交易商市场）；authorized dealer（授权交易商）"},
+  {t:"Market Maker",cn:"做市商",focus:"一类特殊 dealer，持续双向报出买卖价，义务是为市场提供流动性。",use:"designated market maker（指定做市商）；market maker spread（做市价差）"}
+ ]
+},
+{
+ title:"成本分摊三剑客", note:"Depreciation 分摊固定资产，Amortization 分摊无形资产，Impairment 是价值突然减损。",
+ items:[
+  {t:"Depreciation",cn:"折旧",focus:"固定资产（如设备、厂房）成本在使用年限内按期、有计划地分摊。",use:"annual depreciation（年折旧）；accumulated depreciation（累计折旧）"},
+  {t:"Amortization",cn:"摊销",focus:"无形资产（如专利、商誉）或贷款本金在期限内分期分摊。",use:"amortization schedule（摊销表）；intangible amortization（无形资产摊销）"},
+  {t:"Impairment",cn:"减值",focus:"资产可收回金额突然低于账面价值，需一次性确认损失，是非计划性的。",use:"impairment loss（减值损失）；goodwill impairment（商誉减值）"}
+ ]
+},
+{
+ title:"公司如何合到一起", note:"Merge 是双方“合为一体”，Acquire 是一方“买下”另一方，Takeover 强调取得控制权。",
+ items:[
+  {t:"Merge",cn:"合并",focus:"两家公司合为一家新实体，常含平等、整合之意。",use:"merge with（与…合并）；merger of equals（对等合并）"},
+  {t:"Acquire",cn:"收购",focus:"收购方购买目标公司股权或资产，被收购方可以继续存在。",use:"acquire a stake（收购股份）；acquisition offer（收购要约）"},
+  {t:"Takeover",cn:"接管；控股收购",focus:"强调取得目标公司控制权，可以是善意的，也可以是恶意的。",use:"hostile takeover（恶意收购）；takeover bid（收购出价）"}
+ ]
+},
+{
+ title:"审计意见四兄弟", note:"按严重程度递进：Unmodified 无保留 → Qualified 保留 → Adverse 否定 → Disclaimer 无法表示。",
+ items:[
+  {t:"Unmodified Opinion",cn:"无保留意见",focus:"报表在所有重大方面公允反映，是最“干净”的意见。",use:"issue an unmodified opinion（出具无保留意见）"},
+  {t:"Qualified Opinion",cn:"保留意见",focus:"存在重大但不具有广泛性的错报或范围受限，除特定事项外报表公允。",use:"qualified opinion 'except for'（“除……外”的保留意见）"},
+  {t:"Adverse Opinion",cn:"否定意见",focus:"错报重大且具有广泛性，报表整体不公允。",use:"express an adverse opinion（发表否定意见）"},
+  {t:"Disclaimer of Opinion",cn:"无法表示意见",focus:"审计范围受限且影响广泛，无法获取充分适当证据。",use:"disclaimer of opinion（无法表示意见）"}
+ ]
+},
+{
+ title:"独立性威胁", note:"五类威胁损害审计独立性：自身利益、自我评价、过度推介、密切关系、外在压力。",
+ items:[
+  {t:"Self-Interest Threat",cn:"自身利益威胁",focus:"审计师或事务所与客户存在财务利益，如直接持股、收费依赖。",use:"self-interest threat from shares（持股产生的自身利益威胁）"},
+  {t:"Self-Review Threat",cn:"自我评价威胁",focus:"审计师要审查自己或本所先前提供的服务或编制的数据。",use:"self-review threat from bookkeeping（代记账导致的自我评价威胁）"},
+  {t:"Familiarity Threat",cn:"密切关系威胁",focus:"与客户长期或亲密关系导致过度同情，如合伙人长期审计同一客户。",use:"familiarity threat from long association（长期合作的密切关系威胁）"},
+  {t:"Intimidation Threat",cn:"外在压力威胁",focus:"客户以更换事务所、诉讼等方式施压，使审计师无法客观行事。",use:"intimidation threat from litigation（诉讼威胁）"},
+  {t:"Advocacy Threat",cn:"过度推介威胁",focus:"审计师在客户立场上为其辩护或推介，丧失客观性。",use:"advocacy threat in share promotion（推介股票的过度推介威胁）"}
+ ]
+},
+{
+ title:"市场结构四象限", note:"按厂商数量与产品差异：完全竞争、垄断竞争、寡头、垄断。",
+ items:[
+  {t:"Perfect Competition",cn:"完全竞争",focus:"厂商众多、产品同质、自由进出，企业是价格接受者。",use:"perfect competition in commodities（大宗商品近似完全竞争）"},
+  {t:"Monopolistic Competition",cn:"垄断竞争",focus:"厂商较多、产品有差异，企业有有限定价权。",use:"monopolistic competition in restaurants（餐饮业属垄断竞争）"},
+  {t:"Oligopoly",cn:"寡头垄断",focus:"少数大企业主导，决策相互依存，常见价格领导。",use:"oligopoly in telecom（电信业寡头）"},
+  {t:"Monopoly",cn:"完全垄断",focus:"唯一卖者、高进入壁垒，可受政府管制。",use:"regulated monopoly（受管制垄断）"}
+ ]
+},
+{
+ title:"回测三大偏误", note:"量化回测中最容易虚增业绩的三类偏差：幸存者、前视、数据挖掘。",
+ items:[
+  {t:"Survivorship Bias",cn:"幸存者偏差",focus:"只用现存公司数据，退市、破产样本被剔除，高估收益。",use:"survivorship bias in fund databases（基金库的幸存者偏差）"},
+  {t:"Look-Ahead Bias",cn:"前视偏差",focus:"回测时使用了当时尚不可得的信息，如未公布财报。",use:"look-ahead bias from restated data（重述数据导致的前视偏差）"},
+  {t:"Data Mining Bias",cn:"数据挖掘偏差",focus:"反复试错直到策略“有效”，结果难以复现。",use:"data mining bias from overfitting（过拟合的数据挖掘偏差）"}
+ ]
+},
+{
+ title:"行为偏差四剑客", note:"最常见的投资者心理偏差：损失厌恶、过度自信、锚定、羊群效应。",
+ items:[
+  {t:"Loss Aversion",cn:"损失厌恶",focus:"损失的痛苦约为等额收益快乐的两倍，导致捂亏卖盈。",use:"loss aversion and disposition effect（损失厌恶与处置效应）"},
+  {t:"Overconfidence",cn:"过度自信",focus:"高估判断与信息准确性，导致过度交易。",use:"overconfidence and excessive trading（过度自信与过度交易）"},
+  {t:"Anchoring",cn:"锚定效应",focus:"过度依赖最初信息，如买入价、历史高点。",use:"anchoring on purchase price（锚定买入价）"},
+  {t:"Herding",cn:"羊群效应",focus:"跟风模仿他人交易，放大泡沫与崩盘。",use:"herding during bubbles（泡沫中的羊群效应）"}
+ ]
+},
+{
+ title:"债券利差四件套", note:"衡量信用债相对基准的额外收益：G、I、Z 利差与期权调整利差，口径依次不同。",
+ items:[
+  {t:"G-Spread",cn:"G利差",focus:"相对同期限国债收益率的简单利差。",use:"G-spread over Treasuries（对国债的G利差）"},
+  {t:"I-Spread",cn:"I利差",focus:"相对互换利率的利差。",use:"I-spread over swaps（对互换的I利差）"},
+  {t:"Z-Spread",cn:"Z利差",focus:"加在整条即期曲线上、使现值等于市价的恒定利差。",use:"Z-spread over spot curve（对即期曲线的Z利差）"},
+  {t:"OAS",cn:"期权调整利差",focus:"剔除内嵌期权后的利差，用于可赎回债与MBS。",use:"OAS for embedded options（含权债的OAS）"}
+ ]
+},
+{
+ title:"货币市场工具", note:"一年以内的短期融资工具：回购、商业票据、大额存单，期限与担保不同。",
+ items:[
+  {t:"Repo",cn:"回购协议",focus:"以证券为抵押的短期融资，隔夜为主。",use:"overnight repo（隔夜回购）"},
+  {t:"Commercial Paper",cn:"商业票据",focus:"大企业发行的无担保短期票据，通常270天以内。",use:"issue commercial paper（发行商业票据）"},
+  {t:"Certificate of Deposit",cn:"大额存单",focus:"银行发行、可转让的存款凭证。",use:"negotiable certificate of deposit（可转让大额存单）"}
+ ]
+},
+{
+ title:"会计计量基础", note:"三种常见计量口径：历史成本、公允价值、账面价值，回答“按什么价入账”。",
+ items:[
+  {t:"Historical Cost",cn:"历史成本",focus:"取得时实际支付金额，客观可靠但可能过时。",use:"historical cost model（历史成本模式）"},
+  {t:"Fair Value",cn:"公允价值",focus:"当前市场有序交易价格，相关性强但需估值。",use:"fair value through P&L（计入损益的公允价值）"},
+  {t:"Book Value",cn:"账面价值",focus:"报表列示金额，等于原值减折旧摊销与减值。",use:"book value per share（每股账面价值）"}
+ ]
+},
+{
+ title:"审计风险三因子", note:"审计风险 = 固有风险 × 控制风险 × 检查风险，前两者由被审计单位决定。",
+ items:[
+  {t:"Inherent Risk",cn:"固有风险",focus:"在不考虑内控时，认定本身发生重大错报的可能性。",use:"high inherent risk in complex estimates（复杂估计的高固有风险）"},
+  {t:"Control Risk",cn:"控制风险",focus:"被审计单位内控未能及时预防或发现错报的风险。",use:"control risk assessment（控制风险评估）"},
+  {t:"Detection Risk",cn:"检查风险",focus:"审计程序未能发现已存在重大错报的风险，由审计师控制。",use:"detection risk and sampling（检查风险与抽样）"}
+ ]
+}
+];
+
+// 易混淆对：{a:{t,cn,tag,desc}, b:{t,cn,tag,desc}, diff, tip}
+const CONFS = [
+{
+ a:{t:"ROE",cn:"净资产收益率",tag:"看股东回报",desc:"净利润 ÷ 股东权益，衡量股东每投入一元钱能赚回多少。"},
+ b:{t:"ROA",cn:"资产收益率",tag:"看资产效率",desc:"净利润 ÷ 总资产，衡量全部资产（含负债所形成的资产）的盈利效率。"},
+ diff:"分母不同：ROE 只算股东权益，天然受杠杆放大；ROA 覆盖全部资产，更能反映真实经营效率。",
+ tip:"ROE 高、ROA 低，往往是靠借钱撑起来的；两者双高才是真的好生意。"},
+{
+ a:{t:"GDP",cn:"国内生产总值",tag:"按地域算",desc:"在一国境内生产的全部最终产品和服务的价值，不管生产者是哪国企业。"},
+ b:{t:"GNI",cn:"国民总收入",tag:"按归属算",desc:"一国国民（含本国企业海外经营）所获得的总收入，等于 GDP 加上来自国外的净要素收入。",exen:"Ireland's GNI is far below its GDP because foreign multinationals repatriate profits.",excn:"因外国跨国公司汇回利润，爱尔兰GNI远低于其GDP。"},
+ diff:"GDP 看“在哪里生产”，GNI 看“归谁所有”。外资企业大量利润汇出时，该国 GDP 会高于 GNI。",
+ tip:"开放型小经济体或外资大国，对比 GDP 与 GNI 能看出财富到底留给了谁。"},
+{
+ a:{t:"Fiscal Policy",cn:"财政政策",tag:"政府花钱",desc:"政府通过税收、预算与支出调节经济，由财政部等行政部门执行。"},
+ b:{t:"Monetary Policy",cn:"货币政策",tag:"央行调钱",desc:"央行通过利率、准备金与公开市场操作调节货币供应量。"},
+ diff:"主体不同：财政政策是“政府的钱袋子”，货币政策是“经济的水龙头”。",
+ tip:"降息、降准是货币；减税、发债、扩大基建是财政。"},
+{
+ a:{t:"Bull Market",cn:"牛市",tag:"持续上涨",desc:"市场从低点持续上涨（通常超过20%），投资者情绪乐观、买盘踊跃。"},
+ b:{t:"Bear Market",cn:"熊市",tag:"持续下跌",desc:"市场从高点持续下跌（通常超过20%），投资者情绪悲观、风险偏好下降。"},
+ diff:"方向相反：牛市赚的是“进攻的钱”，熊市比的是“防守的能力”。",
+ tip:"记忆：公牛攻击时向上顶（涨），熊攻击时向下拍（跌）。"},
+{
+ a:{t:"Long",cn:"做多",tag:"买了等涨",desc:"买入资产并持有，价格上涨时获利，最大亏损为买入价归零。"},
+ b:{t:"Short",cn:"做空",tag:"借了先卖",desc:"借入资产卖出、待跌后买回归还，价格下跌时获利，上涨亏损理论上无限。",exen:"Hedge funds were short GameStop until the January 2021 squeeze.",excn:"2021年1月挤压前，对冲基金一直做空游戏驿站。"},
+ diff:"风险结构不同：做多亏损有限，做空因价格上涨无上限，亏损也没有上限。",
+ tip:"long 是“持有”，short 是“欠着”；做空者本质上是欠证券的人。"},
+{
+ a:{t:"Premium",cn:"溢价",tag:"高于基准",desc:"价格高于面值、净值或参考价；在期权中也指购买期权所付的期权费。"},
+ b:{t:"Discount",cn:"折价",tag:"低于基准",desc:"价格低于面值、净值或参考价。",exen:"The closed-end fund traded at a 12 percent discount to NAV.",excn:"该封闭式基金以低于净值12%的折价交易。"},
+ diff:"方向相反：premium 是“贵了”，discount 是“便宜了”。",
+ tip:"封基、定增、并购中都常见这两个词：at a premium 溢价交易，at a discount 折价交易。"},
+{
+ a:{t:"Bid",cn:"买入价",tag:"别人出价买",desc:"做市商愿意“买入”的价格，你想卖就按这个价成交。"},
+ b:{t:"Ask",cn:"卖出价",tag:"别人要价卖",desc:"做市商愿意“卖出”的价格，你想买就按这个价成交。",exen:"She bought the shares at the ask price of $45.20.",excn:"她按45.20美元的卖出价买入股票。"},
+ diff:"立场相反：bid 是买方的出价，ask 是卖方的要价，二者之差就是 spread。",
+ tip:"口诀：买 ask、卖 bid；价差就是交易成本。"},
+{
+ a:{t:"Dividend",cn:"股息",tag:"股东的分红",desc:"股票公司把盈利按持股比例分给股东，金额和频率由董事会决定。"},
+ b:{t:"Coupon",cn:"票息",tag:"债券的利息",desc:"债券按票面利率定期支付的利息，金额在发行时就已约定。"},
+ diff:"来源不同：dividend 来自股票盈利、可多可少甚至不发；coupon 是债券的合同义务、必须支付。",
+ tip:"股东等分红，债主收票息；不付 coupon 就构成违约。"},
+{
+ a:{t:"Alpha",cn:"阿尔法",tag:"超额收益",desc:"组合跑赢基准的部分，代表基金经理的主动管理能力。"},
+ b:{t:"Beta",cn:"贝塔",tag:"市场敏感",desc:"组合相对大盘的波动系数，衡量随市场涨跌的幅度。"},
+ diff:"Alpha 是“经理的本事”，Beta 是“市场的暴露”。Beta 为 1 表示与大盘同步。",
+ tip:"赚市场的钱靠 beta，赚经理的钱靠 alpha；指数基金只给 beta。"},
+{
+ a:{t:"Liquidity",cn:"流动性",tag:"短期变现",desc:"资产快速变现的能力，以及手头有没有足够现金应付短期支付。"},
+ b:{t:"Solvency",cn:"偿付能力",tag:"长期偿债",desc:"总资产是否足以覆盖全部债务，衡量长期生存能力。"},
+ diff:"期限不同：流动性看“眼前转不转得开”，偿付能力看“长期还不还得起”。",
+ tip:"企业可能盈利但因流动性枯竭倒闭；资不抵债则是 solvency 问题。"},
+{
+ a:{t:"Gross",cn:"总额",tag:"扣除之前",desc:"未扣除成本、费用或税款之前的金额，如 gross profit、gross income。",exen:"Gross profit rose 8 percent even as net income fell.",excn:"尽管净利润下降，毛利仍增长8%。"},
+ b:{t:"Net",cn:"净额",tag:"扣除之后",desc:"扣除全部成本、费用或税款之后的金额，如 net income、net profit。",exen:"Net margin compressed to 6 percent on higher costs.",excn:"成本上升使净利率降至6%。"},
+ diff:"gross 是“毛的、没扣的”，net 是“净的、扣完的”。",
+ tip:"毛利 gross profit 只减成本，净利 net income 扣完一切。"},
+{
+ a:{t:"Appreciation",cn:"升值",tag:"价值上升",desc:"货币兑其他货币走强，或资产市场价值上升。"},
+ b:{t:"Depreciation",cn:"贬值；折旧",tag:"价值下降",desc:"货币兑其他货币走弱；会计中也指固定资产折旧。"},
+ diff:"方向相反：appreciation 是价值上升，depreciation 是价值下降。",
+ tip:"货币升值利进口、压出口；贬值利出口、推输入性通胀。"},
+{
+ a:{t:"Futures",cn:"期货",tag:"交易所标准化",desc:"在交易所交易的标准化合约，条款统一、逐日盯市、可随时平仓。"},
+ b:{t:"Forwards",cn:"远期",tag:"场外定制",desc:"双方在场外私下签订的合约，金额、日期可定制，违约风险较高。",exen:"The exporter hedged the euro receipt via forwards.",excn:"出口商通过远期合约对冲欧元收入。"},
+ diff:"期货标准化、透明、对手风险低；远期量身定制、灵活但对手风险高。",
+ tip:"散户做 futures，企业锁汇锁价常用 forwards。"},
+{
+ a:{t:"Mutual Fund",cn:"共同基金",tag:"每日一次申赎",desc:"按每日收盘净值申购赎回，场外交易，部分品种有申购费。"},
+ b:{t:"ETF",cn:"交易型指数基金",tag:"盘中实时交易",desc:"在交易所挂牌，交易时间内可像股票一样实时买卖，通常费率更低。"},
+ diff:"交易方式不同：mutual fund 一天一个价，ETF 盘中实时有价、可挂限价单。",
+ tip:"定投选 mutual fund，择时和波段操作选 ETF。"},
+{
+ a:{t:"Call Option",cn:"看涨期权",tag:"买入的权利",desc:"约定价格“买入”标的资产的权利，看涨价时买入。"},
+ b:{t:"Put Option",cn:"看跌期权",tag:"卖出的权利",desc:"约定价格“卖出”标的资产的权利，看跌价时买入。"},
+ diff:"权利方向相反：call 赌上涨，put 赌下跌；买方最大亏损都是期权费。",
+ tip:"call 是“打电话叫过来（买入）”，put 是“推出去（卖出）”。"},
+{
+ a:{t:"CapEx",cn:"资本支出",tag:"买长期资产",desc:"购置设备、厂房等长期资产的支出，先资本化、再逐年折旧。"},
+ b:{t:"OpEx",cn:"运营支出",tag:"日常费用",desc:"租金、工资、水电等日常经营费用，发生当期直接计入损益。"},
+ diff:"CapEx 是“买能用很多年的东西”，分期折旧；OpEx 是“这一年的开销”，一次扣完。",
+ tip:"云服务把买服务器（CapEx）变成了付订阅费（OpEx）。"},
+{
+ a:{t:"Hawkish",cn:"鹰派",tag:"倾向加息",desc:"政策立场偏紧，优先压制通胀，支持加息或缩表。"},
+ b:{t:"Dovish",cn:"鸽派",tag:"倾向降息",desc:"政策立场偏松，优先支持就业与增长，支持降息或扩表。"},
+ diff:"鹰派防通胀、偏紧缩；鸽派撑增长、偏宽松。",
+ tip:"鹰派言论常推高利率、压制股价；鸽派则相反。"},
+{
+ a:{t:"Market Order",cn:"市价单",tag:"要速度",desc:"立即按当前市场最优价成交，保证成交但不保证价格。"},
+ b:{t:"Limit Order",cn:"限价单",tag:"要价格",desc:"只在指定价格或更优价格成交，保证价格但不保证成交。"},
+ diff:"市价单“先成交、后看价”，限价单“先看价、后成交”。",
+ tip:"急着成交用 market，想等好价格用 limit。"},
+{
+ a:{t:"Inflation",cn:"通货膨胀",tag:"物价持续上涨",desc:"物价总水平持续上涨、货币购买力下降。",exen:"U.S. inflation peaked at 9.1 percent in June 2022.",excn:"美国通胀于2022年6月达到9.1%的高点。"},
+ b:{t:"Deflation",cn:"通货紧缩",tag:"物价持续下跌",desc:"物价总水平持续下跌、货币购买力上升，但会推迟消费、加重债务。"},
+ diff:"通胀是“钱变毛”，通缩是“钱变贵”；通缩对高负债经济更危险。",
+ tip:"央行多数时候既怕通胀失控，也怕通缩螺旋。"},
+{
+ a:{t:"Spot",cn:"即期",tag:"马上交割",desc:"现货市场中按当前价格成交、通常两个交易日内交割。",exen:"The spot rate moved 2 percent right after the announcement.",excn:"公告后即期汇率立即变动2%。"},
+ b:{t:"Forward",cn:"远期",tag:"未来交割",desc:"现在就约定价格，未来某日才交割。"},
+ diff:"spot 是“今天的价、马上交割”，forward 是“今天锁价、未来交割”。",
+ tip:"同一种货币的 spot 与 forward 价差，反映两国利率差。"},
+{
+ a:{t:"Tax Evasion",cn:"逃税",tag:"违法隐瞒",desc:"以虚假申报、隐瞒收入等非法手段不缴或少缴税款。"},
+ b:{t:"Tax Avoidance",cn:"避税",tag:"合法安排",desc:"利用税法允许的优惠与架构安排减少税负，但激进避税可能被反避税规则否定。"},
+ diff:"evasion 是“藏起来、违法”，avoidance 是“用规则、合法”；一般反避税规则（GAAR）针对的是后者中的滥用。",
+ tip:"evasion 面临刑事追诉；avoidance 至多被纳税调整补税。"},
+{
+ a:{t:"Tax Credit",cn:"税额抵免",tag:"直接抵税",desc:"直接从应纳税额中扣减，一元抵一元。"},
+ b:{t:"Tax Deduction",cn:"税前扣除",tag:"减少税基",desc:"从应税所得中扣除，省税金额等于扣除额乘税率。"},
+ diff:"credit 直接减税款、力度更大；deduction 只减应纳税所得额。",
+ tip:"同样减1000元，credit 省1000元，deduction 只省1000×税率。"},
+{
+ a:{t:"FIFO",cn:"先进先出",tag:"先买的先出",desc:"假设先购入的存货先发出，物价上涨时销售成本低、利润高。"},
+ b:{t:"LIFO",cn:"后进先出",tag:"后买的先出",desc:"假设后购入的存货先发出，物价上涨时成本高、利润与税负低，仅US GAAP允许。"},
+ diff:"涨价周期：FIFO 利润高、税多；LIFO 利润低、税少。",
+ tip:"IFRS 禁止 LIFO，美国企业用 LIFO 多为税收与稳健性考虑。"},
+{
+ a:{t:"Debit",cn:"借方",tag:"账户左方",desc:"资产、费用增加；负债、权益减少。"},
+ b:{t:"Credit",cn:"贷方",tag:"账户右方",desc:"负债、权益、收入增加；资产减少。"},
+ diff:"借贷是记账方向而非增减；资产借增贷减，负债权益反之。",
+ tip:"每笔分录借贷必相等，这是复式记账的铁律。"},
+{
+ a:{t:"IFRS",cn:"国际准则",tag:"原则导向",desc:"IASB 发布，140多国采用，原则性强、依赖职业判断。"},
+ b:{t:"US GAAP",cn:"美国准则",tag:"规则导向",desc:"FASB 发布，条文详细、规则具体，美国上市公司使用。"},
+ diff:"IFRS 重原则、更简洁；US GAAP 重规则、更详尽。",
+ tip:"LIFO 等差异源于准则理念不同；跨国合并报表常需做准则调节。"},
+{
+ a:{t:"Eurobond",cn:"欧洲债券",tag:"离岸货币",desc:"在发行国以外、以离岸货币计价，如伦敦发行的美元债。"},
+ b:{t:"Foreign Bond",cn:"外国债券",tag:"当地货币",desc:"外国发行人在某国市场、以该国货币发行，如扬基债、武士债。"},
+ diff:"Eurobond 用“第三国货币”、受约束少；foreign bond 用“市场所在国货币”、受当地监管。",
+ tip:"在伦敦发美元债是 Eurobond；在美国发美元债是 Foreign Bond。"},
+{
+ a:{t:"Current Ratio",cn:"流动比率",tag:"含全部流动资产",desc:"流动资产 ÷ 流动负债，包含存货。"},
+ b:{t:"Quick Ratio",cn:"速动比率",tag:"剔除存货",desc:"（流动资产−存货）÷ 流动负债，更严格。"},
+ diff:"分子差一个存货；存货变现慢、可能减值，quick 更能反映即时偿债。",
+ tip:"两个比率都低，短期流动性危险；current 高但 quick 低，说明资金压在存货上。"},
+{
+ a:{t:"Finance Lease",cn:"融资租赁",tag:"实质上购买",desc:"转移所有权风险与报酬，承租人确认使用权资产与负债，上报表。"},
+ b:{t:"Operating Lease",cn:"经营租赁",tag:"实质上租用",desc:"按期付租金、不承担资产残值风险，新准则下多数也上表。"},
+ diff:"finance lease 像“分期付款买资产”，operating lease 像“纯租用”。",
+ tip:"租赁期覆盖资产大部分寿命、或期末低价购买，通常是 finance lease。"},
+{
+ a:{t:"Recession",cn:"衰退",tag:"短期收缩",desc:"经济活动连续数月普遍下降，常见定义为连续两个季度负增长。"},
+ b:{t:"Depression",cn:"萧条",tag:"长期重挫",desc:"持续数年、产出与就业大幅下滑的严重衰退，如1929年大萧条。",exen:"The Great Depression cut U.S. output by roughly a quarter and pushed unemployment to 25 percent.",excn:"大萧条使美国产出下降约四分之一，失业率升至25%。"},
+ diff:"程度与长度不同：recession 是“冬天”，depression 是“冰河期”。",
+ tip:"大萧条后美国实际产出数年下降逾四分之一，失业率最高约25%。"},
+{
+ a:{t:"MBS",cn:"住房抵押贷款支持证券",tag:"底层是房贷",desc:"以住房贷款池现金流为支持的证券。"},
+ b:{t:"CDO",cn:"担保债务凭证",tag:"底层是债券/贷款",desc:"以债务资产为支持、分层发行，可再持有 MBS。"},
+ diff:"MBS 底层是房贷；CDO 底层是更广泛的债务，甚至包含 MBS（CDO²）。",
+ tip:"2008年次贷链条：房贷 → MBS → CDO，风险层层嵌套。"}
+];
+
+/* 形似词组（lookalike words，含非商业词汇）：
+   {note, tip, words:[{t,cn,desc,exen,excn}]}；词项缺字段时运行时从 TERMS 自动补全 */
+const LOOK_ALIKE = [
+ {note:"Principal 可作名词（本金、校长、当事人）或形容词（主要的）；Principle 只能作名词，指原则、准则。",
+  tip:"记“原则”是 principle（像 rule 一样带 -le）；“本金”是 principal。",
+  words:[
+   {t:"Principal"},
+   {t:"Principle",cn:"原则；准则",desc:"基本的真理、规则或行为准则。",exen:"The strategy violated the principle of diversification.",excn:"该策略违背了分散化原则。"}
+ ]},
+ {note:"Capital 是资本、首都；Capitol 专指（美国）国会大厦。",
+  tip:"国会大厦 Capitol 中间有个圆顶，像字母 o。",
+  words:[
+   {t:"Capital"},
+   {t:"Capitol",cn:"国会大厦",desc:"立法机构开会的建筑，常指美国国会大厦。",exen:"The bank's headquarters is two blocks from the Capitol.",excn:"银行总部距国会大厦两个街区。"}
+ ]},
+ {note:"Affect 几乎总作动词（影响）；Effect 通常作名词（效果、影响），偶尔作动词表示“促成”。",
+  tip:"A = Action（动作）；E = End result（结果）。",
+  words:[
+   {t:"Affect",cn:"影响（动词）",desc:"对…产生影响或改变。",exen:"Rate hikes affect bond prices inversely.",excn:"加息对债券价格有反向影响。"},
+   {t:"Effect",cn:"效果；影响",desc:"某事产生的结果；作动词时意为“促成、实现”。",exen:"The effect of the rate cut was a weaker dollar.",excn:"降息的效果是美元走弱。"}
+ ]},
+ {note:"Accept 是动词（接受）；Except 多作介词（除了）。",
+  tip:"Accept 里有“acc-”像 accept a gift；except 是 exclude。",
+  words:[
+   {t:"Accept",cn:"接受",desc:"自愿接收或同意。",exen:"The board accepted the CEO's resignation.",excn:"董事会接受了首席执行官的辞呈。"},
+   {t:"Except",cn:"除了",desc:"不包括；把…排除在外。",exen:"Every desk hit its target except the bond desk.",excn:"除债券部门外，各部门都完成了目标。"}
+ ]},
+ {note:"Complement 是补充、与…相配（使之完整）；Compliment 是恭维、称赞。",
+  tip:"“互补”才 complete，都带 e；称赞是 i，像“我 I 夸你”。",
+  words:[
+   {t:"Complement",cn:"补充；与…相配",desc:"与…结合使之完整或更好。",exen:"Bonds complement equities in a balanced portfolio.",excn:"平衡组合中债券与股票互补。"},
+   {t:"Compliment",cn:"恭维；称赞",desc:"表达赞美或敬意。",exen:"The client complimented the team on the report.",excn:"客户称赞了团队的报告。"}
+ ]},
+ {note:"Stationary 是形容词（静止的、固定的）；Stationery 是名词（文具）。",
+  tip:"Stationery（文具）卖 pap-er，都带 -er。",
+  words:[
+   {t:"Stationary",cn:"静止的；固定的",desc:"不移动、不变化的。",exen:"Headline inflation stayed stationary at 2 percent.",excn:"总体通胀稳定在2%。"},
+   {t:"Stationery",cn:"文具",desc:"书写与办公用品。",exen:"Office stationery is recorded as an operating expense.",excn:"办公文具计入运营支出。"}
+ ]},
+ {note:"Personal 是形容词（个人的、私人的）；Personnel 是名词（员工、人事）。",
+  tip:"Personnel 指“人”，像 person 多了 nel。",
+  words:[
+   {t:"Personal",cn:"个人的；私人的",desc:"属于某个人的。",exen:"Never use personal devices to store client data.",excn:"切勿用个人设备存储客户数据。"},
+   {t:"Personnel",cn:"员工；人事",desc:"组织中的工作人员。",exen:"All finance personnel must complete AML training.",excn:"所有财务人员须完成反洗钱培训。"}
+ ]},
+ {note:"Acquire 获得、收购；Inquire 询问；Require 要求。",
+  tip:"收购 ac-quire；询问 in-quire；要求 re-quire。",
+  words:[
+   {t:"Acquire",cn:"收购；获得",desc:"买入或取得（控制权、技能等）。",exen:"Microsoft acquired Activision for $69 billion in 2023.",excn:"微软于2023年以690亿美元收购动视暴雪。"},
+   {t:"Inquire",cn:"询问",desc:"提出问题、打听。",exen:"The auditor inquired about the related-party transaction.",excn:"审计师询问了该笔关联交易。"},
+   {t:"Require",cn:"要求；需要",desc:"依据规定或需要而必须。",exen:"The covenant requires a minimum current ratio of 1.5.",excn:"契约要求流动比率不低于1.5。"}
+ ]},
+ {note:"Advice 是名词（建议）；Advise 是动词（建议）。",
+  tip:"名词 advice 带 c（像 ice）；动词 advise 带 s。",
+  words:[
+   {t:"Advice",cn:"建议（名词）",desc:"给出的指导或建议。",exen:"The committee gave advice on asset allocation.",excn:"委员会就资产配置给出了建议。"},
+   {t:"Advise",cn:"建议（动词）",desc:"提出建议或告知。",exen:"We advise hedging half the currency exposure.",excn:"我们建议对冲一半的外汇敞口。"}
+ ]},
+ {note:"Discreet 谨慎的、低调的；Discrete 离散的、各自独立的。",
+  tip:"离散的 discrete 两个 e 被 t 分开，像“分开”。",
+  words:[
+   {t:"Discreet",cn:"谨慎的；低调的",desc:"言行谨慎、注意保密。",exen:"Bankers must be discreet about live mandates.",excn:"银行家须对在办委托保密。"},
+   {t:"Discrete",cn:"离散的；分立的",desc:"各自独立、不连续的。",exen:"Bonds are sorted into discrete rating buckets.",excn:"债券被归入离散的评级区间。"}
+ ]},
+ {note:"Elicit 是动词（引出、套出）；Illicit 是形容词（非法的）。",
+  tip:"非法 illicit 像 illegal；引出 elicit 是 e-licit。",
+  words:[
+   {t:"Elicit",cn:"引出；套出",desc:"通过提问等方式引出信息。",exen:"The questionnaire elicited investor risk preferences.",excn:"问卷引出了投资者的风险偏好。"},
+   {t:"Illicit",cn:"非法的；不正当的",desc:"法律或规则所禁止的。",exen:"Illicit funds were frozen under AML rules.",excn:"非法资金依反洗钱规则被冻结。"}
+ ]},
+ {note:"Ensure 确保；Insure 投保；Assure 向…保证。",
+  tip:"投保用 insure（像 insurance）；向人保证用 assure（含人）。",
+  words:[
+   {t:"Ensure",cn:"确保",desc:"使某事必然发生。",exen:"Internal controls ensure accurate reporting.",excn:"内部控制确保报告准确。"},
+   {t:"Insure",cn:"投保；给…保险",desc:"以保险防范损失。",exen:"The cargo was insured for $1 million.",excn:"货物投保了100万美元。"},
+   {t:"Assure",cn:"向…保证",desc:"明确地告诉对方不必担心。",exen:"The CFO assured investors of ample liquidity.",excn:"财务总监向投资者保证流动性充裕。"}
+ ]},
+ {note:"Loose 是形容词（松的）；Lose 是动词（失去、亏损）。",
+  tip:"松的 loose 多一个 o，像松开的绳圈。",
+  words:[
+   {t:"Loose",cn:"松的；宽松的",desc:"不紧、不牢固。",exen:"Loose credit standards often precede defaults.",excn:"宽松的信贷标准往往先于违约。"},
+   {t:"Lose",cn:"失去；亏损",desc:"不再拥有；遭受损失。",exen:"Investors lose money when credit spreads widen.",excn:"信用利差扩大时投资者会亏钱。"}
+ ]},
+ {note:"Disburse 支付、拨付（款项）；Disperse 分散、驱散。",
+  tip:"付款 disburse 像 purse（钱包）。",
+  words:[
+   {t:"Disburse",cn:"支付；拨付",desc:"把钱付出。",exen:"The bank disbursed the loan in three tranches.",excn:"银行分三笔发放贷款。"},
+   {t:"Disperse",cn:"分散；驱散",desc:"使散开、分布。",exen:"Risk is dispersed across the tranches.",excn:"风险被分散到各层级。"}
+ ]},
+ {note:"Wave 波浪、挥手；Waive 放弃、免除（权利/要求）。",
+  tip:"豁免 waive 像 waiver（豁免书）。",
+  words:[
+   {t:"Wave",cn:"波浪；浪潮",desc:"波浪；比喻某事物的一波。",exen:"A wave of redemptions hit the bond fund.",excn:"赎回浪潮冲击该债券基金。"},
+   {t:"Waive",cn:"放弃；免除",desc:"自愿不主张某项权利。",exen:"The bank waived the minor covenant breach.",excn:"银行豁免了这次轻微的契约违约。"}
+ ]},
+ {note:"Cite 引用；Site 地点、网站；Sight 看见、视力。",
+  tip:"信用证 at sight 即“见票即付”。",
+  words:[
+   {t:"Cite",cn:"引用；引证",desc:"引用资料或规则。",exen:"Cite the relevant IFRS standard in the workpaper.",excn:"在工作底稿中引用相应的IFRS准则。"},
+   {t:"Site",cn:"地点；网站",desc:"场所、位置。",exen:"The factory site is close to the port.",excn:"厂区靠近港口。"},
+   {t:"Sight",cn:"看见；视力",desc:"视觉；看见。",exen:"The draft is payable at sight under the letter of credit.",excn:"该汇票在信用证项下见票即付。"}
+ ]},
+ {note:"Council 是委员会；Counsel 是法律顾问、建议。",
+  tip:"委员会 council 是集合；counsel 像 counselor（顾问）。",
+  words:[
+   {t:"Council",cn:"委员会；议会",desc:"议事或决策机构。",exen:"The Stability Council reviewed the new rules.",excn:"稳定委员会审查了新规则。"},
+   {t:"Counsel",cn:"法律顾问；建议",desc:"律师；正式建议。",exen:"Seek legal counsel before signing the agreement.",excn:"签署协议前先征求法律顾问意见。"}
+ ]},
+ {note:"Appraise 估价、评估；Apprise 通知、告知。",
+  tip:"估价 appraise 像 appraisal；告知 apprise 是“使知道”。",
+  words:[
+   {t:"Appraise",cn:"估价；评估",desc:"评定价值或质量。",exen:"The property was appraised at $5 million.",excn:"该物业估价为500万美元。"},
+   {t:"Apprise",cn:"通知；告知",desc:"向某人通报情况。",exen:"Apprise the audit committee of the findings.",excn:"将审计发现告知审计委员会。"}
+ ]},
+ {note:"Assent 同意；Ascent 上升。",
+  tip:"上升 ascent 像 ascend（攀登）。",
+  words:[
+   {t:"Assent",cn:"同意",desc:"赞同、批准。",exen:"The board gave assent to the acquisition.",excn:"董事会同意该收购。"},
+   {t:"Ascent",cn:"上升；升高",desc:"向上移动。",exen:"The ascent of bond yields accelerated in June.",excn:"6月债券收益率上升加速。"}
+ ]},
+ {note:"Later 后来、以后；Latter 后者（两者中的第二个）。",
+  tip:"the latter 与 the former（前者）对应。",
+  words:[
+   {t:"Later",cn:"后来；以后",desc:"在之后的时间。",exen:"The rule was tightened later that year.",excn:"那年晚些时候规则被收紧。"},
+   {t:"Latter",cn:"后者",desc:"已提及两者中的第二个。",exen:"Of cash and credit, the latter is cheaper here.",excn:"现金与信贷中，后者在此更便宜。"}
+ ]},
+ {note:"Adapt 适应；Adept 熟练的；Adopt 采纳。",
+  tip:"三个词只差一个首字母：适应 a-dapt、熟练 a-dept、采纳 a-dopt。",
+  words:[
+   {t:"Adapt",cn:"适应；改编",desc:"调整以适应新情况。",exen:"Banks adapted their models to higher rates.",excn:"银行调整模型以适应更高利率。"},
+   {t:"Adept",cn:"熟练的；擅长的",desc:"做某事很在行。",exen:"She is adept at building cash-flow models.",excn:"她擅长搭建现金流模型。"},
+   {t:"Adopt",cn:"采纳；采用",desc:"正式接受并使用。",exen:"The board adopted the new dividend policy.",excn:"董事会采纳了新的分红政策。"}
+ ]},
+ {note:"Access 进入、使用权；Excess 过量、超额。",
+  tip:"access to capital 是融资渠道；excess reserves 是超额准备金。",
+  words:[
+   {t:"Access",cn:"进入；使用权",desc:"进入或使用的机会。",exen:"Small firms lost access to credit in the crunch.",excn:"信贷紧缩时小企业失去了融资渠道。"},
+   {t:"Excess",cn:"过量；超额",desc:"超过所需或规定的部分。",exen:"Banks parked excess reserves at the central bank.",excn:"银行把超额准备金存放在央行。"}
+ ]},
+ {note:"Device 是名词（设备、装置）；Devise 是动词（设计、想出）。",
+  tip:"设备 device 带 -ice；设计 devise 是动词。",
+  words:[
+   {t:"Device",cn:"设备；装置",desc:"用于特定用途的器具。",exen:"The trading device crashed during the open.",excn:"开盘时交易设备死机。"},
+   {t:"Devise",cn:"设计；想出",desc:"构思、发明。",exen:"The team devised a hedging strategy overnight.",excn:"团队连夜设计了一套对冲策略。"}
+ ]},
+ {note:"Fair 公平的、合理的；Fare 费用、票价。",
+  tip:"fair value 公允价值；airfare 机票。",
+  words:[
+   {t:"Fair",cn:"公平的；合理的",desc:"公正、合理的。",exen:"Both parties negotiated at arm's length for a fair price.",excn:"双方公平谈判确定合理价格。"},
+   {t:"Fare",cn:"费用；票价",desc:"乘车、乘机等支付的费用。",exen:"Air fares rose as jet fuel climbed.",excn:"航空燃油上涨后机票价格上升。"}
+ ]},
+ {note:"Conscience 良心；Conscious 有意识的。",
+  tip:"良心 conscience 含 science；有意识 conscious 是“知道的”。",
+  words:[
+   {t:"Conscience",cn:"良心；道德心",desc:"分辨是非的内心。",exen:"Whistleblowers acted according to conscience.",excn:"举报人是凭良心行事。"},
+   {t:"Conscious",cn:"有意识的；意识到的",desc:"觉察到、清醒的。",exen:"Investors became conscious of duration risk.",excn:"投资者开始意识到久期风险。"}
+ ]},
+ {note:"Credible 可信的；Creditable 值得称赞的；Credulous 轻信的。",
+  tip:"三个词都源自“相信”：-ible 可被信、-able 值得信、-ulous 太容易信。",
+  words:[
+   {t:"Credible",cn:"可信的；可靠的",desc:"能够令人相信的。",exen:"The firm presented a credible turnaround plan.",excn:"公司提出了可信的扭亏计划。"},
+   {t:"Creditable",cn:"值得称赞的",desc:"值得肯定的。",exen:"The bank delivered a creditable performance.",excn:"该银行取得了值得称道的业绩。"},
+   {t:"Credulous",cn:"轻信的",desc:"容易轻易相信他人。",exen:"Credulous investors fell for the Ponzi scheme.",excn:"轻信的投资者落入了庞氏骗局。"}
+ ]},
+ {note:"Distinct 明显不同的、清楚的；Distinctive 有特色的、与众不同的。",
+  tip:"distinct 强调“不同”；distinctive 强调“有辨识度”。",
+  words:[
+   {t:"Distinct",cn:"明显的；不同的",desc:"清楚有别。",exen:"The two tranches have distinct risk profiles.",excn:"两个层级的风险特征明显不同。"},
+   {t:"Distinctive",cn:"有特色的",desc:"有独特辨识度。",exen:"The terminal has a distinctive dark-blue interface.",excn:"该终端有独特的深蓝界面。"}
+ ]},
+ {note:"Effective 有效的（产生效果）；Efficient 高效的（少浪费）。",
+  tip:"effective 看“有没有用”，efficient 看“省不省”。",
+  words:[
+   {t:"Effective",cn:"有效的",desc:"能产生预期效果。",exen:"Effective controls caught the error early.",excn:"有效的控制及早发现了错误。"},
+   {t:"Efficient",cn:"高效的",desc:"以最少浪费完成。",exen:"An efficient market quickly prices in news.",excn:"有效市场会迅速消化消息。"}
+ ]},
+ {note:"Eligible 合格的、符合条件的；Illegible 字迹模糊难辨的。",
+  tip:"eligible 像 election（有资格）；illegible 像 illegal 阅读。",
+  words:[
+   {t:"Eligible",cn:"合格的；符合条件的",desc:"满足规定条件。",exen:"Only R&D spending is eligible for the credit.",excn:"只有研发支出符合该抵免条件。"},
+   {t:"Illegible",cn:"字迹模糊的",desc:"无法辨认的。",exen:"The contract signature was illegible.",excn:"合同上的签名难以辨认。"}
+ ]},
+ {note:"Historic 有历史意义的；Historical 历史的（关于过去的）。",
+  tip:"historic 是“值得记住的”；historical 是“过去的”。",
+  words:[
+   {t:"Historic",cn:"有历史意义的",desc:"具有重大历史意义。",exen:"The central bank delivered a historic emergency cut.",excn:"央行进行了一次历史性紧急降息。"},
+   {t:"Historical",cn:"历史的",desc:"与历史或过去有关。",exen:"Historical returns do not guarantee future results.",excn:"历史收益不代表未来表现。"}
+ ]},
+ {note:"Hoard 囤积（动词/名词）；Horde 大群（人）。",
+  tip:"囤积 hoard 像藏财宝；大群 horde 是人群。",
+  words:[
+   {t:"Hoard",cn:"囤积",desc:"大量储存。",exen:"Firms hoarded cash during the crisis.",excn:"危机期间企业囤积现金。"},
+   {t:"Horde",cn:"大群；人群",desc:"一大群人。",excn:"",exen:"Hordes of retail traders opened accounts.",excn:"大批散户开设了账户。"}
+ ]},
+ {note:"Human 人类的；Humane 仁慈的、人道的。",
+  tip:"human capital 人力资本；humane 是“有人情味”。",
+  words:[
+   {t:"Human",cn:"人类的；人的",desc:"与人有关。",exen:"Training is investment in human capital.",excn:"培训是对人力资本的投资。"},
+   {t:"Humane",cn:"人道的；仁慈的",desc:"富有同情心。",exen:"The firm offered a humane redundancy package.",excn:"公司提供了人性化的裁员方案。"}
+ ]},
+ {note:"Implicit 含蓄的、隐含的；Explicit 明确的、清楚的。",
+  tip:"implicit cost 隐性成本；explicit consent 明确同意。",
+  words:[
+   {t:"Implicit",cn:"隐含的；含蓄的",desc:"未明说但可推知。",exen:"The implicit guarantee misled creditors.",excn:"隐性担保误导了债权人。"},
+   {t:"Explicit",cn:"明确的；清楚的",desc:"清晰表达的。",exen:"The rule sets explicit capital requirements.",excn:"该规则规定了明确的资本要求。"}
+ ]},
+ {note:"Invaluable 极宝贵的（无价）；Valueless 毫无价值的。",
+  tip:"invaluable 是“价值无法估量”；valueless 是“没有价值”。",
+  words:[
+   {t:"Invaluable",cn:"极宝贵的；无价的",desc:"价值极高。",exen:"The due-diligence data proved invaluable.",excn:"尽职调查资料被证明极为宝贵。"},
+   {t:"Valueless",cn:"无价值的",desc:"毫无价值。",exen:"The OTM options expired valueless.",excn:"价外期权到期时一文不值。"}
+ ]},
+ {note:"Judicial 司法的；Judicious 明智的、有判断力的。",
+  tip:"judicial 是“法庭的”；judicious 是“判断得当”。",
+  words:[
+   {t:"Judicial",cn:"司法的；法庭的",desc:"与司法有关。",exen:"The case is under judicial review.",excn:"该案正在接受司法审查。"},
+   {t:"Judicious",cn:"明智的；审慎的",desc:"有良好判断力。",exen:"Judicious use of leverage lifted ROE.",excn:"审慎使用杠杆提升了ROE。"}
+ ]},
+ {note:"Negligent 疏忽的；Negligible 微不足道的。",
+  tip:"-gent 是“疏忽”；-gible 是“可忽略”。",
+  words:[
+   {t:"Negligent",cn:"疏忽的；玩忽职守的",desc:"未尽注意义务。",exen:"The negligent auditor missed the fraud.",excn:"疏忽的审计师未能发现舞弊。"},
+   {t:"Negligible",cn:"微不足道的",desc:"小到可忽略。",exen:"The trade carried negligible counterparty risk.",excn:"该交易的对手风险可忽略。"}
+ ]},
+ {note:"Persecute 迫害；Prosecute 起诉、检控。",
+  tip:"迫害 per-；起诉 pro-，像 prosecutor（检察官）。",
+  words:[
+   {t:"Persecute",cn:"迫害",desc:"骚扰、压制。",exen:"Whistleblowers must not be persecuted.",excn:"举报人不得受到迫害。"},
+   {t:"Prosecute",cn:"起诉；检控",desc:"提起法律诉讼。",exen:"Regulators prosecuted the insider traders.",excn:"监管机构起诉了内幕交易者。"}
+ ]},
+ {note:"Prescribe 规定、开处方；Proscribe 禁止。",
+  tip:"规定 pre-；禁止 pro-，像 prohibit。",
+  words:[
+   {t:"Prescribe",cn:"规定；开处方",desc:"定下规则或要求。",exen:"The standard prescribes a five-step model.",excn:"该准则规定了五步法。"},
+   {t:"Proscribe",cn:"禁止",desc:"正式禁止。",exen:"The policy proscribes trading on MNPI.",excn:"政策禁止利用重大非公开信息交易。"}
+ ]},
+ {note:"Sensible 明智的；Sensitive 敏感的。",
+  tip:"sensible 是“通情达理”；sensitive 是“容易受影响”。",
+  words:[
+   {t:"Sensible",cn:"明智的；合理的",desc:"合乎情理。",exen:"Keeping an emergency reserve is sensible.",excn:"保留应急储备是明智的。"},
+   {t:"Sensitive",cn:"敏感的",desc:"容易受影响。",exen:"Bank stocks are sensitive to rate moves.",excn:"银行股对利率变动敏感。"}
+ ]},
+ {note:"Simulate 模拟；Stimulate 刺激。",
+  tip:"模拟 sim-；刺激 sti-，像 stimulus。",
+  words:[
+   {t:"Simulate",cn:"模拟",desc:"模仿真实情形。",exen:"The model simulates a 2008-style shock.",excn:"该模型模拟2008年级别的冲击。"},
+   {t:"Stimulate",cn:"刺激；激励",desc:"促进、激发。",exen:"Rate cuts were meant to stimulate growth.",excn:"降息意在刺激增长。"}
+ ]},
+ {note:"Uninterested 不感兴趣的；Disinterested 公正的、无利害关系的。",
+  tip:"disinterested 是“没有利益牵涉”，所以公正；uninterested 才是“没兴趣”。",
+  words:[
+   {t:"Uninterested",cn:"不感兴趣的",desc:"没有兴趣。",exen:"Long-term holders were uninterested in short-term noise.",excn:"长期持有者对短期噪音不感兴趣。"},
+   {t:"Disinterested",cn:"公正的；无利害的",desc:"没有个人利益牵涉。",exen:"A disinterested party mediated the dispute.",excn:"由无利害关系的一方调解纠纷。"}
+ ]},
+ {note:"Wary 警惕的；Weary 疲惫的。",
+  tip:"警惕 wary 像 aware；疲惫 weary 像 worn。",
+  words:[
+   {t:"Wary",cn:"警惕的；谨慎的",desc:"小心提防。",exen:"Markets stayed wary of inflation surprises.",excn:"市场对通胀意外保持警惕。"},
+   {t:"Weary",cn:"疲惫的",desc:"疲倦、厌烦。",exen:"Weary traders faced another volatile session.",excn:"疲惫的交易员又迎来一个动荡交易日。"}
+ ]},
+ {note:"Eminent 杰出的；Imminent 迫在眉睫的。",
+  tip:"杰出 e-；逼近 im-，像 imminent danger。",
+  words:[
+   {t:"Eminent",cn:"杰出的；著名的",desc:"地位高、受人尊敬。",exen:"An eminent economist warned of recession.",excn:"一位著名经济学家警告经济衰退。"},
+   {t:"Imminent",cn:"迫在眉睫的",desc:"即将发生。",exen:"The firm faced an imminent default.",excn:"公司面临迫在眉睫的违约。"}
+ ]},
+ {note:"Weather 天气；Whether 是否。",
+  tip:"weather the storm 是“渡过风暴”；whether 是“是否”。",
+  words:[
+   {t:"Weather",cn:"天气；经受住",desc:"作动词意为渡过难关。",exen:"Strong capital helped the bank weather the crisis.",excn:"雄厚资本帮助银行渡过危机。"},
+   {t:"Whether",cn:"是否",desc:"表示选择。",exen:"The board debated whether to hedge.",excn:"董事会讨论是否进行对冲。"}
+ ]},
+ {note:"Respectfully 恭敬地；Respectively 分别、各自。",
+  tip:"respectively 常跟数据并列：A and B are X and Y, respectively。",
+  words:[
+   {t:"Respectfully",cn:"恭敬地",desc:"表示敬意。",exen:"The report is respectfully submitted to the board.",excn:"报告谨呈董事会。"},
+   {t:"Respectively",cn:"分别；各自",desc:"按顺序对应。",exen:"ROE and ROA were 15 and 8 percent, respectively.",excn:"ROE和ROA分别为15%和8%。"}
+ ]},
+ {note:"Tortuous 曲折的、拐弯抹角的；Torturous 折磨人的。",
+  tip:"曲折 tortu-（像 tortoise 慢）；折磨 tortur-（像 torture）。",
+  words:[
+   {t:"Tortuous",cn:"曲折的；拐弯抹角的",desc:"弯多、复杂。",exen:"The deal passed through a tortuous approval process.",excn:"该交易经历了曲折的审批。"},
+   {t:"Torturous",cn:"折磨人的；痛苦的",desc:"令人痛苦。",exen:"Investors faced a torturous wait for results.",excn:"投资者煎熬地等待结果。"}
+ ]},
+ {note:"Allusion 暗指、典故；Illusion 幻觉；Delusion 妄想。",
+  tip:"暗指 al-；幻觉 il-；妄想 de-（自己骗自己）。",
+  words:[
+   {t:"Allusion",cn:"暗指；典故",desc:"间接提及。",exen:"His speech made an allusion to the 2008 crisis.",excn:"他的讲话暗指2008年危机。"},
+   {t:"Illusion",cn:"幻觉；错觉",desc:"虚假的感觉。",exen:"AAA ratings gave an illusion of safety.",excn:"AAA评级造成了安全幻觉。"},
+   {t:"Delusion",cn:"妄想；迷惑",desc:"顽固的错误信念。",exen:"The trader's delusion of control raised risk.",excn:"交易员的控制妄想增加了风险。"}
+ ]}
+];
+
+/* ============================================================
+   逻辑区
+   ============================================================ */
+const CATS = {
+ basic:"基础概念", ethics:"职业道德", qmethods:"量化方法", micro:"微观经济",
+ macro:"宏观与外汇", corp:"公司金融", macc:"管理会计", audit:"审计鉴证",
+ tax:"税务", law:"商法", equity:"股票市场", bond:"固定收益",
+ fund:"基金投资", alt:"另类投资", deriv:"衍生品", pm:"组合管理",
+ risk:"风险管理", banking:"银行机构", ma:"并购发行", quant:"量化交易"
+};
+
+const ICON = {
+ star:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+ speak:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+ chevron:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+ info:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>',
+ key:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M17 5l2 2M14 8l2 2"/></svg>',
+ swap:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
+ close:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+};
+
+/* ---------- 状态 ---------- */
+const state = { cat:"all", query:"", starredOnly:false, lookOnly:false };
+const openSet = new Set();
+let stars = new Set();
+try { stars = new Set(JSON.parse(localStorage.getItem("finlex-stars-v1")||"[]")); } catch(e){}
+
+function saveStars(){ localStorage.setItem("finlex-stars-v1", JSON.stringify([...stars])); }
+
+/* ---------- 交叉索引 ---------- */
+const synMap = {};
+SYNS.forEach((g,i)=>g.items.forEach(it=>{ synMap[it.t]=i; }));
+const confMap = {};
+CONFS.forEach((p,i)=>{ confMap[p.a.t]=i; confMap[p.b.t]=i; });
+
+/* ---------- 工具函数 ---------- */
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function hl(text){
+  text = esc(text);
+  const q = state.query.trim();
+  if(!q) return text;
+  const re = new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
+  return text.replace(re,'<mark class="hl">$1</mark>');
+}
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 1800);
+}
+
+/* ---------- 分类 chips ---------- */
+function renderCats(){
+  const counts = {};
+  TERMS.forEach(t=>counts[t[3]]=(counts[t[3]]||0)+1);
+  let html = `<button class="chip ${state.cat==="all"?"active":""}" data-cat="all">全部 <span class="chip-n">${TERMS.length}</span></button>`;
+  Object.keys(CATS).forEach(k=>{
+    html += `<button class="chip ${state.cat===k?"active":""}" data-cat="${k}">${CATS[k]} <span class="chip-n">${counts[k]||0}</span></button>`;
+  });
+  document.getElementById("catPanel").innerHTML = html;
+  document.getElementById("catCurrent").textContent = state.cat==="all" ? "全部" : CATS[state.cat];
+}
+
+/* ---------- 术语卡片 ---------- */
+function cardHTML(t){
+  const [en,abbr,cn,cat,def,exen,excn,lv] = t;
+  const star = stars.has(en);
+  const open = openSet.has(en);
+  const lvDots = [1,2,3].map(n=>`<i class="${n<=lv?"on":""}"></i>`).join("");
+  const si = synMap[en];
+  const li = lookMap[en]!==undefined ? lookMap[en] : lookMap[abbr];
+  let links = "";
+  if(si!==undefined){
+    links = `<div class="tc-links"><button class="tc-link" data-syn="${si}">近义词辨析</button></div>`;
+  }
+  let lookBlock = "";
+  let lookPill = "";
+  if(li!==undefined){
+    const g = LOOK[li];
+    const chips = g.words.map(w=>`<button class="lk-chip ${w.t===en?"self":""}" data-look="${li}">${esc(w.t)}</button>`).join("");
+    lookBlock = `<div class="tc-look"><div class="tc-look-label">易混淆词（形似）· 点击在右侧弹窗查看</div><div class="tc-look-chips">${chips}</div></div>`;
+    const otherWords = g.words.map(w=>w.t).filter(t=>t!==en).join(" / ");
+    lookPill = `<button class="tc-look-pill" data-look="${li}" aria-label="查看易混淆词">${ICON.swap}<span class="lp-words">${esc(otherWords)}</span></button>`;
+  }
+  return `<article class="term-card ${open?"open":""}" data-en="${esc(en)}">
+    <div class="tc-head">
+      <div class="tc-title"><h3>${hl(en)}</h3>${abbr?`<span class="tc-abbr">${hl(abbr)}</span>`:""}</div>
+      <div class="tc-actions">
+        <button class="icon-btn star ${star?"starred":""}" data-star aria-label="收藏">${ICON.star}</button>
+        <button class="icon-btn" data-speak aria-label="朗读">${ICON.speak}</button>
+      </div>
+    </div>
+    <div class="tc-cn">${hl(cn)}<span class="tc-meta"><span class="lv" title="难度${lv}">${lvDots}</span><span class="tc-cat">${CATS[cat]}</span></span></div>
+    <div class="tc-chevron-row">
+      <div class="tc-chevron">展开释义与例句 ${ICON.chevron}</div>
+      ${lookPill}
+    </div>
+    <div class="tc-body">
+      <p class="tc-def">${hl(def)}</p>
+      <div class="tc-ex"><p class="ex-en">${hl(exen)}</p><p class="ex-cn">${hl(excn)}</p></div>
+      ${links}
+      ${lookBlock}
+    </div>
+  </article>`;
+}
+
+function termMatches(t){
+  if(state.cat!=="all" && t[3]!==state.cat) return false;
+  if(state.starredOnly && !stars.has(t[0])) return false;
+  if(state.lookOnly && lookMap[t[0]]===undefined && lookMap[t[1]]===undefined) return false;
+  if(state.query){
+    const q = state.query.toLowerCase();
+    const hay = (t[0]+" "+t[1]+" "+t[2]+" "+t[4]).toLowerCase();
+    if(!hay.includes(q)) return false;
+  }
+  return true;
+}
+
+function renderGrid(){
+  const list = TERMS.filter(termMatches);
+  const grid = document.getElementById("termGrid");
+  grid.innerHTML = list.map(cardHTML).join("");
+  document.getElementById("empty").style.display = list.length ? "none" : "block";
+  let meta = `共 <b>${TERMS.length}</b> 条术语，当前显示 <b>${list.length}</b> 条`;
+  if(state.starredOnly) meta += `<span class="rm-tag">仅看收藏</span>`;
+  if(state.lookOnly) meta += `<span class="rm-tag">仅看易混淆词</span>`;
+  if(state.cat!=="all") meta += `<span class="rm-tag">${CATS[state.cat]}</span>`;
+  document.getElementById("resultMeta").innerHTML = meta;
+}
+
+/* ---------- 构建易混淆词组（LOOK） ---------- */
+function findTermData(t){
+  return TERMS.find(x=>x[0]===t || x[1]===t);
+}
+const LOOK = [];
+CONFS.forEach(p=>{
+  LOOK.push({
+    note:p.diff, tip:p.tip,
+    words:[p.a,p.b].map(s=>{
+      const term = findTermData(s.t);
+      return {
+        t:s.t, cn:s.cn, desc:s.desc,
+        exen: term ? term[5] : (s.exen||""),
+        excn: term ? term[6] : (s.excn||"")
+      };
+    })
+  });
+});
+LOOK_ALIKE.forEach(g=>{
+  LOOK.push({
+    note:g.note, tip:g.tip,
+    words:g.words.map(w=>{
+      const term = findTermData(w.t);
+      if(term){
+        return {
+          t:w.t,
+          cn:w.cn||term[2],
+          desc:w.desc||term[4],
+          exen:w.exen||term[5],
+          excn:w.excn||term[6]
+        };
+      }
+      return w;
+    })
+  });
+});
+/* 交叉索引：术语名/缩写 → LOOK 组 */
+const lookMap = {};
+LOOK.forEach((g,i)=>g.words.forEach(w=>{
+  lookMap[w.t]=i;
+  const term = findTermData(w.t);
+  if(term && term[1]) lookMap[term[1]]=i;
+}));
+/* 术语全称与形似词的别名映射 */
+const lookAlias = {
+  "Short Selling":"Short", "Gross Profit":"Gross", "Net Income":"Net",
+  "Forward Contract":"Forwards", "Ask Price":"Ask", "Bid Price":"Bid",
+  "Long Position":"Long", "Spot Price":"Spot", "Option Premium":"Premium"
+};
+Object.keys(lookAlias).forEach(termT=>{
+  const gi = lookMap[lookAlias[termT]];
+  if(gi!==undefined) lookMap[termT]=gi;
+});
+
+/* ---------- 右侧抽屉（易混淆词 / 近义词） ---------- */
+let drawerMode = "look";
+let currentLook = 0, currentSyn = 0;
+function renderDrawerSelect(){
+  const sel = document.getElementById("drawerSelect");
+  if(drawerMode==="look"){
+    sel.setAttribute("aria-label","选择易混淆词组");
+    sel.innerHTML = LOOK.map((g,i)=>`<option value="${i}">${g.words.map(w=>w.t).join("  /  ")}</option>`).join("");
+    sel.value = currentLook;
+  } else {
+    sel.setAttribute("aria-label","选择近义词组");
+    sel.innerHTML = SYNS.map((g,i)=>`<option value="${i}">${g.title}</option>`).join("");
+    sel.value = currentSyn;
+  }
+}
+function renderLookBody(){
+  const g = LOOK[currentLook];
+  const cards = g.words.map(w=>`
+    <div class="lk-card">
+      <div class="lc-top">
+        <h3>${esc(w.t)}</h3>
+        <button class="lc-speak" data-look-speak="${esc(w.t)}" aria-label="朗读">${ICON.speak}</button>
+      </div>
+      <div class="lc-cn">${esc(w.cn)}</div>
+      <div class="lc-desc">${esc(w.desc)}</div>
+      ${w.exen?`<div class="lc-ex"><p class="ex-en">${esc(w.exen)}</p><p class="ex-cn">${esc(w.excn)}</p></div>`:""}
+    </div>`).join("");
+  const note = g.note ? `<div class="lk-note"><h4>核心区别</h4><p>${esc(g.note)}</p>${g.tip?`<p style="margin-top:6px">${esc(g.tip)}</p>`:""}</div>` : "";
+  document.getElementById("drawerBody").innerHTML = note+cards;
+}
+function renderSynBody(){
+  const g = SYNS[currentSyn];
+  const cards = g.items.map(it=>`
+    <div class="lk-card">
+      <div class="lc-top">
+        <h3>${esc(it.t)}</h3>
+        <button class="lc-speak" data-look-speak="${esc(it.t)}" aria-label="朗读">${ICON.speak}</button>
+      </div>
+      <div class="lc-cn">${esc(it.cn)}</div>
+      <div class="sc-label">侧重点</div>
+      <p class="sc-p">${esc(it.focus)}</p>
+      <div class="sc-label">典型搭配</div>
+      <div class="sc-use">${esc(it.use)}</div>
+    </div>`).join("");
+  const note = `<div class="lk-note"><h4>辨析</h4><p>${esc(g.note)}</p></div>`;
+  document.getElementById("drawerBody").innerHTML = note+cards;
+}
+function renderDrawer(){
+  if(drawerMode==="look") renderLookBody(); else renderSynBody();
+  renderDrawerSelect();
+}
+function showDrawer(){
+  renderDrawer();
+  document.getElementById("lookDrawer").classList.add("show");
+  document.getElementById("drawerOverlay").classList.add("show");
+  document.getElementById("lookDrawer").setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+}
+function openDrawer(i){
+  drawerMode = "look";
+  currentLook = (i!==undefined)?i:0;
+  document.getElementById("drawerTitle").textContent = "易混淆词";
+  document.getElementById("drawerSubtitle").textContent = "形似词对照 · 释义与例句";
+  showDrawer();
+}
+function openSynDrawer(i){
+  drawerMode = "syn";
+  currentSyn = (i!==undefined)?i:0;
+  document.getElementById("drawerTitle").textContent = "近义词辨析";
+  document.getElementById("drawerSubtitle").textContent = "近义术语 · 侧重点与搭配";
+  showDrawer();
+}
+function closeDrawer(){
+  document.getElementById("lookDrawer").classList.remove("show");
+  document.getElementById("drawerOverlay").classList.remove("show");
+  document.getElementById("lookDrawer").setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+}
+
+/* ---------- 语音朗读 ---------- */
+function speak(text){
+  if(!("speechSynthesis" in window)){ toast("当前浏览器不支持语音朗读"); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = .92;
+  speechSynthesis.speak(u);
+}
+
+/* ---------- 随机术语 ---------- */
+function randomTerm(){
+  const pool = TERMS.filter(termMatches);
+  const pick = pool.length ? pool[Math.floor(Math.random()*pool.length)] : TERMS[Math.floor(Math.random()*TERMS.length)];
+  if(!pool.length){
+    state.cat = "all"; state.query = ""; state.starredOnly = false;
+    document.getElementById("search").value = "";
+    document.getElementById("btnStar").classList.remove("active");
+    renderCats(); renderGrid();
+  }
+  openSet.add(pick[0]);
+  renderGrid();
+  const card = document.querySelector(`.term-card[data-en="${CSS.escape(pick[0])}"]`);
+  if(card){
+    card.scrollIntoView({behavior:"smooth", block:"center"});
+    card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash");
+  }
+  toast("随机术语："+pick[0]+" · "+pick[2]);
+}
+
+/* ---------- Hero 行情条（随机易混淆词） ---------- */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+function renderTicker(){
+  const order = shuffle(LOOK.map((_,i)=>i));
+  const ticks = order.map(gi=>{
+    const g = LOOK[gi];
+    const ens = g.words.map(w=>`<span class="t-en">${esc(w.t)}</span>`).join(`<span class="t-x">⇄</span>`);
+    const cns = g.words.map(w=>w.cn).join(" / ");
+    return `<span class="tick" data-look="${gi}">${ens}<span class="t-cn">${esc(cns)}</span></span>`;
+  }).join("");
+  const track = document.getElementById("tickerTrack");
+  track.innerHTML =
+    `<div class="ticker-group">${ticks}</div><div class="ticker-group">${ticks}</div>`;
+  track.style.animationDuration = Math.max(60, order.length*1.8)+"s";
+}
+/* 每 60 秒重新随机一轮 */
+setInterval(()=>{
+  if(!document.getElementById("lookDrawer").classList.contains("show")) renderTicker();
+}, 60000);
+
+/* ---------- 事件绑定 ---------- */
+/* 分类下拉 */
+const catWrap = document.getElementById("catWrap");
+document.getElementById("catBtn").addEventListener("click", ()=>{
+  const open = catWrap.classList.toggle("open");
+  document.getElementById("catBtn").setAttribute("aria-expanded", open);
+});
+document.getElementById("catPanel").addEventListener("click", e=>{
+  const btn = e.target.closest("[data-cat]");
+  if(!btn) return;
+  state.cat = btn.dataset.cat;
+  renderCats(); renderGrid();
+  catWrap.classList.remove("open");
+  document.getElementById("catBtn").setAttribute("aria-expanded", false);
+  if(window.innerWidth<768) setMobileOpen(false);
+});
+/* 移动端折叠面板 */
+const topnav = document.getElementById("topnav");
+function setMobileOpen(v){
+  topnav.classList.toggle("open", v);
+  document.getElementById("mobileMenu").setAttribute("aria-expanded", v);
+}
+document.getElementById("mobileMenu").addEventListener("click", ()=>{
+  setMobileOpen(!topnav.classList.contains("open"));
+});
+
+const grid = document.getElementById("termGrid");
+grid.addEventListener("click", e=>{
+  const card = e.target.closest(".term-card");
+  if(!card) return;
+  const en = card.dataset.en;
+  const starBtn = e.target.closest("[data-star]");
+  const speakBtn = e.target.closest("[data-speak]");
+  const synLink = e.target.closest("[data-syn]");
+  const lookChip = e.target.closest("[data-look]");
+  if(starBtn){
+    stars.has(en) ? stars.delete(en) : stars.add(en);
+    saveStars();
+    starBtn.classList.toggle("starred", stars.has(en));
+    toast(stars.has(en) ? "已收藏："+en : "已取消收藏");
+    if(state.starredOnly) renderGrid();
+    return;
+  }
+  if(speakBtn){
+    const term = TERMS.find(t=>t[0]===en);
+    speak(term ? term[0] : en);
+    return;
+  }
+  if(synLink){
+    openSynDrawer(+synLink.dataset.syn);
+    return;
+  }
+  if(lookChip){
+    openDrawer(+lookChip.dataset.look);
+    return;
+  }
+  card.classList.toggle("open");
+  openSet.has(en) ? openSet.delete(en) : openSet.add(en);
+});
+
+/* 抽屉：关闭、遮罩、切换、朗读 */
+document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+document.getElementById("drawerOverlay").addEventListener("click", closeDrawer);
+document.getElementById("drawerSelect").addEventListener("change", e=>{
+  if(drawerMode==="look"){ currentLook = +e.target.value; renderLookBody(); }
+  else { currentSyn = +e.target.value; renderSynBody(); }
+});
+document.getElementById("drawerBody").addEventListener("click", e=>{
+  const sp = e.target.closest("[data-look-speak]");
+  if(sp){ speak(sp.dataset.lookSpeak); }
+});
+document.getElementById("btnLook").addEventListener("click", ()=>{
+  state.lookOnly = !state.lookOnly;
+  document.getElementById("btnLook").classList.toggle("active", state.lookOnly);
+  renderGrid();
+});
+document.getElementById("btnSyn").addEventListener("click", ()=>openSynDrawer(0));
+document.getElementById("tickerTrack").addEventListener("click", e=>{
+  const t = e.target.closest("[data-look]");
+  if(t) openDrawer(+t.dataset.look);
+});
+
+const searchInput = document.getElementById("search");
+const searchBox = document.getElementById("searchBox");
+searchInput.addEventListener("input", ()=>{
+  state.query = searchInput.value.trim();
+  searchBox.classList.toggle("has-text", !!searchInput.value);
+  renderGrid();
+});
+document.getElementById("searchClear").addEventListener("click", ()=>{
+  searchInput.value = ""; state.query = "";
+  searchBox.classList.remove("has-text");
+  renderGrid();
+  searchInput.focus();
+});
+document.getElementById("btnRandom").addEventListener("click", randomTerm);
+document.getElementById("btnStar").addEventListener("click", ()=>{
+  state.starredOnly = !state.starredOnly;
+  document.getElementById("btnStar").classList.toggle("active", state.starredOnly);
+  renderGrid();
+});
+
+document.addEventListener("keydown", e=>{
+  const tag = document.activeElement.tagName;
+  if(e.key==="/" && tag!=="INPUT" && tag!=="TEXTAREA"){
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if(e.key==="Escape"){
+    if(document.getElementById("lookDrawer").classList.contains("show")){
+      closeDrawer();
+      return;
+    }
+    if(document.activeElement===searchInput){
+      searchInput.value=""; state.query="";
+      searchBox.classList.remove("has-text");
+      renderGrid();
+      searchInput.blur();
+    }
+  }
+});
+
+/* ---------- 初始化 ---------- */
+document.getElementById("statTerms").textContent = TERMS.length;
+document.getElementById("statCats").textContent = Object.keys(CATS).length;
+document.getElementById("statSyn").textContent = SYNS.length;
+document.getElementById("statConf").textContent = LOOK.length;
+renderTicker();
+renderCats();
+renderGrid();
+
+</script>
+</body>
+</html>
+<!-- （注：内容由AI生成） -->
