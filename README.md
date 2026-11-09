@@ -1,33 +1,16 @@
-个人主页
-https://wendellgong.github.io/  
-PID模拟器小工具
-https://wendellgong.github.io/pid-simulator
+# 龚文治
 
-```mermaid
-gantt
-    
-    title 工作计划
-    dateFormat  YYYY-MM-DD
-    section Section
-    A task           :a1, 2020-01-01, 30d
-    Another task     :after a1  , 20d
-    Another task     :40d
-    section Another
-    Task in sec      :2020-01-12  , 12d
-    another task      : 24d
-```
+- [简历](personalResume/index.md)
+- [项目](projects.md)
 
-```mermaid
-graph LR
-  A[I focus on] --> B((AI));
-  A --> C[octagon];
-  B --> D[Embodied AI];
-  E(Rectangle) --> F{Diamond};
+邮箱：gongwenzhi98@foxmail.com
 
-  style A fill:#ff9fcf;
-  style B stroke:#333,stroke-width:4px;
-  style C fill:#f96,stroke:#333,stroke-width:2px;
-  style D fill:#f96,stroke:#333,stroke-width:2px;
-  style E fill:#f96,stroke:#333,stroke-width:2px;
-  style F # fill:#fc9,stroke:#f63,stroke-width:4px,stroke-dasharray: 5 5;
-```
+
+分为四大模块：blog、repo、media、about me
+
+分为2大语言：ZH，EN
+
+其中，重点编写about me公开版只显示我的姓名、邮箱、学校&专业、工作经历和工作内容（更新oppo算法经历），公众号：酒阑说；以及其他社媒信息；
+
+非公开版显示我做的一些工作：
+包括具体工作&实习的经历和项目；具体参照我给你的docx，填写完之后你把docx从repo中删除；查看非公开的项目需要 输入我的微信号（实际是电话号码17740540639，但是你在代码中需要使用不可逆向的加密方式， 代码中不可以看到我的电话号码）

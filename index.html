@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>龚文治 · Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索</title>
+<meta name="description" content="龚文治 Wendell Gong — 专注多模态表征、生成式召回、数据飞轮与出海搜索，把模型理解翻译成业务收益。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231D63FF'/%3E%3Cpath d='M15 46V18h9l8 16 8-16h9v28h-9V30l-8 14-8-14v16z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+/* ============================================================
+   DESIGN TOKENS — flat · tech · white + blue
+   ============================================================ */
+:root{
+  --bg:#FFFFFF;
+  --bg-2:#F6F9FE;
+  --bg-3:#EDF3FF;
+  --ink:#0B1730;
+  --ink-2:#51607A;
+  --ink-3:#8A97AF;
+  --line:#E4EBF7;
+  --line-2:#CFDCF2;
+  --blue:#1D63FF;
+  --blue-2:#1146CC;
+  --blue-soft:#E9F1FF;
+  --blue-mist:#F4F8FF;
+  --cyan:#38BDF8;
+  --grad:linear-gradient(135deg,#1D63FF 0%,#38BDF8 100%);
+  --ok:#0E9F6E;
+  --danger:#E11D48;
+  --r-sm:10px;
+  --r-md:16px;
+  --r-lg:22px;
+  --shadow-2:0 18px 44px -20px rgba(29,99,255,.28);
+  --font-d:'Space Grotesk','Noto Sans SC',system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  --font-b:'Noto Sans SC',system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --header-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-b);
+  font-size:15px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--blue);color:#fff}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:4px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+img{display:block;max-width:100%}
+ul{list-style:none}
+
+/* scrollbar */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#C9D7EE;border-radius:8px;border:2px solid #fff}
+::-webkit-scrollbar-thumb:hover{background:var(--blue)}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============================================================
+   LAYOUT PRIMITIVES
+   ============================================================ */
+.container{width:100%;max-width:1140px;margin:0 auto;padding:0 22px}
+.section{padding:64px 0}
+@media(min-width:768px){.section{padding:92px 0}}
+
+/* eyebrow labels */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-d);
+  font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--blue);
+}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--grad);border-radius:2px}
+.eyebrow .zh-tag{color:var(--ink-3);letter-spacing:.08em;text-transform:none}
+
+.sec-head{margin-bottom:36px}
+@media(min-width:768px){.sec-head{margin-bottom:48px}}
+.sec-title{
+  margin-top:14px;
+  font-size:clamp(1.55rem,3.6vw,2.35rem);
+  font-weight:700;letter-spacing:-.02em;line-height:1.25;
+}
+.sec-desc{margin-top:10px;color:var(--ink-2);max-width:640px;font-size:15px}
+@media(min-width:768px){.sec-desc{font-size:16px}}
+
+/* reveal on scroll */
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+[data-reveal].in{opacity:1;transform:none}
+
+/* ============================================================
+   BACKGROUND FX — dot grid + grain
+   ============================================================ */
+.dot-grid{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(29,99,255,.13) 1px,transparent 1.4px);
+  background-size:26px 26px;
+  opacity:.5;
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 20%,transparent 75%);
+          mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 20%,transparent 75%);
+}
+.grain{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
+}
+canvas#fx{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.55}
+
+/* ============================================================
+   HEADER / NAV
+   ============================================================ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  height:var(--header-h);
+  background:rgba(255,255,255,.92);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:100%}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--font-d);font-weight:700;font-size:17px;letter-spacing:-.01em}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;background:var(--grad);
+  display:grid;place-items:center;color:#fff;font-size:15px;font-weight:700;
+  box-shadow:0 6px 16px -6px rgba(29,99,255,.5);
+}
+.brand small{display:block;font-family:var(--font-b);font-size:10px;font-weight:400;color:var(--ink-3);letter-spacing:.06em}
+.nav-links{display:none;align-items:center;gap:6px}
+@media(min-width:900px){.nav-links{display:flex}}
+.nav-link{
+  position:relative;padding:8px 14px;border-radius:9px;
+  font-size:14.5px;color:var(--ink-2);font-weight:500;
+  transition:color .25s,background .25s;
+}
+.nav-link:hover{color:var(--blue);background:var(--blue-mist)}
+.nav-link.active{color:var(--blue);font-weight:600}
+.nav-link.active::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;
+  background:var(--grad);border-radius:2px;
+}
+.nav-link .lock-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:2px}
+
+.nav-tools{display:flex;align-items:center;gap:10px}
+.lang-switch{
+  display:inline-flex;align-items:center;gap:2px;padding:3px;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:999px;
+}
+.lang-switch button{
+  padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:600;
+  color:var(--ink-3);transition:all .25s;
+}
+.lang-switch button.on{background:var(--blue);color:#fff;box-shadow:0 3px 10px -3px rgba(29,99,255,.5)}
+.menu-btn{
+  width:42px;height:42px;border-radius:10px;border:1px solid var(--line);
+  display:grid;place-items:center;background:#fff;
+}
+@media(min-width:900px){.menu-btn{display:none}}
+.menu-btn svg{stroke:var(--ink)}
+
+/* mobile drawer */
+.drawer{
+  position:fixed;top:var(--header-h);left:0;right:0;z-index:890;
+  background:#fff;border-bottom:1px solid var(--line);
+  padding:10px 22px 18px;display:none;
+}
+.drawer.open{display:block;animation:drawerIn .35s var(--ease)}
+@keyframes drawerIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.drawer a{display:flex;align-items:center;justify-content:space-between;padding:13px 4px;border-bottom:1px dashed var(--line);font-size:15px;font-weight:500}
+.drawer a:last-child{border-bottom:none}
+.drawer a .arr{color:var(--blue);font-family:var(--font-d)}
+
+/* ============================================================
+   BUTTONS / CHIPS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:13px 24px;border-radius:12px;font-size:14.5px;font-weight:600;
+  transition:transform .3s var(--ease),box-shadow .3s,background .3s,color .3s,border-color .3s;
+  will-change:transform;
+  white-space:nowrap;
+}
+.btn svg{width:17px;height:17px;flex:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 10px 24px -10px rgba(29,99,255,.55)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 32px -12px rgba(29,99,255,.6)}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line-2)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px)}
+.btn-sm{padding:9px 16px;font-size:13px;border-radius:10px}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;padding:calc(var(--header-h) + 46px) 0 56px;overflow:hidden}
+@media(min-width:768px){.hero{padding:calc(var(--header-h) + 84px) 0 84px}}
+.hero-grid{display:grid;justify-items:center;text-align:center;gap:0}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;padding:7px 14px;
+  border:1px solid var(--line-2);border-radius:999px;background:#fff;
+  font-family:var(--font-d);font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--blue);
+}
+.hero-eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(14,159,110,.45);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(14,159,110,.45)}70%{box-shadow:0 0 0 9px rgba(14,159,110,0)}100%{box-shadow:0 0 0 0 rgba(14,159,110,0)}}
+.hero h1{
+  margin-top:22px;
+  font-size:clamp(2.7rem,8.5vw,4.8rem);
+  font-weight:700;letter-spacing:-.03em;line-height:1.04;
+}
+.hero-name-en{
+  margin-top:10px;display:block;
+  font-family:var(--font-d);font-size:clamp(1.15rem,3.2vw,1.75rem);font-weight:600;
+  letter-spacing:.34em;text-transform:uppercase;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-slogan{
+  margin-top:30px;
+  font-family:var(--font-d);
+  font-size:clamp(1.55rem,4.6vw,2.7rem);font-weight:700;
+  letter-spacing:.08em;line-height:1.15;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-tagline{margin-top:18px;color:var(--ink-2);max-width:600px;font-size:15.5px;margin-inline:auto}
+.hero-tagline b{color:var(--ink);font-weight:600}
+.hero-cta{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero-mail{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;
+  font-family:var(--font-d);font-size:13.5px;color:var(--ink-3);
+  border-bottom:1px dashed var(--line-2);padding-bottom:3px;
+  transition:color .25s,border-color .25s;
+}
+.hero-mail:hover{color:var(--blue);border-color:var(--blue)}
+.hero-mail svg{width:15px;height:15px}
+
+/* ============================================================
+   FOCUS CARDS (home)
+   ============================================================ */
+.focus-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:1024px){.focus-grid{grid-template-columns:repeat(4,1fr)}}
+.focus-card{
+  position:relative;padding:24px 20px;border:1px solid var(--line);border-radius:var(--r-md);
+  background:#fff;overflow:hidden;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s;
+}
+.focus-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease);
+}
+.focus-card:hover{transform:translateY(-5px);border-color:var(--blue);box-shadow:var(--shadow-2)}
+.focus-card:hover::before{transform:scaleX(1)}
+.focus-ico{
+  width:44px;height:44px;border-radius:12px;background:var(--blue-soft);color:var(--blue);
+  display:grid;place-items:center;margin-bottom:16px;
+}
+.focus-ico svg{width:22px;height:22px}
+.focus-card h3{font-size:15.5px;font-weight:700;margin-bottom:6px}
+.focus-card p{font-size:13px;color:var(--ink-2);line-height:1.65}
+.focus-card .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{
+  padding:3px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue-2);
+  font-size:11.5px;font-weight:600;font-family:var(--font-d);
+}
+
+/* ============================================================
+   LOCKED WORKS STRIP (home)
+   ============================================================ */
+.works-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:768px){.works-grid{grid-template-columns:repeat(4,1fr)}}
+.work-card{
+  position:relative;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);
+  background:#fff;text-align:left;width:100%;
+  transition:transform .35s var(--ease),box-shadow .35s,border-color .35s;
+}
+.work-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-2);border-color:var(--blue)}
+.work-thumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--bg-3)}
+.work-thumb img{width:100%;height:100%;object-fit:cover;filter:blur(7px) saturate(.75);transform:scale(1.06);transition:filter .4s,transform .4s}
+.work-card:hover .work-thumb img{filter:blur(5px) saturate(.9)}
+.work-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.88))}
+.work-lock{
+  position:absolute;inset:0;z-index:2;display:grid;place-items:center;
+}
+.work-lock .lock-badge{
+  width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.92);
+  border:1px solid var(--line-2);display:grid;place-items:center;color:var(--blue);
+  box-shadow:0 10px 24px -10px rgba(11,23,48,.3);
+  transition:transform .35s var(--ease),background .3s;
+}
+.work-card:hover .lock-badge{transform:scale(1.12)}
+.work-lock .lock-badge svg{width:20px;height:20px}
+.work-body{padding:13px 14px 14px;position:relative;z-index:1;background:#fff}
+.work-body h3{font-size:13.5px;font-weight:600;line-height:1.4}
+.work-body .w-tag{display:block;margin-top:4px;font-size:11px;color:var(--ink-3);font-family:var(--font-d)}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline{display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:768px){.timeline{grid-template-columns:150px 26px 1fr}}
+.tl-node{position:relative;padding:0 0 34px}
+@media(min-width:768px){
+  .tl-node{display:contents}
+  .tl-time{grid-column:1;padding:6px 14px 0 0;text-align:right}
+  .tl-axis{grid-column:2}
+  .tl-card{grid-column:3;margin-bottom:20px}
+}
+.tl-time{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.tl-time .per{font-family:var(--font-d);font-size:13.5px;font-weight:600;color:var(--blue-2);white-space:nowrap}
+.tl-time .org-m{display:block;font-size:11px;color:var(--ink-3);font-family:var(--font-d)}
+.tl-axis{display:none}
+@media(min-width:768px){
+  .tl-axis{display:block;position:relative}
+  .tl-axis::before{content:"";position:absolute;top:4px;bottom:4px;left:50%;width:2px;margin-left:-1px;background:linear-gradient(180deg,var(--blue),var(--cyan) 70%,transparent);border-radius:2px}
+  .tl-axis::after{content:"";position:absolute;top:10px;left:50%;width:12px;height:12px;margin-left:-9px;border-radius:50%;background:#fff;border:3px solid var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+}
+@media(max-width:767px){
+  .tl-node{position:relative;padding-left:26px}
+  .tl-node::before{content:"";position:absolute;left:9px;top:6px;bottom:-8px;width:2px;background:linear-gradient(180deg,var(--blue),var(--cyan) 70%,transparent)}
+  .tl-node::after{content:"";position:absolute;left:0;top:9px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+}
+.tl-card{
+  border:1px solid var(--line);border-radius:var(--r-md);background:#fff;padding:18px 20px;
+  transition:border-color .3s,box-shadow .3s,transform .3s var(--ease);
+}
+.tl-card:hover{border-color:var(--blue);box-shadow:var(--shadow-2);transform:translateY(-3px)}
+.tl-card h3{font-size:15.5px;font-weight:700}
+.tl-card .role-line{margin-top:2px;font-size:13px;color:var(--blue);font-weight:600}
+.tl-card p{margin-top:8px;font-size:13.5px;color:var(--ink-2)}
+.tl-card ul{margin-top:8px}
+.tl-card li{position:relative;padding-left:15px;font-size:13.5px;color:var(--ink-2);margin-top:4px}
+.tl-card li::before{content:"";position:absolute;left:1px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.tl-card .metrics{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.metric{
+  padding:5px 11px;border-radius:9px;background:var(--blue-mist);border:1px solid var(--line);
+  font-family:var(--font-d);font-size:12px;font-weight:600;color:var(--blue-2);
+}
+.metric.ok{background:#ECFDF5;border-color:#C9F2DF;color:var(--ok)}
+
+/* ============================================================
+   CTA BAND
+   ============================================================ */
+.cta-band{
+  position:relative;overflow:hidden;border-radius:var(--r-lg);
+  background:linear-gradient(135deg,#1146CC 0%,#1D63FF 55%,#38BDF8 130%);
+  padding:44px 26px;color:#fff;text-align:center;
+}
+@media(min-width:768px){.cta-band{padding:60px 40px}}
+.cta-band::before{
+  content:"";position:absolute;top:-60%;right:-20%;width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.22),transparent 62%);pointer-events:none;
+}
+.cta-band h2{position:relative;font-size:clamp(1.5rem,3.6vw,2.2rem);font-weight:700;letter-spacing:-.02em}
+.cta-band p{position:relative;margin:12px auto 26px;max-width:520px;font-size:14.5px;color:rgba(255,255,255,.85)}
+.cta-band .btn-light{background:#fff;color:var(--blue-2);box-shadow:0 12px 28px -12px rgba(0,0,0,.35)}
+.cta-band .btn-light:hover{transform:translateY(-2px);box-shadow:0 18px 36px -14px rgba(0,0,0,.4)}
+.cta-band .btn-outline-w{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.5)}
+.cta-band .btn-outline-w:hover{background:rgba(255,255,255,.22);transform:translateY(-2px)}
+.cta-btns{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ============================================================
+   ABOUT VIEW
+   ============================================================ */
+.about-grid{display:grid;gap:28px}
+@media(min-width:960px){.about-grid{grid-template-columns:340px 1fr;gap:44px;align-items:start}}
+.id-card{
+  position:sticky;top:calc(var(--header-h) + 20px);
+  border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:26px;
+}
+.id-mark{width:60px;height:60px;border-radius:18px;background:var(--grad);display:grid;place-items:center;color:#fff;font-family:var(--font-d);font-size:26px;font-weight:700;margin-bottom:18px;box-shadow:0 12px 26px -12px rgba(29,99,255,.55)}
+.id-card h2{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.id-card .id-en{font-family:var(--font-d);font-size:13px;color:var(--blue);font-weight:600;letter-spacing:.06em}
+.id-card .id-role{margin-top:8px;font-size:13.5px;color:var(--ink-2)}
+.id-list{margin-top:20px;border-top:1px dashed var(--line);padding-top:16px;display:grid;gap:12px}
+.id-row{display:flex;gap:11px;align-items:flex-start;font-size:13.5px}
+.id-row svg{width:17px;height:17px;color:var(--blue);flex:none;margin-top:2px}
+.id-row .lb{color:var(--ink-3);font-size:12px;display:block}
+.id-socials{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.soc-btn{
+  width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:#fff;
+  display:grid;place-items:center;color:var(--ink-2);transition:all .3s;
+}
+.soc-btn:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-3px);box-shadow:var(--shadow-2)}
+.soc-btn svg{width:18px;height:18px}
+
+.about-body .block{margin-top:34px}
+.about-body .block:first-child{margin-top:0}
+.block-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;margin-bottom:16px}
+.block-title .bar{width:4px;height:18px;border-radius:3px;background:var(--grad)}
+.edu-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:768px){.edu-grid{grid-template-columns:repeat(2,1fr)}}
+.edu-card{border:1px solid var(--line);border-radius:var(--r-md);padding:18px;background:#fff;transition:border-color .3s,transform .3s var(--ease)}
+.edu-card:hover{border-color:var(--blue);transform:translateY(-3px)}
+.edu-card .deg{display:inline-block;padding:3px 10px;border-radius:8px;background:var(--blue-soft);color:var(--blue-2);font-size:11.5px;font-weight:600}
+.edu-card h4{margin-top:10px;font-size:15px;font-weight:700}
+.edu-card p{margin-top:4px;font-size:13px;color:var(--ink-2)}
+.edu-card .per{margin-top:8px;font-family:var(--font-d);font-size:12px;color:var(--ink-3)}
+.skill-cloud{display:flex;flex-wrap:wrap;gap:8px}
+.skill-chip{
+  padding:7px 14px;border-radius:10px;background:#fff;border:1px solid var(--line);
+  font-size:13px;font-weight:500;color:var(--ink);transition:all .28s;
+}
+.skill-chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-mist);transform:translateY(-2px)}
+.ach-list{display:grid;gap:10px}
+.ach-item{
+  display:flex;gap:14px;align-items:flex-start;padding:15px 16px;
+  border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;transition:border-color .3s,transform .3s var(--ease);
+}
+.ach-item:hover{border-color:var(--blue);transform:translateX(4px)}
+.ach-badge{
+  flex:none;width:36px;height:36px;border-radius:10px;background:var(--blue-soft);color:var(--blue);
+  display:grid;place-items:center;font-family:var(--font-d);font-size:11.5px;font-weight:700;
+}
+.ach-item .tt{font-size:14px;font-weight:600;line-height:1.5}
+.ach-item .dt{font-size:12px;color:var(--ink-3);margin-top:2px;font-family:var(--font-d)}
+.paper-item{border:1px solid var(--line);border-radius:var(--r-md);padding:18px;background:#fff}
+.paper-item .pt{font-size:14px;font-weight:600;line-height:1.6}
+.paper-item .meta{margin-top:6px;font-size:12.5px;color:var(--ink-3);font-family:var(--font-d)}
+
+/* ============================================================
+   MEDIA VIEW
+   ============================================================ */
+.media-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:768px){.media-grid{grid-template-columns:repeat(2,1fr)}}
+.media-card{
+  display:flex;gap:18px;align-items:flex-start;padding:22px;
+  border:1px solid var(--line);border-radius:var(--r-md);background:#fff;
+  transition:transform .35s var(--ease),border-color .35s,box-shadow .35s;
+}
+.media-card:hover{transform:translateY(-4px);border-color:var(--blue);box-shadow:var(--shadow-2)}
+.media-ico{flex:none;width:52px;height:52px;border-radius:14px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center}
+.media-ico svg{width:25px;height:25px}
+.media-card h3{font-size:16px;font-weight:700}
+.media-card .sub{margin-top:2px;font-size:13px;color:var(--ink-3);font-family:var(--font-d)}
+.media-card p{margin-top:8px;font-size:13.5px;color:var(--ink-2)}
+.media-card .go{margin-top:12px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--blue)}
+.media-card .go svg{width:15px;height:15px;transition:transform .3s}
+.media-card:hover .go svg{transform:translateX(4px)}
+.qr-slot{
+  margin-top:14px;display:inline-flex;align-items:center;gap:12px;
+  padding:10px 14px;border:1px dashed var(--line-2);border-radius:12px;background:var(--blue-mist);
+}
+.qr-slot .qr-box{width:54px;height:54px;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--ink-3)}
+.qr-slot .qr-box svg{width:26px;height:26px}
+.qr-slot .qr-tip{font-size:12px;color:var(--ink-3);line-height:1.6}
+
+/* ============================================================
+   REPO VIEW
+   ============================================================ */
+.repo-hero{
+  border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:30px 26px;
+  display:flex;gap:22px;align-items:center;flex-wrap:wrap;
+}
+.repo-avatar{width:84px;height:84px;border-radius:22px;background:var(--grad);display:grid;place-items:center;color:#fff;font-family:var(--font-d);font-size:30px;font-weight:700;box-shadow:var(--shadow-2)}
+.repo-hero h2{font-size:22px;font-weight:700}
+.repo-hero .handle{font-family:var(--font-d);font-size:14px;color:var(--blue);font-weight:600}
+.repo-hero p{margin-top:6px;font-size:13.5px;color:var(--ink-2);max-width:520px}
+.repo-hero .repo-stats{display:flex;gap:22px;margin-top:14px}
+.repo-hero .repo-stats b{font-family:var(--font-d);font-size:18px;display:block}
+.repo-hero .repo-stats span{font-size:11.5px;color:var(--ink-3)}
+.repo-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+@media(min-width:768px){.repo-grid{grid-template-columns:repeat(2,1fr)}}
+.repo-card{
+  border:1px solid var(--line);border-radius:var(--r-md);background:#fff;padding:20px;
+  display:block;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s;
+}
+.repo-card:hover{transform:translateY(-4px);border-color:var(--blue);box-shadow:var(--shadow-2)}
+.repo-card .r-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.repo-card h3{font-size:15.5px;font-weight:700;color:var(--ink)}
+.repo-card .star{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-d);font-size:12.5px;color:var(--ink-3)}
+.repo-card .star svg{width:14px;height:14px;color:#F59E0B}
+.repo-card p{margin-top:8px;font-size:13px;color:var(--ink-2);line-height:1.65}
+.repo-card .r-meta{display:flex;gap:14px;margin-top:12px;font-family:var(--font-d);font-size:12px;color:var(--ink-3);flex-wrap:wrap}
+.repo-card .lang{display:inline-flex;align-items:center;gap:6px}
+.repo-card .lang::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--blue)}
+.repo-loading{display:grid;place-items:center;gap:14px;padding:60px 0;color:var(--ink-3);font-size:13.5px}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--blue-soft);border-top-color:var(--blue);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============================================================
+   BLOG VIEW
+   ============================================================ */
+.blog-empty{
+  text-align:center;padding:70px 20px;border:1px dashed var(--line-2);border-radius:var(--r-lg);
+  background:var(--blue-mist);position:relative;overflow:hidden;
+}
+.blog-empty .be-ico{width:76px;height:76px;margin:0 auto 22px;border-radius:22px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--blue);box-shadow:var(--shadow-2)}
+.blog-empty .be-ico svg{width:36px;height:36px}
+.blog-empty h3{font-size:20px;font-weight:700}
+.blog-empty p{margin:10px auto 26px;max-width:440px;color:var(--ink-2);font-size:14.5px}
+.be-note{display:inline-flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-3);margin-top:22px}
+.be-note svg{width:15px;height:15px;color:var(--blue)}
+
+/* ============================================================
+   PRIVATE VIEW — gate
+   ============================================================ */
+.gate-wrap{display:grid;place-items:center;min-height:calc(100vh - var(--header-h) - 80px);padding:36px 0}
+.gate-card{
+  width:100%;max-width:460px;text-align:center;
+  border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:42px 28px;
+  position:relative;overflow:hidden;
+}
+.gate-card::before{
+  content:"";position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(29,99,255,.13),transparent 65%);
+  pointer-events:none;
+}
+.gate-ico{
+  position:relative;width:66px;height:66px;margin:0 auto 20px;border-radius:19px;
+  background:var(--grad);color:#fff;display:grid;place-items:center;
+  box-shadow:0 16px 34px -14px rgba(29,99,255,.55);
+  animation:gateBob 3.4s ease-in-out infinite;
+}
+.gate-ico svg{width:30px;height:30px}
+@keyframes gateBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.gate-card h2{position:relative;font-size:21px;font-weight:700;letter-spacing:-.01em}
+.gate-card .g-sub{position:relative;margin:10px auto 0;max-width:340px;font-size:13.5px;color:var(--ink-2)}
+.gate-form{position:relative;margin-top:26px}
+.gate-input-wrap{position:relative}
+.gate-input-wrap svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink-3)}
+.gate-input{
+  width:100%;height:52px;padding:0 46px 0 44px;
+  border:1.5px solid var(--line-2);border-radius:13px;
+  font-family:var(--font-d);font-size:15px;letter-spacing:.1em;color:var(--ink);
+  background:#fff;transition:border-color .3s,box-shadow .3s;
+}
+.gate-input::placeholder{letter-spacing:.02em;font-family:var(--font-b);color:var(--ink-3)}
+.gate-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.gate-toggle{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--ink-3);
+  transition:color .25s,background .25s;
+}
+.gate-toggle:hover{color:var(--blue);background:var(--blue-mist)}
+.gate-toggle svg{width:19px;height:19px}
+.gate-submit{
+  width:100%;margin-top:14px;height:52px;border-radius:13px;background:var(--grad);color:#fff;
+  font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;
+  box-shadow:0 12px 26px -12px rgba(29,99,255,.55);transition:transform .3s var(--ease),box-shadow .3s;
+}
+.gate-submit:hover{transform:translateY(-2px);box-shadow:0 18px 34px -14px rgba(29,99,255,.6)}
+.gate-submit svg{width:17px;height:17px}
+.gate-err{
+  margin-top:12px;display:none;align-items:center;justify-content:center;gap:8px;
+  font-size:13px;color:var(--danger);
+}
+.gate-err.show{display:flex;animation:shake .45s}
+.gate-form.shake{animation:shake .45s}
+.gate-err svg{width:15px;height:15px}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+.gate-hint{margin-top:18px;font-size:12px;color:var(--ink-3);line-height:1.7}
+.gate-hint b{color:var(--blue-2);font-weight:600}
+.gate-secure{display:inline-flex;align-items:center;gap:7px;margin-top:16px;font-size:11.5px;color:var(--ink-3)}
+.gate-secure svg{width:14px;height:14px;color:var(--ok)}
+
+/* ============================================================
+   PRIVATE CONTENT
+   ============================================================ */
+.pv-banner{
+  display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between;
+  border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:24px 26px;
+}
+.pv-banner .pv-t{font-size:19px;font-weight:700}
+.pv-banner .pv-s{font-size:13px;color:var(--ink-2);margin-top:3px}
+.pv-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#ECFDF5;border:1px solid #C9F2DF;color:var(--ok);font-size:12.5px;font-weight:600}
+.pv-badge svg{width:15px;height:15px}
+.exp-detail{border:1px solid var(--line);border-radius:var(--r-md);background:#fff;padding:22px;margin-top:16px;transition:border-color .3s,box-shadow .3s}
+.exp-detail:hover{border-color:var(--blue);box-shadow:var(--shadow-2)}
+.exp-detail .ed-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.exp-detail h3{font-size:16px;font-weight:700}
+.exp-detail .ed-per{font-family:var(--font-d);font-size:12.5px;color:var(--blue-2);font-weight:600;white-space:nowrap}
+.exp-detail .ed-role{font-size:13px;color:var(--blue);font-weight:600;margin-top:2px}
+.exp-detail ul{margin-top:12px;display:grid;gap:8px}
+.exp-detail li{position:relative;padding-left:17px;font-size:13.5px;color:var(--ink-2)}
+.exp-detail li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:2px;background:var(--grad)}
+.exp-detail li b{color:var(--ink);font-weight:600}
+.exp-detail .metrics{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.exp-detail .metric{border-color:var(--line);background:var(--blue-mist)}
+
+/* project cards (private) */
+.pj-grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:768px){.pj-grid{grid-template-columns:repeat(2,1fr);gap:20px}}
+.pj-card{
+  border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;
+  transition:transform .4s var(--ease),border-color .4s,box-shadow .4s;
+  transform-style:preserve-3d;
+}
+.pj-card:hover{border-color:var(--blue);box-shadow:var(--shadow-2)}
+.pj-card .pj-img{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--bg-3)}
+.pj-card .pj-img img{width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .6s var(--ease)}
+.pj-card:hover .pj-img img{transform:scale(1.045)}
+.pj-card .pj-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,23,48,.18))}
+.pj-card .pj-tags{position:absolute;left:14px;bottom:12px;z-index:2;display:flex;gap:6px;flex-wrap:wrap}
+.pj-card .pj-tags span{padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.92);font-size:11px;font-weight:600;color:var(--blue-2);font-family:var(--font-d);backdrop-filter:blur(4px)}
+.pj-body{padding:20px}
+.pj-body h3{font-size:16.5px;font-weight:700;letter-spacing:-.01em}
+.pj-body .pj-sub{margin-top:3px;font-size:12.5px;color:var(--ink-3);font-family:var(--font-d)}
+.pj-desc{margin-top:10px;font-size:13.5px;color:var(--ink-2)}
+.pj-detail{margin-top:14px;display:grid;gap:10px}
+.pj-detail h4{font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.1em;font-family:var(--font-d)}
+.pj-detail ul{display:grid;gap:6px}
+.pj-detail li{position:relative;padding-left:15px;font-size:13px;color:var(--ink-2);line-height:1.65}
+.pj-detail li::before{content:"";position:absolute;left:1px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.pj-detail li b{color:var(--ink);font-weight:600}
+.pj-links{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{border-top:1px solid var(--line);background:var(--bg-2);margin-top:20px}
+.foot-inner{padding-block:48px 36px}
+.foot-top{display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.foot-brand{font-family:var(--font-d);font-size:20px;font-weight:700;letter-spacing:-.01em}
+.foot-brand small{display:block;font-family:var(--font-b);font-size:12px;font-weight:400;color:var(--ink-3);margin-top:6px;max-width:300px;line-height:1.7}
+.foot-links{display:flex;gap:26px;flex-wrap:wrap}
+.foot-links a{font-size:13.5px;color:var(--ink-2);transition:color .25s}
+.foot-links a:hover{color:var(--blue)}
+.foot-bottom{
+  margin-top:34px;padding-top:20px;border-top:1px dashed var(--line);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--ink-3);
+}
+.foot-bottom .made{display:inline-flex;align-items:center;gap:6px}
+.foot-bottom .made svg{width:13px;height:13px;color:var(--blue)}
+
+/* ============================================================
+   VIEW TRANSITIONS
+   ============================================================ */
+.view-enter{animation:viewIn .55s var(--ease) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  [data-reveal]{opacity:1;transform:none}
+  canvas#fx{display:none}
+}
+@media(max-width:479px){
+  .hero-cta .btn{width:100%}
+  .hero-mail{display:none}
+}
+</style>
+</head>
+<body>
+<!-- ===== SHELL: backgrounds / cursor / header / app / footer injected by JS below ===== -->
+<div class="dot-grid" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<header>
+  <div class="container nav">
+    <a class="brand" href="#/home" aria-label="Home">
+      <span class="brand-mark">W</span>
+      <span>Wendell Gong<span class="zh-name" style="display:none">龚文治</span>
+        <small id="brand-sub">MULTI-MODAL RECSYS</small>
+      </span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Main navigation"></nav>
+    <div class="nav-tools">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button id="langZh" class="on" type="button">中</button>
+        <button id="langEn" type="button">EN</button>
+      </div>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="drawer" aria-label="Mobile menu"></div>
+
+<main id="app" tabindex="-1"></main>
+
+<footer>
+  <div class="container foot-inner">
+    <div class="foot-top">
+      <div class="foot-brand">Wendell Gong
+        <small id="footTag">多模态推荐算法工程师 · 专注 VLM 表征 / 生成式推荐 / 数据飞轮</small>
+      </div>
+      <div class="foot-links" id="footLinks"></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year">2026</span> Wendell Gong · gongwenzhi98@foxmail.com</span>
+      <span class="made"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> Built with flat blue — powered by static pages</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   STATE
+   ============================================================ */
+const STATE = {
+  lang: (localStorage.getItem('gw_lang') === 'en') ? 'en' : 'zh',
+  route: 'home',
+  unlocked: sessionStorage.getItem('gw_unlocked') === '1',
+  menuOpen: false
+};
+const SALT = 'GW_LOCK_2026';
+const HASH = '23ac705455d2e19a07df31da48e638844c1282029dbcc056f415bf870936e6be';
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const tr = o => o[STATE.lang];
+const t = k => { let o = L[STATE.lang]; k.split('.').forEach(p => { o = o ? o[p] : undefined; }); return o; };
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+const ICONS = {
+  arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+  ext: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>',
+  github: '<path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/>',
+  wechat: '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.2 0-2.4-.25-3.4-.7L4 21l1.6-4.6A8.5 8.5 0 1 1 21 11.5z"/><path d="M8 10h.01"/><path d="M13 10h.01"/>',
+  xhs: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  unlock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+  eye: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  eyeoff: '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m1 1 22 22"/>',
+  layers: '<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+  db: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
+  chip: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
+  code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+  refresh: '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>',
+  star: '<path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  warn: '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  terminal: '<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
+  pen: '<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  camera: '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  send: '<path d="m22 2-11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/>',
+  key: '<path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/>',
+  pin: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  bell: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>'
+};
+function icon(n, size){
+  return '<svg viewBox="0 0 24 24" width="'+(size||18)+'" height="'+(size||18)+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';
+}
+const eyebrow = (en, zh) => '<span class="eyebrow">// ' + en + (STATE.lang==='zh' && zh ? ' <span class="zh-tag">' + zh + '</span>' : '') + '</span>';
+
+/* ============================================================
+   CHROME (nav / footer / lang)
+   ============================================================ */
+function renderChrome(){
+  const navLinks = document.getElementById('navLinks');
+  const order = [['blog','blog'],['repo','repo'],['media','media'],['about','about'],['private','private']];
+  navLinks.innerHTML = order.map(([key,route]) => {
+    const isPrivate = key==='private';
+    return '<a class="nav-link' + (STATE.route===route?' active':'') + '" href="#/' + route + '">' +
+      (isPrivate ? '<span class="lock-dot"></span>' : '') + t('nav.'+key) + '</a>';
+  }).join('');
+  const drawer = document.getElementById('drawer');
+  drawer.innerHTML = order.map(([key,route]) =>
+    '<a href="#/' + route + '">' + t('nav.'+key) + '<span class="arr">→</span></a>'
+  ).join('') + '<a href="mailto:gongwenzhi98@foxmail.com">gongwenzhi98@foxmail.com<span class="arr">↗</span></a>';
+  document.getElementById('footLinks').innerHTML = order.map(([key,route]) =>
+    '<a href="#/' + route + '">' + t('nav.'+key) + '</a>'
+  ).join('');
+  document.getElementById('footTag').textContent = t('foot.tag');
+  document.getElementById('brand-sub').textContent = 'MULTI-MODAL RECSYS';
+  const zhName = document.querySelector('.zh-name');
+  if (zhName) zhName.style.display = STATE.lang==='zh' ? 'inline' : 'none';
+  document.getElementById('langZh').classList.toggle('on', STATE.lang==='zh');
+  document.getElementById('langEn').classList.toggle('on', STATE.lang==='en');
+  document.documentElement.lang = STATE.lang==='zh' ? 'zh-CN' : 'en';
+  document.title = STATE.lang==='zh'
+    ? '龚文治 · Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索'
+    : 'Wendell Gong — Multi-Modal Representation · Generative Recall · Data Flywheel · Overseas Search';
+}
+
+/* ============================================================
+   VIEWS
+   ============================================================ */
+const views = {
+  home(){
+    const h = t('hero'), fo = t('focus'), wo = t('works'), tl = t('timeline'), cta = t('cta');
+    return `
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <span class="hero-eyebrow" data-reveal><span class="pulse"></span>${h.eyebrow}</span>
+          <h1 data-reveal>${h.name}</h1>
+          <span class="hero-name-en" data-reveal>${h.nameEn}</span>
+          <div class="hero-slogan" data-reveal>${h.slogan}</div>
+          <p class="hero-tagline" data-reveal>${h.tagline}</p>
+          <div class="hero-cta" data-reveal>
+            <a class="btn btn-primary magnetic" href="#/private">${icon('lock',17)}${h.ctaWorkLock}</a>
+            <a class="btn btn-ghost magnetic" href="mailto:gongwenzhi98@foxmail.com">${icon('send',17)}${h.ctaMail}</a>
+          </div>
+          <a class="hero-mail" href="mailto:gongwenzhi98@foxmail.com">${icon('mail',15)}gongwenzhi98@foxmail.com</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          ${eyebrow('WHAT I DO','能力聚焦')}
+          <h2 class="sec-title">${fo.title}</h2>
+          <p class="sec-desc">${fo.sub}</p>
+        </div>
+        <div class="focus-grid">
+          ${fo.cards.map((c,i) => `
+          <article class="focus-card tilt" data-reveal data-delay="${i*70}">
+            <div class="focus-ico">${icon(['chip','layers','refresh','globe'][i],22)}</div>
+            <h3>${c.t}</h3><p>${c.d}</p>
+            <div class="tag-row">${c.tags.map(x=>'<span class="tag">'+x+'</span>').join('')}</div>
+          </article>`).join('')}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--bg-2)">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          ${eyebrow('SELECTED WORKS','作品集')}
+          <h2 class="sec-title">${wo.title}</h2>
+          <p class="sec-desc">${wo.sub}</p>
+        </div>
+        <div class="works-grid">
+          ${DATA.projects.map((p,i) => `
+          <button type="button" class="work-card tilt" data-reveal data-delay="${(i%4)*60}" onclick="location.hash='#/private'">
+            <span class="work-thumb"><img src="${p.imgs[0]}" alt="${tr(p.title)}" loading="lazy"></span>
+            <span class="work-lock"><span class="lock-badge">${icon('lock',20)}</span></span>
+            <span class="work-body"><h3>${tr(p.title)}</h3><span class="w-tag">${p.sub[STATE.lang]}</span></span>
+          </button>`).join('')}
+        </div>
+        <div style="text-align:center;margin-top:30px" data-reveal>
+          <a class="btn btn-primary magnetic" href="#/private">${icon('key',17)}${wo.more}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          ${eyebrow('EXPERIENCE','经历')}
+          <h2 class="sec-title">${tl.title}</h2>
+          <p class="sec-desc">${tl.sub}</p>
+        </div>
+        <div class="timeline">
+          ${DATA.expPublic.map((e,i) => `
+          <div class="tl-node">
+            <div class="tl-time"><span class="per">${e.per}</span></div>
+            <div class="tl-axis" aria-hidden="true"></div>
+            <div class="tl-card" data-reveal data-delay="${i*60}">
+              <h3>${tr(e.company)}</h3>
+              <div class="role-line">${tr(e.role)}</div>
+              <ul>${e.bullets.map(b=>'<li>'+tr(b)+'</li>').join('')}</ul>
+            </div>
+          </div>`).join('')}
+        </div>
+        <div style="margin-top:14px" data-reveal>
+          <a class="btn btn-ghost btn-sm magnetic" href="#/private">${icon('key',15)}${tl.seePrivate} →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="cta-band" data-reveal>
+          <h2>${cta.title}</h2>
+          <p>${cta.desc}</p>
+          <div class="cta-btns">
+            <a class="btn btn-light magnetic" href="#/private">${icon('unlock',17)}${cta.btn}</a>
+            <a class="btn btn-outline-w magnetic" href="mailto:gongwenzhi98@foxmail.com">${icon('send',17)}${cta.btn2}</a>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  },
+
+  about(){
+    const ab = t('about');
+    const edu = DATA.education.map((e,i) => `
+      <div class="edu-card" data-reveal data-delay="${i*60}">
+        <span class="deg">${tr(e.deg)}</span>
+        <h4>${tr(e.school)}</h4>
+        <p>${tr(e.dept)}</p>
+        <div class="per">${e.per}</div>
+      </div>`).join('');
+    const exp = DATA.expPublic.map((e,i) => `
+      <div class="tl-node">
+        <div class="tl-time"><span class="per">${e.per}</span></div>
+        <div class="tl-axis" aria-hidden="true"></div>
+        <div class="tl-card" data-reveal data-delay="${i*50}">
+          <h3>${tr(e.company)}</h3>
+          <div class="role-line">${tr(e.role)}</div>
+          <ul>${e.bullets.map(b=>'<li>'+tr(b)+'</li>').join('')}</ul>
+        </div>
+      </div>`).join('');
+    const awards = DATA.awards.map((a,i) => `
+      <div class="ach-item" data-reveal data-delay="${i*50}">
+        <span class="ach-badge">${a.y.slice(0,4)}</span>
+        <div><div class="tt">${tr(a.t)}</div><div class="dt">${a.y}</div></div>
+      </div>`).join('');
+    return `
+    <section class="section">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          ${eyebrow(ab.eyebrow, ab.eyebrowZh)}
+          <h2 class="sec-title">${ab.title}</h2>
+          <p class="sec-desc">${ab.desc}</p>
+        </div>
+        <div class="about-grid">
+          <aside class="id-card" data-reveal>
+            <div class="id-mark">W</div>
+            <h2>龚文治</h2>
+            <div class="id-en">WENDELL GONG</div>
+            <p class="id-role">${ab.idRole}</p>
+            <div class="id-list">
+              <div class="id-row">${icon('pin',17)}<span><span class="lb">LOCATION</span>${ab.idLoc}</span></div>
+              <div class="id-row">${icon('mail',17)}<span><span class="lb">EMAIL</span>gongwenzhi98@foxmail.com</span></div>
+              <div class="id-row">${icon('wechat',17)}<span><span class="lb">WECHAT OA</span>酒阑说</span></div>
+            </div>
+            <div class="id-socials">
+              <a class="soc-btn" href="https://github.com/WendellGong" target="_blank" rel="noopener" aria-label="GitHub">${icon('github',18)}</a>
+              <a class="soc-btn" href="http://xhslink.com/vYfvLR" target="_blank" rel="noopener" aria-label="Xiaohongshu">${icon('xhs',18)}</a>
+              <a class="soc-btn" href="mailto:gongwenzhi98@foxmail.com" aria-label="Email">${icon('mail',18)}</a>
+            </div>
+            <a class="btn btn-primary magnetic" href="#/private" style="width:100%;margin-top:22px">${icon('lock',16)}${ab.privateCta}</a>
+          </aside>
+          <div class="about-body">
+            <div class="block" data-reveal>
+              <div class="block-title"><span class="bar"></span>${ab.researchTitle}</div>
+              <div class="skill-cloud">
+                ${DATA.research.map(r=>'<span class="skill-chip">'+tr(r)+'</span>').join('')}
+              </div>
+            </div>
+            <div class="block" data-reveal>
+              <div class="block-title"><span class="bar"></span>${ab.eduTitle}</div>
+              <div class="edu-grid">${edu}</div>
+            </div>
+            <div class="block" data-reveal>
+              <div class="block-title"><span class="bar"></span>${ab.expTitle}</div>
+              <div class="timeline">${exp}</div>
+              <div style="margin-top:10px"><a class="btn btn-ghost btn-sm magnetic" href="#/private">${icon('key',15)}${ab.expPrivateHint} →</a></div>
+            </div>
+            <div class="block" data-reveal>
+              <div class="block-title"><span class="bar"></span>${ab.skillTitle}</div>
+              <div class="skill-cloud">
+                ${DATA.skills.map(s=>'<span class="skill-chip">'+s+'</span>').join('')}
+              </div>
+            </div>
+            <div class="block" data-reveal>
+              <div class="block-title"><span class="bar"></span>${ab.awardTitle}</div>
+              <div class="ach-list">${awards}</div>
+            </div>
+            <div class="block" data-reveal>
+              <div class="block-title"><span class="bar"></span>${ab.paperTitle} / ${ab.patentTitle}</div>
+              <div style="display:grid;gap:12px">
+                <div class="paper-item">
+                  <div class="pt">${ab.paper.t}</div>
+                  <div class="meta">${ab.paper.m}</div>
+                </div>
+                <div class="paper-item">
+                  <div class="pt">${ab.patentItem}</div>
+                  <div class="meta">CN · 发明专利 · 2021</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  },
+
+  media(){
+    const me = t('media');
+    const icons = ['wechat','xhs','github','mail'];
+    return `
+    <section class="section">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          ${eyebrow(me.eyebrow, me.eyebrowZh)}
+          <h2 class="sec-title">${me.title}</h2>
+          <p class="sec-desc">${me.sub}</p>
+        </div>
+        <div class="media-grid">
+          ${me.cards.map((c,i) => `
+          <article class="media-card" data-reveal data-delay="${i*60}">
+            <div class="media-ico">${icon(icons[i],25)}</div>
+            <div style="flex:1;min-width:0">
+              <h3>${c.name}</h3>
+              <div class="sub">${c.sub}</div>
+              <p>${c.d}</p>
+              ${i===0 ? `
+              <div class="qr-slot">
+                <span class="qr-box">${icon('wechat',26)}</span>
+                <span class="qr-tip">${c.tip}<br>公众号二维码可在此替换</span>
+              </div>` : ''}
+              ${c.link ? '<a class="go" href="'+c.link+'" target="_blank" rel="noopener">'+c.go+' '+icon('arrow',15)+'</a>' : ''}
+            </div>
+          </article>`).join('')}
+        </div>
+      </div>
+    </section>`;
+  },
+
+  repo(){
+    const rp = t('repo');
+    return `
+    <section class="section">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          ${eyebrow(rp.eyebrow, rp.eyebrowZh)}
+          <h2 class="sec-title">${rp.title}</h2>
+          <p class="sec-desc">${rp.sub}</p>
+        </div>
+        <div class="repo-hero" data-reveal>
+          <div class="repo-avatar">W</div>
+          <div style="flex:1;min-width:240px">
+            <h2>WendellGong</h2>
+            <div class="handle">github.com/WendellGong</div>
+            <p>Multi-modal recommendation algorithms · VLM embeddings · search/rec/ads engineering</p>
+            <div class="repo-stats" id="repoStats">
+              <span><b>–</b>${rp.publicRepos}</span>
+              <span><b>–</b>Stars</span>
+            </div>
+          </div>
+          <a class="btn btn-primary magnetic" href="https://github.com/WendellGong" target="_blank" rel="noopener">${icon('github',17)}GitHub</a>
+        </div>
+        <div class="sec-head" data-reveal>
+          ${eyebrow('FEATURED','精选')}
+          <h2 class="sec-title">${rp.featTitle}</h2>
+          <p class="sec-desc">${rp.featSub}</p>
+        </div>
+        <div class="repo-grid">
+          ${DATA.featRepos.map(f => `
+          <a class="repo-card" href="${f.url}" target="_blank" rel="noopener">
+            <div class="r-top"><h3>${f.name}</h3><span class="star">${icon('star',14)}${f.star}</span></div>
+            <p>${tr(f.desc)}</p>
+            <div class="r-meta">${f.lang ? '<span class="lang">' + f.lang + '</span>' : ''}<span>${icon('code',12)} GitHub</span></div>
+          </a>`).join('')}
+        </div>
+        <div class="repo-grid" id="repoGrid">
+          <div class="repo-loading"><div class="spinner"></div>${rp.loading}</div>
+        </div>
+      </div>
+    </section>`;
+  },
+
+  blog(){
+    const b = t('blog');
+    return `
+    <section class="section">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          ${eyebrow(b.eyebrow, b.eyebrowZh)}
+          <h2 class="sec-title">${b.title}</h2>
+          <p class="sec-desc">${b.sub}</p>
+        </div>
+        <div class="blog-empty" data-reveal>
+          <div class="be-ico">${icon('pen',36)}</div>
+          <h3>${b.emptyT}</h3>
+          <p>${b.emptyP}</p>
+          <a class="btn btn-primary magnetic" href="mailto:?subject=${encodeURIComponent(STATE.lang==='zh'?'订阅「龚文治」博客更新':'Subscribe to Wendell Gong blog')}&body=${encodeURIComponent(STATE.lang==='zh'?'请将「龚文治」博客更新邮件发送至：':'Please send Wendell Gong blog updates to:')}">${icon('bell',17)}${b.cta}</a>
+          <div class="be-note">${icon('shield',15)}${b.note}</div>
+        </div>
+      </div>
+    </section>`;
+  },
+
+  private(){
+    if (!STATE.unlocked) {
+      const p = t('private');
+      return `
+      <section class="gate-wrap">
+        <div class="gate-card" data-reveal>
+          <div class="gate-ico">${icon('lock',30)}</div>
+          <h2>${p.gateT}</h2>
+          <p class="g-sub">${p.gateSub}</p>
+          <form class="gate-form" id="gateForm" novalidate autocomplete="off">
+            <div class="gate-input-wrap">
+              ${icon('key',18)}
+              <input class="gate-input" id="gateInput" type="password" placeholder="${p.gatePlaceholder}" autocomplete="off" spellcheck="false">
+              <button type="button" class="gate-toggle" id="gateToggle" aria-label="toggle">${icon('eye',19)}</button>
+            </div>
+            <button type="submit" class="gate-submit magnetic" id="gateSubmit">${icon('unlock',17)}${p.gateBtn}</button>
+          </form>
+          <div class="gate-err" id="gateErr">${icon('warn',15)}<span>${p.gateErr}</span></div>
+          <p class="gate-hint">${p.gateHint}</p>
+          <span class="gate-secure">${icon('shield',14)}${p.secure}</span>
+        </div>
+      </section>`;
+    }
+    const p = t('private');
+    const exp = DATA.expPrivate.map((e) => `
+      <article class="exp-detail" data-reveal>
+        <div class="ed-head">
+          <div>
+            <h3>${tr(e.company)}</h3>
+            <div class="ed-role">${tr(e.role)}</div>
+          </div>
+          <div class="ed-per">${e.per}</div>
+        </div>
+        ${e.blocks.map(bl => `
+          <div style="margin-top:16px">
+            <h4 class="pj-detail" style="margin-bottom:8px;font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.1em;font-family:var(--font-d);display:flex;align-items:center;gap:8px"><span class="bar" style="width:4px;height:14px;border-radius:3px;background:var(--grad);display:inline-block"></span>${tr(bl.t)}</h4>
+            <ul>${bl.bullets.map(b=>'<li>'+tr(b)+'</li>').join('')}</ul>
+          </div>`).join('')}
+      </article>`).join('');
+    const pj = DATA.projects.map((pr,i) => `
+      <article class="pj-card tilt" data-reveal data-delay="${(i%2)*70}">
+        <div class="pj-img">
+          <img src="${pr.imgs[0]}" alt="${tr(pr.title)}" loading="lazy">
+          <div class="pj-tags">${pr.tags.map(x=>'<span>'+x+'</span>').join('')}</div>
+        </div>
+        <div class="pj-body">
+          <h3>${tr(pr.title)}</h3>
+          <div class="pj-sub">${pr.sub[STATE.lang]}</div>
+          <p class="pj-desc">${tr(pr.desc)}</p>
+          <div class="pj-detail">
+            <h4>${STATE.lang==='zh'?'HIGHLIGHTS · 项目亮点':'HIGHLIGHTS'}</h4>
+            <ul>${pr.hl.map(x=>'<li>'+tr(x)+'</li>').join('')}</ul>
+          </div>
+          <div class="pj-detail">
+            <h4>${STATE.lang==='zh'?'RESULTS · 项目成果':'RESULTS'}</h4>
+            <ul>${pr.res.map(x=>'<li>'+tr(x)+'</li>').join('')}</ul>
+          </div>
+          ${pr.link ? '<div class="pj-links"><a class="btn btn-ghost btn-sm magnetic" href="'+pr.link+'" target="_blank" rel="noopener">'+(STATE.lang==='zh'?'查看案例':'View case')+' '+icon('ext',14)+'</a></div>' : ''}
+        </div>
+      </article>`).join('');
+    return `
+    <section class="section">
+      <div class="container">
+        <div class="pv-banner" data-reveal>
+          <div>
+            <div class="pv-t">${p.bannerT}</div>
+            <div class="pv-s">${p.bannerS}</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <span class="pv-badge">${icon('check',15)}${p.badge}</span>
+            <button type="button" class="btn btn-ghost btn-sm" id="lockAgain">${icon('lock',14)}${p.lockAgain}</button>
+          </div>
+        </div>
+        <div class="sec-head" style="margin-top:52px" data-reveal>
+          ${eyebrow('EXPERIENCE','经历')}
+          <h2 class="sec-title">${p.expTitle}</h2>
+        </div>
+        ${exp}
+        <div class="sec-head" style="margin-top:64px" data-reveal>
+          ${eyebrow('PROJECTS','项目')}
+          <h2 class="sec-title">${p.pjTitle}</h2>
+          <p class="sec-desc">${p.pjSub}</p>
+        </div>
+        <div class="pj-grid">${pj}</div>
+      </div>
+    </section>`;
+  }
+};
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+function parseRoute(){
+  const h = (location.hash || '#/home').replace(/^#\/?/, '');
+  return ['home','about','media','repo','blog','private'].indexOf(h) >= 0 ? h : 'home';
+}
+function render(){
+  const app = document.getElementById('app');
+  const html = views[STATE.route]();
+  app.innerHTML = html;
+  const v = app.firstElementChild;
+  if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    v.classList.add('view-enter');
+  }
+  afterRender();
+}
+function afterRender(){
+  window.scrollTo(0, 0);
+  renderChrome();
+  closeMenu();
+  observeReveals();
+  bindView();
+  if (STATE.route === 'private' && STATE.unlocked) initTilt();
+}
+function go(route){ if (STATE.route !== route) { STATE.route = route; location.hash = '#/' + route; render(); } }
+
+/* ============================================================
+   SHA-256 (pure JS, for irreversible passcode check)
+   ============================================================ */
+function utf8Bytes(s){
+  const out = []; let i, c;
+  for (i = 0; i < s.length; i++) {
+    c = s.charCodeAt(i);
+    if (c < 128) out.push(c);
+    else if (c < 2048) out.push(192 | (c >> 6), 128 | (c & 63));
+    else if (c >= 0xD800 && c <= 0xDBFF) {
+      c = ((c - 0xD800) << 10) + (s.charCodeAt(++i) - 0xDC00) + 0x10000;
+      out.push(240 | (c >> 18), 128 | ((c >> 12) & 63), 128 | ((c >> 6) & 63), 128 | (c & 63));
+    } else out.push(224 | (c >> 12), 128 | ((c >> 6) & 63), 128 | (c & 63));
+  }
+  return out;
+}
+function sha256Hex(msg){
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const H0 = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const bytes = utf8Bytes(msg);
+  const bitLen = bytes.length * 8;
+  bytes.push(0x80);
+  while (bytes.length % 64 !== 56) bytes.push(0);
+  bytes.push(0, 0, 0, 0, (bitLen >>> 24) & 255, (bitLen >>> 16) & 255, (bitLen >>> 8) & 255, bitLen & 255);
+  const rotr = (n, x) => (x >>> n) | (x << (32 - n));
+  const W = new Array(64);
+  let H = H0.slice();
+  for (let i = 0; i < bytes.length; i += 64) {
+    for (let j = 0; j < 16; j++) {
+      W[j] = ((bytes[i + j * 4] << 24) | (bytes[i + j * 4 + 1] << 16) | (bytes[i + j * 4 + 2] << 8) | bytes[i + j * 4 + 3]) >>> 0;
+    }
+    for (let j = 16; j < 64; j++) {
+      const s0 = rotr(7, W[j - 15]) ^ rotr(18, W[j - 15]) ^ (W[j - 15] >>> 3);
+      const s1 = rotr(17, W[j - 2]) ^ rotr(19, W[j - 2]) ^ (W[j - 2] >>> 10);
+      W[j] = (W[j - 16] + s0 + W[j - 7] + s1) >>> 0;
+    }
+    let a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+    for (let j = 0; j < 64; j++) {
+      const S1 = rotr(6, e) ^ rotr(11, e) ^ rotr(25, e);
+      const ch = (e & f) ^ ((~e) & g);
+      const t1 = (h + S1 + ch + K[j] + W[j]) >>> 0;
+      const S0 = rotr(2, a) ^ rotr(13, a) ^ rotr(22, a);
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const t2 = (S0 + maj) >>> 0;
+      h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+    }
+    H = H.map((v, idx) => (v + [a, b, c, d, e, f, g, h][idx]) >>> 0);
+  }
+  return H.map(x => ('00000000' + x.toString(16)).slice(-8)).join('');
+}
+
+/* ============================================================
+   PASSCODE GATE
+   ============================================================ */
+function bindGate(){
+  const form = document.getElementById('gateForm');
+  if (!form) return;
+  const input = document.getElementById('gateInput');
+  const err = document.getElementById('gateErr');
+  const toggle = document.getElementById('gateToggle');
+  toggle.addEventListener('click', () => {
+    input.type = input.type === 'password' ? 'text' : 'password';
+    toggle.innerHTML = icon(input.type === 'password' ? 'eye' : 'eyeoff', 19);
+  });
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const v = input.value.trim();
+    if (!v) return;
+    if (sha256Hex(v + SALT) === HASH) {
+      STATE.unlocked = true;
+      sessionStorage.setItem('gw_unlocked', '1');
+      err.classList.remove('show');
+      input.value = '';
+      render();
+    } else {
+      err.classList.add('show');
+      form.classList.remove('shake');
+      void form.offsetWidth;
+      form.classList.add('shake');
+      input.select();
+    }
+  });
+  const lockBtn = document.getElementById('lockAgain');
+  if (lockBtn) lockBtn.addEventListener('click', () => {
+    STATE.unlocked = false;
+    sessionStorage.removeItem('gw_unlocked');
+    render();
+  });
+}
+
+/* ============================================================
+   GITHUB REPOS (live sync with static fallback)
+   ============================================================ */
+function loadRepos(){
+  const grid = document.getElementById('repoGrid');
+  const stats = document.getElementById('repoStats');
+  if (!grid) return;
+  const rp = t('repo');
+  const fallback = () => {
+    grid.innerHTML = `
+      <a class="repo-card" href="https://github.com/WendellGong/WendellGong.github.io" target="_blank" rel="noopener">
+        <div class="r-top"><h3>WendellGong.github.io</h3><span class="star">${icon('star',14)}<span id="selfStar">–</span></span></div>
+        <p>${rp.thisSite}</p>
+        <div class="r-meta"><span class="lang">HTML</span><span>GitHub Pages</span></div>
+      </a>
+      <div class="repo-card" style="display:grid;place-items:center;color:var(--ink-3);font-size:13px;min-height:120px">
+        ${icon('github',22)}<span style="margin-top:8px">${rp.loadFail}</span>
+      </div>`;
+    const s = document.getElementById('selfStar');
+    fetch('https://api.github.com/repos/WendellGong/WendellGong.github.io')
+      .then(r => r.json()).then(d => { if (s && d.stargazers_count !== undefined) s.textContent = d.stargazers_count; }).catch(()=>{});
+  };
+  fetch('https://api.github.com/users/WendellGong/repos?sort=updated&per_page=8')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+      const items = (data || []).filter(x => !x.fork).slice(0, 6);
+      if (!items.length) return fallback();
+      grid.innerHTML = items.map(r => `
+        <a class="repo-card" href="${r.html_url}" target="_blank" rel="noopener">
+          <div class="r-top"><h3>${esc(r.name)}</h3><span class="star">${icon('star',14)}${r.stargazers_count || 0}</span></div>
+          <p>${r.description ? esc(r.description) : rp.noDesc}</p>
+          <div class="r-meta">${r.language ? '<span class="lang">' + esc(r.language) + '</span>' : ''}<span>${icon('code',12)} ${r.size ? (r.size + ' KB') : ''}</span><span>updated ${r.updated_at ? r.updated_at.slice(0,10) : ''}</span></div>
+        </a>`).join('');
+      if (stats) {
+        stats.innerHTML = '<span><b>' + items.length + '+</b>' + rp.publicRepos + '</span><span><b>' + items.reduce((s,x)=>s+(x.stargazers_count||0),0) + '</b>Stars</span>';
+      }
+    })
+    .catch(fallback);
+}
+
+/* ============================================================
+   REVEAL ON SCROLL
+   ============================================================ */
+let revealObs = null;
+function observeReveals(){
+  if (revealObs) revealObs.disconnect();
+  const els = document.querySelectorAll('[data-reveal]');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    els.forEach(el => el.classList.add('in'));
+    return;
+  }
+  revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        const el = en.target;
+        const d = el.getAttribute('data-delay');
+        if (d) el.style.transitionDelay = d + 'ms';
+        el.classList.add('in');
+        revealObs.unobserve(el);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+  els.forEach(el => revealObs.observe(el));
+}
+
+/* ============================================================
+   MAGNETIC BUTTONS
+   ============================================================ */
+function initMagnetic(){
+  if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.magnetic').forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      el.style.transform = 'translate(' + (x * 0.22) + 'px,' + (y * 0.32) + 'px)';
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  });
+}
+
+/* ============================================================
+   TILT CARDS
+   ============================================================ */
+function initTilt(){
+  if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.tilt').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = 'perspective(900px) rotateX(' + (-py * 5) + 'deg) rotateY(' + (px * 5) + 'deg) translateY(-4px)';
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+}
+
+/* ============================================================
+   PARTICLES (fixed ambient constellation)
+   ============================================================ */
+function initParticles(){
+  const cv = document.getElementById('fx');
+  if (!cv || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const ctx = cv.getContext('2d');
+  let W, H, pts = [], running = true, raf = null;
+  const DPR = Math.min(devicePixelRatio || 1, 2);
+  function resize(){
+    W = cv.width = innerWidth * DPR;
+    H = cv.height = innerHeight * DPR;
+    cv.style.width = innerWidth + 'px';
+    cv.style.height = innerHeight + 'px';
+    const count = innerWidth < 768 ? 30 : (innerWidth < 1200 ? 44 : 56);
+    pts = [];
+    for (let i = 0; i < count; i++) {
+      pts.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.22 * DPR, vy: (Math.random() - 0.5) * 0.22 * DPR, r: (Math.random() * 1.6 + 0.8) * DPR });
+    }
+  }
+  let mx = -9999, my = -9999;
+  addEventListener('mousemove', (e) => { mx = e.clientX * DPR; my = e.clientY * DPR; });
+  addEventListener('mouseout', () => { mx = -9999; my = -9999; });
+  const LINK = 130 * DPR;
+  function frame(){
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+      const dxm = mx - p.x, dym = my - p.y;
+      const dm = Math.hypot(dxm, dym);
+      if (dm < 180 * DPR) { p.x -= dxm * 0.0025; p.y -= dym * 0.0025; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(29,99,255,.42)';
+      ctx.fill();
+    }
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const a = pts[i], b = pts[j];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < LINK) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = 'rgba(29,99,255,' + (0.16 * (1 - d / LINK)).toFixed(3) + ')';
+          ctx.lineWidth = 1 * DPR;
+          ctx.stroke();
+        }
+      }
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  resize();
+  addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(raf); running = false; }
+    else if (!running) { running = true; frame(); }
+  });
+  frame();
+}
+
+/* ============================================================
+   LANGUAGE SWITCH + MENU
+   ============================================================ */
+function setLang(lang){
+  STATE.lang = lang;
+  localStorage.setItem('gw_lang', lang);
+  render();
+}
+function closeMenu(){
+  STATE.menuOpen = false;
+  document.getElementById('drawer').classList.remove('open');
+  const b = document.getElementById('menuBtn');
+  b.setAttribute('aria-expanded', 'false');
+  b.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+}
+function toggleMenu(){
+  STATE.menuOpen = !STATE.menuOpen;
+  const d = document.getElementById('drawer');
+  const b = document.getElementById('menuBtn');
+  if (STATE.menuOpen) {
+    d.classList.add('open');
+    b.setAttribute('aria-expanded', 'true');
+    b.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+  } else closeMenu();
+}
+
+/* ============================================================
+   BIND CURRENT VIEW + INIT
+   ============================================================ */
+function bindView(){
+  initMagnetic();
+  initTilt();
+  if (STATE.route === 'private') bindGate();
+  if (STATE.route === 'repo') loadRepos();
+  const evt = new CustomEvent('view:ready');
+  document.dispatchEvent(evt);
+}
+function init(){
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('langZh').addEventListener('click', () => setLang('zh'));
+  document.getElementById('langEn').addEventListener('click', () => setLang('en'));
+  document.getElementById('menuBtn').addEventListener('click', toggleMenu);
+  document.getElementById('drawer').addEventListener('click', (e) => { if (e.target.closest('a')) closeMenu(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  addEventListener('hashchange', () => {
+    STATE.route = parseRoute();
+    render();
+  });
+  STATE.route = parseRoute();
+  renderChrome();
+  initParticles();
+  render();
+}
+
+
+/* ============================================================
+   I18N DICTIONARY
+   ============================================================ */
+const L = {
+  zh: {
+    nav: { about: '关于', repo: '仓库', media: '媒体', blog: '博客', private: '私密区' },
+    hero: {
+      eyebrow: 'MULTI-MODAL RECSYS',
+      name: '龚文治',
+      nameEn: 'WENDELL GONG',
+      slogan: 'Explore · Exploit · Exceed',
+      tagline: '专注<b>多模态表征</b>、<b>生成式召回</b>、<b>数据飞轮</b>与<b>出海搜索</b>，用模型理解更真实的世界，把技术翻译成业务收益。',
+      ctaWork: '查看作品集',
+      ctaWorkLock: '私密 · 口令进入',
+      ctaMail: '联系我',
+      mailLabel: 'EMAIL'
+    },
+    focus: {
+      title: '能力聚焦',
+      sub: '一条从数据、表征到收益的完整链路：把多模态数据变成可落地的推荐、搜索与广告系统。',
+      cards: [
+        { t: '信息流/联盟广告表征', d: '面向国内 / 海外应用商店与信息流&联盟广告的多模态表征体系，覆盖素材理解、特征编码到投放收益的完整链路。', tags: ['应用商店', '信息流', '联盟广告'] },
+        { t: '生成式召回', d: '在检索、精排之外探索生成式召回范式，把“匹配”变成“生成”，离线与线上指标全面正向。', tags: ['Gen-Rec', 'APP 场景'] },
+        { t: '端云数据飞轮', d: '端云协同感知融合、自动化标注与模型迭代闭环，数据越用越好、模型越跑越强。', tags: ['数据飞轮', '自动标注'] },
+        { t: '出海搜索经验', d: '训练新加坡、东南亚与印度区域的搜索算法：语义表征模型、Query 改写与生成式搜索，让搜索更懂多元语言与文化。', tags: ['新加坡', '东南亚', '印度'] }
+      ]
+    },
+    works: {
+      title: '作品集预览',
+      sub: '以下为非公开作品。输入口令后可解锁完整项目细节与图文案例。',
+      lockedHint: '输入口令解锁全部项目',
+      more: '进入私密区'
+    },
+    timeline: {
+      title: '工作经历',
+      sub: '从自动驾驶大模型到广告搜广推，始终在多模态与 AI 工程化的第一线。',
+      seePrivate: '查看完整版'
+    },
+    cta: {
+      title: '想看看完整的工作细节？',
+      desc: '完整项目文档、实习经历与个人项目，都在口令保护的私密区里。',
+      btn: '进入私密区',
+      btn2: '写邮件给我'
+    },
+    about: {
+      eyebrow: 'ABOUT ME',
+      eyebrowZh: '关于',
+      title: '关于我',
+      desc: '一名深耕多模态与搜广推的算法工程师，兼具工程落地与产品 Sense。',
+      idRole: '多模态推荐算法工程师 @ OPPO',
+      idLoc: 'Base：北京 / 上海',
+      idEmail: 'gongwenzhi98@foxmail.com',
+      eduTitle: '教育背景',
+      expTitle: '工作经历',
+      expPrivateHint: '完整版含项目细节与实习经历，见私密区',
+      skillTitle: '专业技能',
+      researchTitle: '研究方向',
+      achTitle: '荣誉与论文',
+      awardTitle: '获奖情况',
+      paperTitle: '学术论文',
+      patentTitle: '专利',
+      patentItem: '一种基于模仿学习和强化学习的高速车辆控制方法（2021.07）',
+      contactTitle: '联系我',
+      contactSub: '邮箱 · 公众号 · 社媒',
+      privateCta: '查看完整经历与项目',
+      paper: { t: 'SOINS: A Real-Time Underwater Sonar-Inertial System for Pipeline 3D Reconstruction.', m: 'Gong, Wenzhi et al. · ICIRA 2022' }
+    },
+    media: {
+      eyebrow: 'MEDIA',
+      eyebrowZh: '媒体',
+      title: '媒体与关注',
+      sub: '公众号、小红书与代码仓库，都在这里找到我。',
+      cards: [
+        { name: '公众号', sub: '酒阑说', d: '关于多模态、搜广推与大模型工程化的思考与输出。', go: '关注', tip: '在微信搜索「酒阑说」' },
+        { name: '小红书', sub: 'Xiaohongshu', d: 'AI 视频处理案例：无字幕视频多语识别与三语字幕生成。', go: '看案例', link: 'http://xhslink.com/vYfvLR' },
+        { name: 'GitHub', sub: 'WendellGong', d: '个人代码仓库与本站源码，欢迎 Star 与交流。', go: '去逛逛', link: 'https://github.com/WendellGong' },
+        { name: '邮箱', sub: 'Email', d: '工作机会、技术交流与合作，随时来信。', go: '写邮件', link: 'mailto:gongwenzhi98@foxmail.com' }
+      ]
+    },
+    repo: {
+      eyebrow: 'REPO',
+      eyebrowZh: '仓库',
+      title: '代码仓库',
+      sub: '从 GitHub 实时同步的个人项目。',
+      publicRepos: '公开仓库',
+      loading: '正在同步 GitHub 仓库…',
+      loadFail: '暂时无法连接 GitHub，以下为仓库概要。',
+      viewAll: '在 GitHub 查看全部',
+      noDesc: '暂无描述',
+      thisSite: '个人主页 · 本站源码',
+      featTitle: '精选项目',
+      featSub: '个人比较有代表性的开源作品，与 GitHub 保持同步。'
+    },
+    blog: {
+      eyebrow: 'BLOG',
+      eyebrowZh: '博客',
+      title: '博客',
+      sub: '关于多模态、搜广推与大模型工程化的写作计划。',
+      emptyT: '博客正在路上',
+      emptyP: '这里将陆续发布技术笔记、模型拆解与工程实践。首篇已在筹备中——关于 VLM2Vec 的落地手记。',
+      cta: '第一时间收到更新',
+      note: '更新后我会通过邮件通知你'
+    },
+    private: {
+      eyebrow: 'PRIVATE',
+      eyebrowZh: '私密',
+      gateT: '私密作品集',
+      gateSub: '输入口令解锁完整的工作经历、实习细节与项目文档。',
+      gatePlaceholder: '输入口令',
+      gateBtn: '解锁内容',
+      gateErr: '口令不正确，请重试',
+      gateHint: '口令 = 微信号。忘记口令？联系我本人获取。',
+      secure: '口令仅以不可逆哈希存储于页面，不会明文出现在代码中',
+      bannerT: '私密作品集已解锁',
+      bannerS: '包含完整工作经历、实习细节与图文项目文档。离开页面后自动重新上锁。',
+      badge: '已解锁',
+      expTitle: '完整工作经历',
+      pjTitle: '项目作品集',
+      pjSub: '每个项目含背景、方案与量化成果',
+      lockAgain: '重新上锁'
+    },
+    foot: {
+      tag: 'Explore · Exploit · Exceed — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索'
+    },
+    common: { backHome: '返回首页' }
+  },
+
+  en: {
+    nav: { about: 'About', repo: 'Repo', media: 'Media', blog: 'Blog', private: 'Private' },
+    hero: {
+      eyebrow: 'MULTI-MODAL RECSYS',
+      name: '龚文治',
+      nameEn: 'WENDELL GONG',
+      slogan: 'Explore · Exploit · Exceed',
+      tagline: 'Focused on <b>multi-modal representation</b>, <b>generative recall</b>, the <b>data flywheel</b> and <b>overseas search</b> — turning models that understand the real world into business outcomes.',
+      ctaWork: 'View Portfolio',
+      ctaWorkLock: 'Private · Passcode',
+      ctaMail: 'Contact Me',
+      mailLabel: 'EMAIL'
+    },
+    focus: {
+      title: 'What I Do',
+      sub: 'A complete pipeline from multi-modal data to recommendation, search & ads systems that deliver revenue.',
+      cards: [
+        { t: 'Feed & Union-Ad Representation', d: 'Multi-modal representation for domestic / overseas app stores plus feed & union ads — from asset understanding to monetization.', tags: ['App Store', 'Feed Ads', 'Union Ads'] },
+        { t: 'Generative Recall', d: 'Exploring generative paradigms beyond retrieval & ranking — turning “matching” into “generation”.', tags: ['Gen-Rec', 'APP'] },
+        { t: 'Data Flywheel', d: 'Cloud-edge perception fusion, auto-labeling and iterative model training that compound over time.', tags: ['Flywheel', 'Auto-Labeling'] },
+        { t: 'Overseas Search', d: 'Search algorithms trained across Singapore, Southeast Asia & India — semantic embeddings, query rewriting and generative search.', tags: ['Singapore', 'SEA', 'India'] }
+      ]
+    },
+    works: {
+      title: 'Portfolio Preview',
+      sub: 'Non-public works below. Enter the passcode to unlock full project details and visual cases.',
+      lockedHint: 'Enter passcode to unlock all projects',
+      more: 'Open Private Area'
+    },
+    timeline: {
+      title: 'Experience',
+      sub: 'From autonomous-driving foundation models to ad & search — always on the front line of multi-modal AI engineering.',
+      seePrivate: 'View Full Version'
+    },
+    cta: {
+      title: 'Want the full story?',
+      desc: 'Complete project docs, internships and side projects live behind the passcode-protected private area.',
+      btn: 'Open Private Area',
+      btn2: 'Email Me'
+    },
+    about: {
+      eyebrow: 'ABOUT ME',
+      eyebrowZh: '',
+      title: 'About Me',
+      desc: 'An algorithm engineer focused on multi-modality and search/recommendation/ads, with both engineering depth and product sense.',
+      idRole: 'Multi-Modal RecSys Engineer @ OPPO',
+      idLoc: 'Base: Beijing / Shanghai',
+      idEmail: 'gongwenzhi98@foxmail.com',
+      eduTitle: 'Education',
+      expTitle: 'Experience',
+      expPrivateHint: 'Full version with project details & internship stories lives in the private area',
+      skillTitle: 'Skills',
+      researchTitle: 'Research Directions',
+      achTitle: 'Honors & Publications',
+      awardTitle: 'Awards',
+      paperTitle: 'Paper',
+      patentTitle: 'Patent',
+      patentItem: 'A high-speed vehicle control method based on imitation learning and reinforcement learning (2021.07)',
+      contactTitle: 'Contact',
+      contactSub: 'Email · WeChat OA · Socials',
+      privateCta: 'View Full Experience & Projects',
+      paper: { t: 'SOINS: A Real-Time Underwater Sonar-Inertial System for Pipeline 3D Reconstruction.', m: 'Gong, Wenzhi et al. · ICIRA 2022' }
+    },
+    media: {
+      eyebrow: 'MEDIA',
+      eyebrowZh: '',
+      title: 'Media & Socials',
+      sub: 'WeChat official account, Xiaohongshu and code repos — find me anywhere.',
+      cards: [
+        { name: 'WeChat OA', sub: '酒阑说', d: 'Thoughts on multi-modality, search/rec/ads and LLM engineering.', go: 'Follow', tip: 'Search 「酒阑说」 in WeChat' },
+        { name: 'Xiaohongshu', sub: 'RED', d: 'AI video case: subtitle-free multi-lingual transcription with trilingual subtitles.', go: 'View Case', link: 'http://xhslink.com/vYfvLR' },
+        { name: 'GitHub', sub: 'WendellGong', d: 'Personal repos and the source of this site — stars welcome.', go: 'Explore', link: 'https://github.com/WendellGong' },
+        { name: 'Email', sub: 'Mail', d: 'Opportunities, technical exchange and collaboration — drop a line anytime.', go: 'Write', link: 'mailto:gongwenzhi98@foxmail.com' }
+      ]
+    },
+    repo: {
+      eyebrow: 'REPO',
+      eyebrowZh: '',
+      title: 'Code Repos',
+      sub: 'Personal projects synced live from GitHub.',
+      publicRepos: 'Public Repos',
+      loading: 'Syncing GitHub repos…',
+      loadFail: 'Cannot reach GitHub right now — showing a static summary instead.',
+      viewAll: 'View all on GitHub',
+      noDesc: 'No description',
+      thisSite: 'Personal homepage · source of this site',
+      featTitle: 'Featured',
+      featSub: 'A few personal open-source works worth highlighting — always in sync on GitHub.'
+    },
+    blog: {
+      eyebrow: 'BLOG',
+      eyebrowZh: '',
+      title: 'Blog',
+      sub: 'Writing plans on multi-modality, search/rec/ads and LLM engineering.',
+      emptyT: 'The blog is on its way',
+      emptyP: 'Technical notes, model deep-dives and engineering practice will land here. The first post — a VLM2Vec landing story — is in the works.',
+      cta: 'Get notified',
+      note: 'I will email you when new posts arrive'
+    },
+    private: {
+      eyebrow: 'PRIVATE',
+      eyebrowZh: '',
+      gateT: 'Private Portfolio',
+      gateSub: 'Enter the passcode to unlock full work history, internship details and project docs.',
+      gatePlaceholder: 'Enter passcode',
+      gateBtn: 'Unlock',
+      gateErr: 'Incorrect passcode, try again',
+      gateHint: 'Passcode = WeChat ID. Forgot it? Reach out to me directly.',
+      secure: 'The passcode is stored only as an irreversible hash — never in plaintext',
+      bannerT: 'Private portfolio unlocked',
+      bannerS: 'Full work history, internships, quantified results and illustrated project docs. The area re-locks when you leave.',
+      badge: 'Unlocked',
+      expTitle: 'Full Work Experience',
+      pjTitle: 'Project Portfolio',
+      pjSub: 'Each project covers background, approach and quantified results',
+      lockAgain: 'Lock again'
+    },
+    foot: {
+      tag: 'Explore · Exploit · Exceed — Multi-Modal Representation · Generative Recall · Data Flywheel · Overseas Search'
+    },
+    common: { backHome: 'Back to home' }
+  }
+};
+
+/* ============================================================
+   CONTENT DATA (bilingual)
+   ============================================================ */
+const DATA = {
+  education: [
+    { deg: { zh: '硕士 · 保送', en: 'M.Eng. (Recommended)' }, school: { zh: '华中科技大学', en: 'Huazhong University of Science & Technology' }, dept: { zh: '人工智能与自动化学院', en: 'School of Artificial Intelligence & Automation' }, per: '2020.09 – 2023.06' },
+    { deg: { zh: '学士 · 前 5%', en: 'B.Eng. (Top 5%)' }, school: { zh: '西南交通大学', en: 'Southwest Jiaotong University' }, dept: { zh: '电气工程学院', en: 'School of Electrical Engineering' }, per: '2016.09 – 2020.06' }
+  ],
+  expPublic: [
+    {
+      company: { zh: 'OPPO · 推荐搜索部', en: 'OPPO · Search & Recommendation' },
+      role: { zh: '广告算法工程师', en: 'Ad Algorithm Engineer' },
+      per: '2024.12 – 至今',
+      bullets: [
+        { zh: '聚焦国内 / 海外应用商店与信息流&联盟广告的算法建设：多模态表征、生成式召回与搜索推荐链路', en: 'Algorithms for domestic / overseas app stores plus feed & union ads — multi-modal representation, generative recall and search & rec pipelines' }
+      ]
+    },
+    {
+      company: { zh: '北京市高级别自动驾驶示范区联合实验室', en: 'Beijing Hi-Tech Autonomous Driving Zone Joint Lab' },
+      role: { zh: '行业大模型产品负责人', en: 'Industry Foundation-Model Product Lead' },
+      per: '2023.07 – 2024.09',
+      bullets: [
+        { zh: '聚焦多模态大模型与生成式模型在自动驾驶场景的产品化落地', en: 'Productizing multi-modal & generative foundation models for autonomous driving' }
+      ]
+    },
+    {
+      company: { zh: '佑驾创新 Minieye', en: 'Minieye' },
+      role: { zh: 'AI 工程师（实习）', en: 'AI Engineer (Internship)' },
+      per: '2022.11 – 2023.05',
+      bullets: [
+        { zh: '多模态端云协同感知融合与数据飞轮迭代', en: 'Multi-modal cloud-edge perception fusion with data-flywheel iteration' }
+      ]
+    },
+    {
+      company: { zh: '哔哩哔哩 bilibili', en: 'bilibili' },
+      role: { zh: 'AI 工程师（实习）', en: 'AI Engineer (Internship)' },
+      per: '2022.05 – 2022.10',
+      bullets: [
+        { zh: '视频体验优化（QoE）与端侧模型压缩部署', en: 'QoE video experience optimization & edge model compression deployment' }
+      ]
+    }
+  ],
+  expPrivate: [
+    {
+      company: { zh: 'OPPO · 推荐搜索部', en: 'OPPO · Search & Recommendation' },
+      role: { zh: '广告算法工程师', en: 'Ad Algorithm Engineer' },
+      per: '2024.12 – 至今',
+      blocks: [
+        {
+          t: { zh: '多模态特征平台', en: 'Multi-Modal Feature Platform' },
+          bullets: [
+            { zh: '主导平台功能设计、后端数据流架构与性能优化，搭建场景管理 / 模型管理 / 算子设计核心模块', en: 'Led platform design, backend data-flow architecture and performance optimization; built scenario management, model management and operator design modules' },
+            { zh: '<b>x+ 场景</b>收益转化：信息流大盘 <b>+x.x%</b>，联盟电商收入 <b>+xx.x%</b>（转化成本 <b>-x.x%</b>），广告相似率 <b>-xx.x%</b>，新广告主 ARPU <b>+xx.x%</b>', en: '<b>x+ scenarios</b> monetized: feed revenue <b>+x.x%</b>, union e-commerce revenue <b>+xx.x%</b> (CPA <b>-x.x%</b>), ad similarity <b>-xx.x%</b>, new-advertiser ARPU <b>+xx.x%</b>' },
+            { zh: '离线 Embedding 推理耗时 <b>-xx%</b>；素材缓存机制使重复下载 <b>-xx.x%</b>（反爬虫使下载成功率升至 <b>xx.x%</b>），重复推理耗时 <b>-xx.x%</b>', en: 'Offline embedding inference latency <b>-xx%</b>; asset caching cut duplicate downloads <b>-xx.x%</b> (anti-crawler lifted success to <b>xx.x%</b>), duplicate inference <b>-xx.x%</b>' },
+            { zh: '算子效率：多模态特征算子 <b>xxxμs → xxμs</b>，SimTier 特征算子 <b>xxxμs → xxμs</b>', en: 'Operator efficiency: multi-modal op <b>xxxμs → xxμs</b>, SimTier op <b>xxxμs → xxμs</b>' }
+          ]
+        },
+        {
+          t: { zh: 'VLM2Vec 表征模型研发', en: 'VLM2Vec Embedding Models' },
+          bullets: [
+            { zh: '挖掘真实 i2i / u2i / q2i 数据并样本增强，训练 FusionGate / FusionAE / AD-Embedding / OEmbedding（MMEB 榜单前 xx）', en: 'Mined real i2i / u2i / q2i data with augmentation; trained FusionGate, FusionAE, AD-Embedding and OEmbedding (top-xx on MMEB)' },
+            { zh: 'Semantic-ID：LoRA 微调 CLIP Encoder（R=x）+ MRL 降维至 xx + RQ-VAE（金字塔 codebook，利用率 xx%、熵 x.xx）', en: 'Semantic-ID: LoRA-finetuned CLIP (R=x) + MRL to xx-dim + RQ-VAE with pyramid codebook (xx% utilization, entropy x.xx)' },
+            { zh: 'RECALL@50 持续提升：<b>x.xx → x.xx → x.xx → x.xx → x.xx</b>', en: 'RECALL@50 climbed steadily: <b>x.xx → x.xx → x.xx → x.xx → x.xx</b>' }
+          ]
+        },
+        {
+          t: { zh: '国内搜索算法', en: 'Domestic Search Algorithms' },
+          bullets: [
+            { zh: '面向国内搜索场景的语义表征与检索优化：Query 理解、语义匹配与召回排序链路调优', en: 'Semantic representation & retrieval optimization for domestic search: query understanding, semantic matching and recall-ranking tuning' },
+            { zh: '落地 Query 改写与意图识别，改善长尾、口语化 Query 的召回质量与整体搜索体验', en: 'Shipped query rewriting with intent recognition, improving recall quality and search experience for long-tail, colloquial queries' }
+          ]
+        },
+        {
+          t: { zh: '海外搜索算法（出海：新加坡 / 东南亚 / 印度）', en: 'Overseas Search (SG / SEA / India)' },
+          bullets: [
+            { zh: '训练新加坡、东南亚与印度区域的搜索算法：语义表征模型训练、Query 改写模型与生成式搜索模型', en: 'Trained search algorithms for Singapore, Southeast Asia & India — semantic embedding training, query-rewriting models and generative search models' },
+            { zh: '多语言、多文化场景下的跨语言语义对齐与小语种 Query 理解，本地化检索与排序适配', en: 'Cross-lingual semantic alignment and low-resource query understanding across languages & cultures, with localized retrieval and ranking' },
+            { zh: '探索生成式搜索范式，让搜索结果从“匹配”走向“生成”，并与推荐、广告链路联动', en: 'Exploring generative search so results move from “matching” to “generation”, linked with recommendation and ads pipelines' }
+          ]
+        },
+        {
+          t: { zh: '联盟电商 CVR 模型', en: 'Union E-Commerce CVR Model' },
+          bullets: [
+            { zh: 'wide&deep + ppnet + MMOE，多模态 Emb 经 Adapter（Swish+GELU 降维）融合；SimTier 特征取平均长度 xxx、跨 x 年的用户序列', en: 'wide&deep + ppnet + MMOE with multi-modal embeds fused via an Adapter (Swish+GELU); SimTier features over user sequences of avg. length xxx across x years' },
+            { zh: 'AD-CLIP 离线 AUC <b>+x.xxx</b>、线上收入 <b>+x.x%</b>、转化成本 <b>-x.x%</b>、新广告主价值 <b>+x.x%</b>', en: 'AD-CLIP: offline AUC <b>+x.xxx</b>, online revenue <b>+x.x%</b>, CPA <b>-x.x%</b>, new-advertiser value <b>+x.x%</b>' },
+            { zh: '叠加 Semantic-ID（AUC +x.xxx、收入 +x.x%）与 SimTier@20（AUC +x.xxx、收入 +x.x%）；多场景 CTR / 混排均有 x%+ 收入提升', en: 'Stacked Semantic-ID (AUC +x.xxx, revenue +x.x%) and SimTier@20 (AUC +x.xxx, revenue +x.x%); x%+ revenue lifts across CTR & mixed-ranking scenarios' }
+          ]
+        },
+        {
+          t: { zh: '实习团队管理', en: 'Intern Mentoring' },
+          bullets: [
+            { zh: '指导 x 名实习生：多模态物料预处理（AUC +x.xxx）、生成式推荐 APP 课题（hitrate@100 +x.xxx、recall@100 +x.xxx、线上收入 +x.xx%、用户时长 +x.xx%），均已转正', en: 'Mentored x interns: multi-modal asset preprocessing (AUC +x.xxx) and generative-recommendation APP (hitrate@100 +x.xxx, recall@100 +x.xxx, revenue +x.xx%, dwell +x.xx%) — both converted' }
+          ]
+        }
+      ]
+    },
+    {
+      company: { zh: '北京市高级别自动驾驶示范区联合实验室', en: 'Beijing Hi-Tech Autonomous Driving Zone Joint Lab' },
+      role: { zh: '行业大模型产品负责人', en: 'Industry Foundation-Model Product Lead' },
+      per: '2023.07 – 2024.09',
+      blocks: [
+        {
+          t: { zh: '大模型产品与团队', en: 'Foundation-Model Product & Team' },
+          bullets: [
+            { zh: '聚焦多模态大模型与生成式模型在自动驾驶落地，带领清华、北交实习生团队（x 人）', en: 'Focused on multi-modal & generative model adoption in autonomous driving, leading a x-person intern team (Tsinghua, BJTU)' },
+            { zh: '与商汤、北大计算机学院大模型团队合作研发并参与交付', en: 'Co-developed and delivered with SenseTime and PKU CS foundation-model teams' }
+          ]
+        },
+        {
+          t: { zh: '开放词汇自动化标注系统', en: 'Open-Vocabulary Auto-Labeling' },
+          bullets: [
+            { zh: 'LLM + RAG（LangChain）标注词表-法规检索系统，SDK / API / 私有化部署', en: 'LLM + RAG (LangChain) vocabulary-rule retrieval; delivered via SDK, API or private deployment' },
+            { zh: 'CLIP + Grounding DINO：自动标注成功率 <b>xx.x%</b>，词表 xx → xxx 类；标注时间 xs → x.xs/框，成本 x.x → x.xx 元/框，本地算力无泄露风险', en: 'CLIP + Grounding DINO: <b>xx.x%</b> auto-labeling success, vocabulary xx → xxx classes; labeling xs → x.xs/box, cost ¥x.x → ¥x.xx/box, local compute with zero leakage risk' }
+          ]
+        },
+        {
+          t: { zh: '多视角视频生成系统', en: 'Multi-View Video Generation' },
+          bullets: [
+            { zh: 'DiT + LoRA 微调 Unet；layout(2D-3D)、全局/局部文本提示、相机位姿、BEV 道路图、光流、时间注意力', en: 'DiT + LoRA-finetuned Unet; layout (2D-3D), global/local text prompts, camera pose, BEV roadmap, optical flow, temporal attention' },
+            { zh: '生成具有真实渲染、真实动作、真实轨迹的 Corner Case 场景视频', en: 'Generated corner-case videos with realistic rendering, motion and trajectories' }
+          ]
+        }
+      ]
+    },
+    {
+      company: { zh: '佑驾创新 Minieye', en: 'Minieye' },
+      role: { zh: 'AI 工程师（实习）', en: 'AI Engineer (Internship)' },
+      per: '2022.11 – 2023.05',
+      blocks: [
+        {
+          t: { zh: '端云协同数据飞轮', en: 'Cloud-Edge Data Flywheel' },
+          bullets: [
+            { zh: '基于 Transformer 的多模态端云协作式感知融合算法（视频 / 点云 / 语音 / 结构化数据）', en: 'Transformer-based multi-modal cloud-edge perception fusion (video, point cloud, speech, structured data)' },
+            { zh: '落盘数据需求 <b>xx 万 → x 千条</b>，模型更新周期 <b>x 周 → x 周</b>（效率 +xxx%）', en: 'Data-storage need cut from <b>xxxK → xK rows</b>; model update cycle <b>x → x weeks</b> (+xxx% efficiency)' }
+          ]
+        }
+      ]
+    },
+    {
+      company: { zh: '哔哩哔哩 bilibili', en: 'bilibili' },
+      role: { zh: 'AI 工程师（实习）', en: 'AI Engineer (Internship)' },
+      per: '2022.05 – 2022.10',
+      blocks: [
+        {
+          t: { zh: 'QoE 强化学习与端侧部署', en: 'QoE RL & Edge Deployment' },
+          bullets: [
+            { zh: '深度强化学习 QoE 框架：清晰度-质量-反馈模型与清晰度策略', en: 'DRL QoE framework: bitrate-quality-feedback model with a resolution strategy' },
+            { zh: '总卡顿时间 <b>-x.x%</b>、清晰度切换 <b>-x.x%</b>；XGBoost 蒸馏 DRL 至 <b>xxKB</b>（-xx%）移动端部署', en: 'Total stutter <b>-x.x%</b>, resolution switches <b>-x.x%</b>; XGBoost distilled DRL to <b>xxKB</b> (-xx%) for mobile deployment' }
+          ]
+        }
+      ]
+    }
+  ],
+  awards: [
+    { y: '2021.11', t: { zh: '全国大学生工程实践与创新能力大赛金奖（智能网联汽车赛项冠军）', en: 'National Grand Prize, China Undergraduate Engineering Practice & Innovation (ICV Champion)' } },
+    { y: '2019.09', t: { zh: '全国大学生电子设计竞赛 全国一等奖', en: 'National First Prize, National Undergraduate Electronic Design Contest' } },
+    { y: '2018.06', t: { zh: '全国大学生节能减排社会实践与科学竞赛 全国三等奖', en: 'National Third Prize, Energy Conservation Social Practice & Science Contest' } },
+    { y: '2017.07', t: { zh: '四川省光电设计大赛双车竞技组一等奖（全省第二名）', en: 'First Prize, Sichuan Optoelectronic Design Contest (2nd in province)' } }
+  ],
+  skills: ['Python', 'C++', 'SQL', 'PyTorch', 'TensorFlow', 'Sklearn', 'Linux / Shell', 'Hadoop', 'Hive', 'Redis', 'Qwen-VL2', 'Llama', 'CLIP', 'VLM2Vec', 'Wide&Deep', 'DeepFM', 'SIM', 'DIN', '量化 / 剪枝 / 蒸馏', 'LangChain / RAG', 'Whisper', 'Stable Diffusion'],
+  research: [
+    { zh: 'GenAI @ Stable Diffusion / Llama3', en: 'GenAI @ Stable Diffusion / Llama3' },
+    { zh: '多模态：图像 / 音频 / 文本 / 点云', en: 'Multi-Modal: image / audio / text / point cloud' },
+    { zh: 'Whisper 多语言翻译', en: 'Whisper multi-lingual translation' },
+    { zh: 'LLM-RAG on Laws', en: 'LLM-RAG on Laws' }
+  ],
+  projects: [
+    {
+      id: 'p1',
+      title: { zh: '多模态开放词汇自动化标注系统', en: 'Multi-Modal Open-Vocabulary Auto-Labeling System' },
+      sub: { zh: 'LLM+RAG · CLIP · Grounding DINO · 2D/3D 标注', en: 'LLM+RAG · CLIP · Grounding DINO · 2D/3D Labeling' },
+      imgs: ['images/DataLabel.png', 'images/autoLabeling.png'],
+      tags: ['LLM+RAG', 'VLM', '2D/3D'],
+      desc: { zh: '开放词汇下的数据自动化标注系统，为视觉与点云数据自动生成 2D/3D 掩码与 3D 边框标注。', en: 'An open-vocabulary auto-labeling system that generates 2D/3D masks and 3D boxes for vision and point-cloud data.' },
+      hl: [
+        { zh: '构建基于 LLM + RAG(LangChain) 的标注词表-法规检索系统，完成产品化方案设计', en: 'Built an LLM + RAG (LangChain) vocabulary-rule retrieval system with full product design' },
+        { zh: '集成 LLM 思维链与 VLM 跨模态能力，理解逻辑命令（如“给带塑料袋的人贴标签”）', en: 'Combined LLM chain-of-thought with VLM cross-modal ability to interpret commands like "label people carrying plastic bags"' },
+        { zh: '语言-视觉 Prompt 模块（CLIP）协同推理，时空融合与校正细化 3D 标签', en: 'Language-vision prompt module (CLIP) with spatio-temporal fusion to refine 3D labels' }
+      ],
+      res: [
+        { zh: '自动标注成功率 <b>xx.x%</b>，检测词表 xx → xxx 类（支持 Prompt）', en: '<b>xx.x%</b> auto-labeling success; vocabulary xx → xxx classes (promptable)' },
+        { zh: '标注时间 <b>xs → x.xs/框</b>，成本 <b>x.x → x.xx 元/框</b>，本地算力、无数据泄露风险', en: 'Labeling <b>xs → x.xs/box</b>, cost <b>¥x.x → ¥x.xx/box</b>, local compute with no leakage risk' }
+      ]
+    },
+    {
+      id: 'p2',
+      title: { zh: '基于目标姿态与关键点的多视角视频生成系统', en: 'Multi-View Video Generation with Pose & Keypoint Control' },
+      sub: { zh: 'DiT · LoRA · Corner Case 场景生成', en: 'DiT · LoRA · Corner-Case Synthesis' },
+      imgs: ['images/multiViewVideo.png'],
+      tags: ['DiT', 'LoRA', 'VideoGen'],
+      desc: { zh: '面向感知大模型训练的 Corner Case 场景生成系统，从 0 到 1 搭建视频生成环境、框架与迭代流程。', en: 'Corner-case synthesis for perception foundation models, built from zero — environment, framework and iteration pipeline.' },
+      hl: [
+        { zh: '创新模块：layout(2D-3D)、全局/局部文本提示、相机位姿、BEV 道路图、光流、时间注意力', en: 'Novel modules: layout (2D-3D), global/local text prompts, camera pose, BEV roadmap, optical flow, temporal attention' },
+        { zh: '与北大、智源、智谱等顶尖机构开展市场调研、行业分析与工程落地交流', en: 'Market research and engineering exchanges with PKU, BAAI, Zhipu and other top institutions' }
+      ],
+      res: [
+        { zh: 'LoRA 微调 Unet，生成具有真实渲染、真实动作、真实轨迹的场景视频', en: 'LoRA-finetuned Unet produces videos with realistic rendering, motion and trajectories' }
+      ]
+    },
+    {
+      id: 'p3',
+      title: { zh: '视频生成模型评估系统', en: 'Video Generation Model Evaluation System' },
+      sub: { zh: 'Benchmark · 自动化评估 · xxT 数据', en: 'Benchmark · Auto-Evaluation · xxT Data' },
+      imgs: ['images/vbench.png'],
+      tags: ['Benchmark', 'Evaluation'],
+      desc: { zh: '覆盖视频生成模型全生命周期的评估平台：指标设计、Benchmark、自动化工具与可视化。', en: 'A full-lifecycle evaluation platform for video generation models: metrics, benchmark, automation and visualization.' },
+      hl: [
+        { zh: '设计可量化、标准化的生成视频评价指标与自动化评估工具', en: 'Designed quantifiable, standardized evaluation metrics with automated tooling' },
+        { zh: '搭建评估可视化平台、模型泛化迭代平台与运行性能监控平台', en: 'Built evaluation dashboards, generalization iteration and runtime monitoring platforms' }
+      ],
+      res: [
+        { zh: '收集不少于 <b>xxT</b> 视频数据；Benchmark 覆盖视频质量（时间/帧相关）与条件一致性（语义/风格）', en: 'Collected <b>xxT+</b> of video data; benchmark covers video quality (temporal/frame) and condition consistency (semantic/style)' }
+      ]
+    },
+    {
+      id: 'p4',
+      title: { zh: '端云协同的多模态数据飞轮系统', en: 'Cloud-Edge Multi-Modal Data Flywheel' },
+      sub: { zh: 'Transformer · 五阶段联合训练 · 数据飞轮', en: 'Transformer · 5-Stage Training · Flywheel' },
+      imgs: ['images/dataCloseLoop.png'],
+      tags: ['Transformer', 'Flywheel'],
+      desc: { zh: '多模态感知数据融合与自动化标注，构建“用户反馈 → 模型质量 → 产品体验”的正向循环。', en: 'Multi-modal perception fusion with auto-labeling, closing the loop from user feedback to model quality to product.' },
+      hl: [
+        { zh: 'xx 万+ 图片-文本-点云-标注框数据字典，总数据量 xxT+', en: 'xxxK+ image-text-pointcloud-box tuples, xxT+ total data' },
+        { zh: '五阶段联合训练：图文对齐 → 合成数据长文本优化 → 难负样本学习 → 跨视野注意力 → 时序注意力', en: '5-stage joint training: image-text alignment, synthetic long-text optimization, hard-negative learning, cross-view attention, temporal attention' }
+      ],
+      res: [
+        { zh: '用户反馈（含缺省即中等偏上）驱动模型微调，形成低垂的数据飞轮正循环', en: 'User feedback (defaulting to above-average when absent) drives fine-tuning — a low-hanging data flywheel' }
+      ]
+    },
+    {
+      id: 'p5',
+      title: { zh: '端侧模型优化部署方案', en: 'Edge Model Optimization & Deployment' },
+      sub: { zh: '量化 · 剪枝 · 蒸馏 · xxKB', en: 'Quantization · Pruning · Distillation · xxKB' },
+      imgs: ['images/modelCompress.png'],
+      tags: ['Quantization', 'Edge'],
+      desc: { zh: '面向移动端的模型压缩部署体系，提供“开关式”量化与剪枝工具。', en: 'A mobile model compression stack with switch-style quantization and pruning tools.' },
+      hl: [
+        { zh: '量化工具：激活值统计（hist/maxmin/kl/mse/kl-sym）、权重（adaround/brecq/qdrop）', en: 'Quantization: activation stats (hist/maxmin/kl/mse/kl-sym), weights (adaround/brecq/qdrop)' },
+        { zh: '支持 transformer/resnet 骨干自动剪枝、稀疏化训练与精调脚本', en: 'Auto-pruning for transformer/resnet backbones with sparsification and fine-tuning scripts' }
+      ],
+      res: [
+        { zh: 'XGBoost 小模型学习 DRL 大模型知识，压缩至 <b>xxKB</b>（-xx%），移动端顺利部署并加速推理', en: 'XGBoost learned from a DRL teacher, compressing to <b>xxKB</b> (-xx%) for smooth mobile deployment and faster inference' }
+      ]
+    },
+    {
+      id: 'p6',
+      title: { zh: '平台规则检索校验 RAG 模型', en: 'Platform Rules Retrieval & Verification RAG' },
+      sub: { zh: 'BGE · BM25 · 对比学习 · 法律知识库', en: 'BGE · BM25 · Contrastive Learning · Legal KB' },
+      imgs: ['images/RAG.png'],
+      tags: ['RAG', 'BGE'],
+      desc: { zh: '面向法律知识库的检索式问答，保证措辞精确、规避 LLM 幻觉。', en: 'Retrieval-based QA over legal knowledge bases for precise wording without hallucination.' },
+      hl: [
+        { zh: 'BGE-large-zh 向量化 + 向量压缩，在保持距离近似不变下大幅降低存储与计算', en: 'BGE-large-zh embeddings with vector compression, cutting storage/compute while preserving distances' },
+        { zh: '向量子空间划分加速搜索；BM25 兼顾实时性；对比学习提升判断准确率', en: 'Subspace-partitioned search, BM25 for real-time needs, contrastive learning for accuracy' }
+      ],
+      res: [
+        { zh: '排序模型过滤候选集，生成多种参考答案并将最优者置顶', en: 'A ranker filters candidates and surfaces the best answer first among multiple references' }
+      ]
+    },
+    {
+      id: 'p7',
+      title: { zh: '无字幕视频多语识别与字幕生成系统（个人项目）', en: 'Subtitle-Free Multi-Lingual Video Transcription & Subtitles (Side Project)' },
+      sub: { zh: 'Whisper · LLM · FFmpeg · 三语字幕', en: 'Whisper · LLM · FFmpeg · Trilingual Subs' },
+      imgs: ['images/videoSrt.png'],
+      tags: ['Whisper', 'Side Project'],
+      desc: { zh: '将无字幕的英文/意大利文混合视频自动转为中英意三语字幕视频。', en: 'Automatically converts subtitle-free EN/IT videos into trilingual (ZH-EN-IT) subtitled videos.' },
+      hl: [
+        { zh: 'Whisper 提取时间戳与英文文本，LLM 翻译为中/意文，pysrt 生成字幕，moviepy/ffmpeg 嵌入视频', en: 'Whisper extracts timestamps & English text; LLM translates; pysrt builds subs; moviepy/ffmpeg burn them in' }
+      ],
+      res: [
+        { zh: '完整案例见小红书（含原视频）', en: 'Full case on Xiaohongshu (incl. original video)' }
+      ],
+      link: 'http://xhslink.com/vYfvLR'
+    },
+    {
+      id: 'p8',
+      title: { zh: '技术产品思维之 TPF & PMF', en: 'TPF & PMF — Tech-Product Thinking' },
+      sub: { zh: 'TPF · PMF · 大模型产品方法论', en: 'TPF · PMF · LLM Product Methodology' },
+      imgs: ['images/TPF.png'],
+      tags: ['TPF', 'PMF'],
+      desc: { zh: '在大模型时代重新理解技术匹配与市场匹配的关系。', en: 'Revisiting tech-product fit and product-market fit in the foundation-model era.' },
+      hl: [
+        { zh: 'TPF：技术擅长什么、不擅长什么、怎么匹配；PMF：在好市场里用产品满足市场', en: 'TPF: what tech is good/bad at and how to match; PMF: meeting a good market with a good product' },
+        { zh: '大模型时代：TPF 是内部落地做正确的事，PMF 是对用户做正确的事', en: 'In the LLM era: TPF does things right internally; PMF does the right thing for users' }
+      ],
+      res: [
+        { zh: 'TPF 与 PMF 并非二选一：从需求到技术实现再到市场验证，形成 MVP → PMF 的迭代闭环', en: 'TPF & PMF are not either/or: from need to implementation to market, iterating from MVP toward PMF' }
+      ]
+    }
+  ],
+  featRepos: [
+    { name: 'RQ-VAE-Recommender', desc: { zh: '基于 Semantic-ID 的生成式检索推荐模型（PyTorch）', en: 'Generative retrieval model with Semantic IDs (PyTorch)' }, url: 'https://github.com/WendellGong/RQ-VAE-Recommender', lang: 'Python', star: 0 },
+    { name: 'realtime_trafficLight_verify', desc: { zh: 'V2X 交通灯与控制器状态实时校验系统', en: 'Real-time verification for V2X traffic lights & their controllers' }, url: 'https://github.com/WendellGong/realtime_trafficLight_verify', star: 3 },
+    { name: 'semantic_seg_demo_bicam', desc: { zh: 'RTSP 多路摄像头实时语义分割', en: 'Real-time semantic segmentation for RTSP multi-stream cameras' }, url: 'https://github.com/WendellGong/semantic_seg_demo_bicam', star: 2 },
+    { name: 'WendellGong.github.io', desc: { zh: '本站源码：单文件静态个人主页', en: 'Source of this site — single-file static homepage' }, url: 'https://github.com/WendellGong/WendellGong.github.io', lang: 'HTML', star: 7 },
+    { name: 'MSJ-Factory', desc: { zh: 'Qwen2.5-Coder 中文场景微调完整指南', en: 'Complete guide to fine-tuning Qwen2.5-Coder for Chinese scenarios' }, url: 'https://github.com/WendellGong/MSJ-Factory', star: 0 },
+    { name: 'bullet-trade', desc: { zh: '全流程量化交易系统，兼容聚宽策略代码', en: 'Full-pipeline trading system compatible with JoinQuant code' }, url: 'https://github.com/WendellGong/bullet-trade', star: 0 }
+  ]
+};
+init();
+</script>
+</body>
+</html>
