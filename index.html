@@ -1527,18 +1527,30 @@ function observeReveals(){
     els.forEach(el => el.classList.add('in'));
     return;
   }
-  revealObs = new IntersectionObserver((entries) => {
-    entries.forEach(en => {
-      if (en.isIntersecting) {
-        const el = en.target;
-        const d = el.getAttribute('data-delay');
-        if (d) el.style.transitionDelay = d + 'ms';
-        el.classList.add('in');
-        revealObs.unobserve(el);
-      }
-    });
+  let obs;
+  const reveal = el => {
+    if (el.classList.contains('in')) return;
+    const d = el.getAttribute('data-delay');
+    if (d) el.style.transitionDelay = d + 'ms';
+    el.classList.add('in');
+    if (obs) obs.unobserve(el);
+  };
+  obs = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) reveal(en.target); });
   }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
-  els.forEach(el => revealObs.observe(el));
+  revealObs = obs;
+  els.forEach(el => obs.observe(el));
+  // 切换视图后部分浏览器不会重新派发 IntersectionObserver 的初始通知，
+  // 而内容较短的视图也无法靠滚动触发，故对视口内元素补一次即时显示。
+  const showVisible = () => {
+    els.forEach(el => {
+      if (!el.isConnected || el.classList.contains('in')) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) reveal(el);
+    });
+  };
+  requestAnimationFrame(showVisible);
+  setTimeout(showVisible, 400);
 }
 
 /* ============================================================
