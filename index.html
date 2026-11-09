@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>龚文治 · Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索</title>
-<meta name="description" content="龚文治 Wendell Gong — 专注多模态表征、生成式召回、数据飞轮与出海搜索，把模型理解翻译成业务收益。">
+<title>Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索</title>
+<meta name="description" content="Wendell Gong — 专注多模态表征、生成式召回、数据飞轮与出海搜索，把模型理解翻译成业务收益。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231D63FF'/%3E%3Cpath d='M15 46V18h9l8 16 8-16h9v28h-9V30l-8 14-8-14v16z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
 <style>
@@ -649,7 +649,7 @@ footer{border-top:1px solid var(--line);background:var(--bg-2);margin-top:20px}
   <div class="container nav">
     <a class="brand" href="#/home" aria-label="Home">
       <span class="brand-mark">W</span>
-      <span>Wendell Gong<span class="zh-name" style="display:none">龚文治</span>
+      <span>Wendell Gong
         <small id="brand-sub">MULTI-MODAL RECSYS</small>
       </span>
     </a>
@@ -762,13 +762,11 @@ function renderChrome(){
   ).join('');
   document.getElementById('footTag').textContent = t('foot.tag');
   document.getElementById('brand-sub').textContent = 'MULTI-MODAL RECSYS';
-  const zhName = document.querySelector('.zh-name');
-  if (zhName) zhName.style.display = STATE.lang==='zh' ? 'inline' : 'none';
   document.getElementById('langZh').classList.toggle('on', STATE.lang==='zh');
   document.getElementById('langEn').classList.toggle('on', STATE.lang==='en');
   document.documentElement.lang = STATE.lang==='zh' ? 'zh-CN' : 'en';
   document.title = STATE.lang==='zh'
-    ? '龚文治 · Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索'
+    ? 'Wendell Gong — 多模态表征 · 生成式召回 · 数据飞轮 · 出海搜索'
     : 'Wendell Gong — Multi-Modal Representation · Generative Recall · Data Flywheel · Overseas Search';
 }
 
@@ -909,7 +907,7 @@ const views = {
         <div class="about-grid">
           <aside class="id-card" data-reveal>
             <div class="id-mark">W</div>
-            <h2>龚文治</h2>
+            <h2>Wendell Gong</h2>
             <div class="id-en">WENDELL GONG</div>
             <p class="id-role">${ab.idRole}</p>
             <div class="id-list">
@@ -1058,7 +1056,7 @@ const views = {
           <div class="be-ico">${icon('pen',36)}</div>
           <h3>${b.emptyT}</h3>
           <p>${b.emptyP}</p>
-          <a class="btn btn-primary magnetic" href="mailto:?subject=${encodeURIComponent(STATE.lang==='zh'?'订阅「龚文治」博客更新':'Subscribe to Wendell Gong blog')}&body=${encodeURIComponent(STATE.lang==='zh'?'请将「龚文治」博客更新邮件发送至：':'Please send Wendell Gong blog updates to:')}">${icon('bell',17)}${b.cta}</a>
+          <a class="btn btn-primary magnetic" href="mailto:?subject=${encodeURIComponent(STATE.lang==='zh'?'订阅「Wendell Gong」博客更新':'Subscribe to Wendell Gong blog')}&body=${encodeURIComponent(STATE.lang==='zh'?'请将「Wendell Gong」博客更新邮件发送至：':'Please send Wendell Gong blog updates to:')}">${icon('bell',17)}${b.cta}</a>
           <div class="be-note">${icon('shield',15)}${b.note}</div>
         </div>
       </div>
@@ -1500,7 +1498,7 @@ const L = {
     nav: { about: '关于', repo: '仓库', media: '媒体', blog: '博客', private: '私密区' },
     hero: {
       eyebrow: 'MULTI-MODAL RECSYS',
-      name: '龚文治',
+      name: 'Wendell Gong',
       nameEn: 'WENDELL GONG',
       slogan: 'Explore · Exploit · Exceed',
       tagline: '专注<b>多模态表征</b>、<b>生成式召回</b>、<b>数据飞轮</b>与<b>出海搜索</b>，用模型理解更真实的世界，把技术翻译成业务收益。',
@@ -1623,7 +1621,7 @@ const L = {
     nav: { about: 'About', repo: 'Repo', media: 'Media', blog: 'Blog', private: 'Private' },
     hero: {
       eyebrow: 'MULTI-MODAL RECSYS',
-      name: '龚文治',
+      name: 'Wendell Gong',
       nameEn: 'WENDELL GONG',
       slogan: 'Explore · Exploit · Exceed',
       tagline: 'Focused on <b>multi-modal representation</b>, <b>generative recall</b>, the <b>data flywheel</b> and <b>overseas search</b> — turning models that understand the real world into business outcomes.',

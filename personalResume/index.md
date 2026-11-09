@@ -2,7 +2,7 @@
 <table border="0">
   <tr>
     <td width="75%">
-      <h1>龚文治</h1>
+      <h1>Wendell Gong</h1>
       <p><b>Huangzhong University of Science and Technology 人工智能与自动化学院 硕士</b></p>
       <p><b>Southwest Jiaotong Universities 电气工程学院 本科</b></p>
       <p><b>Email：gongwenzhi98@foxmail.com</b></p>

@@ -1,4 +1,4 @@
-# 龚文治
+# Wendell Gong
 
 - [简历](personalResume/index.md)
 - [项目](projects.md)
